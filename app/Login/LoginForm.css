@@ -1,0 +1,68 @@
+/* src/styles/globals.css */
+
+/*
+  1. Base styling for the entire page container
+  We use a custom class here to apply the background image overlay 
+  for the "frosted glass" look on the login card.
+*/
+.login-page-bg {
+  /* This ensures the page takes up the full viewport */
+  @apply min-h-screen w-full; 
+  /* Sets the relative context for the absolute positioned background image */
+  @apply relative; 
+}
+
+/* 2. Styling for the Background Image to apply the blur/fade.
+  Note: The opacity is controlled by the Next.js Image component's parent/wrapper 
+  or using Tailwind's `opacity-*` utility in the JSX.
+*/
+.login-background-image {
+  /* This class ensures the image itself is blurred slightly, similar to the source image */
+  filter: blur(2px) brightness(0.9);
+  /* The opacity overlay effect is handled by a pseudo-element if needed, 
+     but we'll try to achieve the fade effect using the opacity utility on the card itself */
+}
+
+/* 3. Styling for the Login Card Container (The central white box)
+  This applies the semi-transparent white background and the frosted glass effect (backdrop-blur).
+*/
+.login-card-container {
+  /* Basic Card Dimensions and Styling */
+  @apply w-full max-w-sm p-8 rounded-xl shadow-2xl;
+  
+  /* Semi-Transparent Background */
+  background-color: rgba(255, 255, 255, 0.85); /* Adjust opacity here */
+
+  /* Frosted Glass Effect (Crucial for the look in the image) */
+  backdrop-filter: blur(8px); /* The "frosted" or "smoky" glass effect */
+  -webkit-backdrop-filter: blur(8px); /* For Safari compatibility */
+  
+  /* Optional: Border/Outline for definition */
+  @apply border border-gray-100;
+}
+
+/* 4. Standard Form Element Styles (Customized to match the look)
+*/
+.login-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.login-input {
+  @apply w-full p-3 border border-gray-300 rounded-md 
+  focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+  placeholder-gray-400 text-base;
+}
+
+.login-button {
+  @apply w-full py-3 px-4 bg-gray-900 text-white font-semibold rounded-lg 
+  shadow-md hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 
+  transition duration-200 ease-in-out text-lg;
+}
+
+.login-button:disabled {
+  @apply bg-gray-400 cursor-not-allowed;
+}
+
+.login-link {
+  @apply text-sm text-red-600 hover:text-red-800 font-medium;
+}
