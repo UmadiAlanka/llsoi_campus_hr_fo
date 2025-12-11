@@ -1,0 +1,175 @@
+/* LoginForm.module.css */
+
+/* The main container taking up the full screen */
+.container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items:first baseline;
+  overflow: hidden;
+  font-family: sans-serif; /* Use a standard readable font */
+}
+
+/* Background Image handling. 
+   We use a pseudo-element to blur the background without blurring the login card content.
+*/
+.container::before {
+  
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  /* REPLACE '/bg-graduates.jpg' with your actual image path inside the public folder */
+  background-image: url(loginBackground.jpg); 
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.8); /* Blur and darken slightly */
+  z-index: -1;
+  transform: scale(1.1); /* Scale up slightly to avoid blurred edges showing */
+}
+
+/* The central login card */
+.loginCard {
+  /* Frosted glass effect */
+  background-color: rgba(255, 255, 255, 0.75); /* Semi-transparent white */
+  backdrop-filter: blur(15px); /* This creates the frosted look */
+  -webkit-backdrop-filter: blur(45px); /* Safari support */
+  border-radius: 45px;
+  padding: 60px;
+  width:820;
+  height:750;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  color: #333;
+  justify-items: center;
+}
+
+
+/* Header section with logo and titles */
+.header {
+  margin-bottom: 30px;
+}
+
+.logoImage {
+  width: 115px;
+  height: 115px;
+  margin-left: 200px;
+  margin-right: auto;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+  
+}
+
+/* "LLSOI Campus" part */
+.titlePrimary {
+  font-size: 50px;
+  font-weight:900;
+  font-family: "Kanit", sans-serif;
+  color: #FFD814; 
+  margin: 5;
+  -webkit-text-stroke: 2px rgb(39, 39, 39); ;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Makes yellow text pop against white */
+}
+
+/* "HR Management System" part */
+.titleSecondary {
+  font-size: 50px;
+  font-weight: 900;
+  font-family: "Kanit", sans-serif;
+  color: #636161;
+  margin: 5px 0;
+}
+/* "HR Management System" part */
+.subHeader {
+  font-size: 40px;
+  font-weight: 900;
+  font-family: "Kanit", sans-serif;
+  color: #000000; 
+  
+}
+
+/* "Login to Your Account" text */
+.subTitle {
+  color: rgb(171, 23, 12); /* Red color */
+  font-weight: 100;
+  font-family: "Kanit", sans-serif;
+  margin-top: 10px;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+/* Form styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left; /* Align labels to the left */
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 300;
+  margin-bottom: 8px;
+  color: #000;
+  font-size: 1rem;
+  display: block;
+  margin-right: 325px;
+  font-size: 25px;
+  font-family: "Kanit", sans-serif;
+}
+
+.Input {
+  padding: 10px;
+  border-radius: 13px;
+  width: 100%;
+  background-color: rgba(237, 242, 247, 0.033); /* Light gray, slightly transparent */
+  font-size: 1rem;
+  border: #414040 solid 2px;
+}
+
+.input:focus {
+  border-color: #050505; /* Highlight border on focus */
+  background-color: #fff;
+}
+
+/* Login Button */
+.loginButton {
+  margin-top: 10px;
+  padding: 15px;
+  width: 150px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size:25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.loginButton:hover {
+  background-color: #333;
+}
+
+.loginButton:active {
+  transform: scale(0.98);
+}
+
+/* Forgot Password Link */
+.forgotLink {
+  display: inline-block;
+  margin-top: 5px;
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size:25px;
+}
+
+.forgotLink:hover {
+  text-decoration: underline;
+}
