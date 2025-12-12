@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import style from './LoginForm.module.css';
 
-
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
