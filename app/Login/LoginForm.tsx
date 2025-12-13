@@ -2,7 +2,7 @@
 /** @jsxImportSource react */
 
 "use client";
-
+import Link from 'next/link';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import style from './LoginForm.module.css';
@@ -109,14 +109,14 @@ const LoginForm: React.FC = () => {
               className={style.loginButton}
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Logging' : 'Login'}
             </button>
           </form>
 
           <div>
-            <a href="#" className={style.forgotLink}>
+            <Link href="/forgot-password" className={style.forgotLink}>
               Forgot your password?
-            </a>
+            </Link>
           </div>
         </div>
       </div>
