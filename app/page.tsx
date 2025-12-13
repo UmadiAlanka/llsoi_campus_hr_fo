@@ -1,4 +1,4 @@
-import LoginForm from '@/app/Login/Login';
+import LoginForm from '@/app/login/Login';
 export default function Home() {
   return (
    <div>
