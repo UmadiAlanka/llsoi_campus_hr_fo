@@ -5,7 +5,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import style from './LoginForm.module.css';
+import style from './Login.module.css';
 
 
 const LoginForm: React.FC = () => {
