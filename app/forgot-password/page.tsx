@@ -1,6 +1,6 @@
 import React from 'react';
 import ForgotPasswordForm from '@/app/forgot-password/ForgotPasswordForm';
-import LoginForm from '@/app/login/LoginForm';
+import LoginForm from '@/app/Login/Login';
 
 export default function ForgotPasswordPage() {
   return (
