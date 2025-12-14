@@ -10,6 +10,13 @@
   overflow: hidden;
   font-family: sans-serif; /* Use a standard readable font */
 }
+:root {
+    --bg-color:rgba(255, 255, 255, 0.75) ;
+    --bg-color2:rgb(7, 7, 7);
+    --text-color1: #323946;
+    --main-color1:#FFD814;
+    --main-color2: rgb(171, 23, 12);
+}
 
 /* Background Image handling. 
    We use a pseudo-element to blur the background without blurring the login card content.
@@ -31,7 +38,7 @@
 /* The central login card */
 .loginCard {
   /* Frosted glass effect */
-  background-color: rgba(255, 255, 255, 0.75); /* Semi-transparent white */
+  background-color: var(--bg-color); /* Semi-transparent white */
   backdrop-filter: blur(15px); /* This creates the frosted look */
   -webkit-backdrop-filter: blur(45px); /* Safari support */
   border-radius: 45px;
@@ -40,7 +47,7 @@
   height:780;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  color: #333;
+  color: var(--text-color1);
   justify-items: center;
 }
 
@@ -65,7 +72,7 @@
   font-size: 50px;
   font-weight:900;
   font-family: "Kanit", sans-serif;
-  color: #FFD814; 
+  color: var(--main-color1); 
   margin: 5;
   -webkit-text-stroke: 2px rgb(39, 39, 39); ;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Makes yellow text pop against white */
@@ -76,7 +83,7 @@
   font-size: 50px;
   font-weight: 900;
   font-family: "Kanit", sans-serif;
-  color: #636161;
+  color:var(--main-color2);
   margin: 5px 0;
 }
 /* "HR Management System" part */
@@ -84,13 +91,13 @@
   font-size: 40px;
   font-weight: 900;
   font-family: "Kanit", sans-serif;
-  color: #000000; 
+  color:var(--text-color1); 
   
 }
 
 /* "Login to Your Account" text */
 .subTitle {
-  color: rgb(171, 23, 12); /* Red color */
+  color: var(--main-color2);
   font-weight: 100;
   font-family: "Kanit", sans-serif;
   margin-top: 10px;
@@ -114,7 +121,7 @@
 .label {
   font-weight: 300;
   margin-bottom: 8px;
-  color: #000;
+  color: var(--text-color1);
   font-size: 1rem;
   display: block;
   margin-right: 325px;
@@ -126,13 +133,13 @@
   padding: 10px;
   border-radius: 13px;
   width: 100%;
-  background-color: rgba(237, 242, 247, 0.033); /* Light gray, slightly transparent */
+  background-color:var(--bg-color); /* Light gray, slightly transparent */
   font-size: 1rem;
-  border: #414040 solid 2px;
+  border:var(--text-color1) solid 2px;
 }
 
 .input:focus {
-  border-color: #050505; /* Highlight border on focus */
+  border-color: var(--bg-color2); /* Highlight border on focus */
   background-color: #fff;
 }
 
@@ -141,8 +148,8 @@
   margin-top: 10px;
   padding: 15px;
   width: 150px;
-  background-color: #000;
-  color: white;
+  background-color: var(--bg-color2);
+  color: var(--bg-color);
   border: none;
   border-radius: 12px;
   font-size:25px;
@@ -153,7 +160,7 @@
 }
 
 .loginButton:hover {
-  background-color: #333;
+  background-color: var(--text-color1);
 }
 
 .loginButton:active {
@@ -164,7 +171,7 @@
 .forgotLink {
   display: inline-block;
   margin-top: 5px;
-  color: #000;
+  color: var(--bg-color2);
   text-decoration: none;
   font-weight: 600;
   font-size:25px;
