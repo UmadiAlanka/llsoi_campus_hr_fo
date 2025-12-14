@@ -78,12 +78,12 @@
   text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Makes yellow text pop against white */
 }
 
-/* "HR Management System" part */
+/* "LLSOI Campus" part */
 .titleSecondary {
   font-size: 50px;
   font-weight: 900;
   font-family: "Kanit", sans-serif;
-  color:var(--main-color2);
+  color:var(--text-color1);
   margin: 5px 0;
 }
 /* "HR Management System" part */
@@ -91,7 +91,7 @@
   font-size: 40px;
   font-weight: 900;
   font-family: "Kanit", sans-serif;
-  color:var(--text-color1); 
+  color:var(--bg-color2); 
   
 }
 
