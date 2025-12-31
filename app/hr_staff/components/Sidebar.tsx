@@ -15,9 +15,6 @@ const Sidebar = () => {
 
   return (
     <div className={styles.sidebar}>
-      <div className={styles.logoContainer}>
-        <img src="/logo.png" alt="LLSOI Logo" className={styles.logo} />
-      </div>
       <nav className={styles.nav}>
         {menuItems.map((item) => (
           <Link key={item.name} href={item.path} className={styles.navItem}>
@@ -25,11 +22,12 @@ const Sidebar = () => {
             <span className={styles.text}>{item.name}</span>
           </Link>
         ))}
-        <button className={styles.logoutBtn}>
-          <LogOut size={20} />
-          <span>Logout</span>
-        </button>
       </nav>
+
+      <button className={styles.logoutBtn}>
+        <LogOut size={20} />
+        <span>Logout</span>
+      </button>
     </div>
   );
 };
