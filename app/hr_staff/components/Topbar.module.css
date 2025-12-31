@@ -1,0 +1,30 @@
+.topbar {
+  height: 60px;
+  background-color: #5c0000; /* Deep Maroon */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  color: #ffcc00; /* Gold */
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.subTitle {
+  color: white;
+  font-weight: normal;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+
+.userIcon {
+  color: #ffcc00;
+}
