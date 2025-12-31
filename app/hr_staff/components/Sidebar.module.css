@@ -1,54 +1,65 @@
 .sidebar {
   width: 280px;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  min-width: 280px;
+  /* height: 100% ensures it fits perfectly inside the layout container */
+  height: 100%; 
+  background: rgba(0, 0, 0, 0.4); /* Darker tint for better contrast against background */
+  backdrop-filter: blur(12px);
   color: white;
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.logoContainer {
-  padding: 0 20px 30px;
+  padding: 10px 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
+  /* flex-grow pushes the logout button to the bottom */
+  flex-grow: 1;
 }
 
 .navItem {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: 14px 25px;
   text-decoration: none;
-  color: white;
-  transition: 0.3s;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
   font-size: 0.9rem;
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 0 25px 25px 0;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffcc00; /* Text turns gold on hover */
+  border-radius: 0 30px 30px 0;
+  padding-left: 30px; /* Slight slide effect on hover */
 }
 
 .icon {
   margin-right: 15px;
+  display: flex;
+  align-items: center;
 }
 
 .logoutBtn {
   margin-top: auto;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 12px 20px;
+  padding: 15px 25px;
   background: none;
   border: none;
-  color: white;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ff8080; /* Soft red for logout */
   cursor: pointer;
   width: 100%;
-  text-align: left;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.logoutBtn:hover {
+  background: rgba(255, 128, 128, 0.1);
 }
