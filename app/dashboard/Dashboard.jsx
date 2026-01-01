@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
@@ -27,24 +28,33 @@ const Dashboard = () => {
         {/* SIDEBAR (Logo removed from here) */}
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
-            <div className={`${styles.navLink} ${styles.active}`}>
+            {/* Link to Dashboard */}
+            <Link href="/dashboard" className={`${styles.navLink} ${styles.active}`}>
               <img src="/icons/dashboard.png" alt="" className={styles.navIcon} /> Dashboard
-            </div>
-            <div className={styles.navLink}>
+            </Link>
+
+            {/* Link to Attendance */}
+            <Link href="/attendance" className={styles.navLink}>
               <img src="/icons/attendance.png" alt="" className={styles.navIcon} /> View Attendance
-            </div>
-            <div className={styles.navLink}>
+            </Link>
+
+            {/* Link to Leave Request */}
+            <Link href="/leave" className={styles.navLink}>
               <img src="/icons/leave.png" alt="" className={styles.navIcon} /> Request Leave
-            </div>
-            <div className={styles.navLink}>
+            </Link>
+
+            {/* Link to Salary */}
+            <Link href="/salary" className={styles.navLink}>
               <img src="/icons/salary.png" alt="" className={styles.navIcon} /> View Salary
-            </div>
-            <div className={styles.navLink}>
+            </Link>
+
+            {/* Link to Logout/Login */}
+            <Link href="/login" className={styles.navLink}>
               <img src="/icons/logout.png" alt="" className={styles.navIcon} /> Log Out
-            </div>
+            </Link>
           </nav>
         </aside>
-
+        
         {/* MAIN CONTENT */}
         <main className={styles.mainContent}>
           <section className={styles.pageBody}>
