@@ -1,10 +1,9 @@
-import Attendance from './Attendance/Attendance'; // 1. ADD THIS IMPORT
-
-
+import LoginForm from '@/app/login/LoginForm';
+import Dashboard from './dashboard/Dashboard';
 export default function Home() {
   return (
    <div>
-     <Attendance/>
+     <Dashboard/>
    </div>
   );
 }
