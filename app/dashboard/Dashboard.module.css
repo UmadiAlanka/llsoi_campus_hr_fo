@@ -64,8 +64,8 @@ html, body, #root {
 }
 
 .avatarImg {
-  width: 45px;
-  height: 45px;
+  width: 30px;
+  height: 30px;
   object-fit: contain; 
 }
 
@@ -122,6 +122,10 @@ html, body, #root {
   background-color: #fff;
   border-left: 5px solid #7a1212;
   color: #0b0b0b;
+}
+
+.navLink:hover {
+  background-color: #ffffff;
 }
 
 /* MAIN CONTENT AREA */
