@@ -4,11 +4,12 @@ import Attendance from '@/app/attendance/Attendance';
 import AdminManage from '@/app/admin-dashboard/admin-manage-users/adminManage';  
 import AdminAddUser from '@/app/admin-dashboard/admin-manage-users/adminAddUser';
 import AdminAttendance from '@/app/admin-dashboard/admin-attendance/adminAttendance';  
+import AdminMarkAttendance from '@/app/admin-dashboard/admin-attendance/adminMarkAttendance';
 
 export default function Home() {
   return (
    <div>
-     <AdminAttendance/>
+     <AdminMarkAttendance/>
    </div>
   );
 }
