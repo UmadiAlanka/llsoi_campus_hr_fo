@@ -126,9 +126,11 @@ const adminAttendance: React.FC = () => {
               </div>
             </div>
 
-            <button className={styles.markAttendanceBtn}>
-              Mark Attendance
-            </button>
+            <Link href="/mark-attendance" className={styles.markAttendanceLink}>
+              <button className={styles.markAttendanceBtn}>
+                Mark Attendance
+              </button>
+            </Link>
           </div>
 
           <div className={styles.tableContainer}>
