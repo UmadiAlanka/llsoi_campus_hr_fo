@@ -168,7 +168,7 @@
   height: 20px; 
 }
 
-.addUserButton {
+.addUserBtn {
   background-color: var(--main-color);
   color:var(--main-color1);
   border: none;
@@ -204,9 +204,13 @@
   padding: 15px;
   border-bottom: 1px solid #5c5454;
   color: #333;
+  background-color: var(--text-color1);
   font-family:"Kanit", sans-serif ;
   font-weight: 500;
   text-align: center;
+  flex-direction: column;
+  
+  
 }
 
 .actionButtons {
