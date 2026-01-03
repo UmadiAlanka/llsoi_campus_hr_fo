@@ -138,7 +138,9 @@ const adminManage: React.FC = () => {
                       <td>{user.contactNumber}</td>
                       <td>
                         <div className={styles.actionButtons}>
+                          <Link href={`/adminEditUser.tsx/${user.id}`}>
                           <button className={styles.editButton}>EDIT</button>
+                          </Link>
                           <button className={styles.deleteButton}>DELETE</button>
                         </div>
                       </td>
