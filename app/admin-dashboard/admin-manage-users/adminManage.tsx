@@ -104,10 +104,10 @@ const adminManage: React.FC = () => {
                   <img src="/icons/search.png" alt="Search" />
                 </button>
               </div>
-              <button className={styles.addUserButton}>
-                ADD USER +
-              </button>
-            </div>
+               <Link href="/adminAddUser">
+                <button className={styles.addUserBtn}>ADD USER +</button>
+               </Link>
+              </div>
 
             {/* User Table */}
             <div className={styles.tableContainer}>
