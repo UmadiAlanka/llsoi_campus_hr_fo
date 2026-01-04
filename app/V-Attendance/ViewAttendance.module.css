@@ -1,0 +1,315 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the page is at least full screen */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* HEADER STYLES */
+.topHeader {
+  background-color: #7a1212;
+  color: #ffcc00; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px;
+  height: 80px; 
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.mainLogo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.systemTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffcc00; 
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffcc00; 
+}
+
+.userText p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.userText span {
+  font-size: 0.8rem;
+  display: block;
+  text-align: right;
+}
+
+.avatarImg {
+  width: 30px;
+  height: 30px;
+  object-fit: contain; 
+}
+
+.dashboardBody {
+  display: flex;
+  flex: 1;
+  background-image: url('/background.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* CHANGE THIS: */
+  overflow: visible; /* Ensure content isn't cut off */
+  align-items: stretch; /* This ensures sidebar and mainContent are equal height */
+}
+
+.sidebar {
+  width: 280px;
+  background: rgba(207, 207, 207, 0.25); 
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  
+  /* CHANGE THIS: */
+  min-height: calc(100vh - 80px); 
+  height: auto; /* Allow it to grow with content */
+  
+  padding-top: 20px;
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLink {
+  padding: 15px 25px;
+  border-radius: 40px;
+  margin: 20 10px 10px 10px;
+  color: #0b0b0b;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.navIcon {
+  width: 35px;
+  height: 35px;
+  margin-right: 15px;
+}
+
+.active {
+  background-color: #fff;
+  border-left: 5px solid #7a1212;
+  color: #0b0b0b;
+}
+
+.navLink:hover {
+  background-color: #ffffff;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 30px 50px;
+}
+
+.pageTitle {
+  color: #fff;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+
+
+/* --- Month/Year & Status Dropdowns --- */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filterLabel {
+  color: #fff; /* White text as per image */
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.selectInput {
+  background-color: white;
+  color: #7a1212; /* Dark red text inside */
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 700;
+  min-width: 180px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow from prototype */
+  appearance: auto;
+}
+
+/* --- Summary Card (Matching image_c41180.png) --- */
+.summaryCard {
+  background: rgba(255, 255, 255, 0.9); /* Transparent white */
+  border: 2px solid #7a1212; /* Dark red border */
+  border-radius: 12px;
+  padding: 18px 25px;
+  width: fit-content;
+  min-width: 520px;
+  margin-bottom: 30px;
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #7a1212;
+  margin-bottom: 12px;
+}
+
+/* The red circle with dot icon */
+.redTargetIcon {
+  width: 22px;
+  height: 22px;
+  border: 3px solid #7a1212; 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.innerDot {
+  width: 10px;
+  height: 10px;
+  background-color: #7a1212;
+  border-radius: 50%;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two column layout */
+  gap: 10px 40px;
+  padding-left: 35px;
+  font-weight: 700;
+  color: #7a1212;
+}
+
+
+/* Container to provide the semi-transparent overlay behind the table */
+.tableWrapper {
+  background: rgba(255, 255, 255, 0.3); /* Transparent overlay */
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.attendanceTable {
+  width: 100%;
+  border-collapse: separate; /* Required for the gap between rows */
+  border-spacing: 0 10px; /* Creates the 10px vertical gap between white boxes */
+}
+
+.attendanceTable th {
+  background: #7a1212; /* Dark red header */
+  color: #ffffff;
+  padding: 15px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+/* Styling for the white "boxes" (rows) */
+.attendanceTable td {
+  background: #ffffff; /* Solid white box for each row */
+  padding: 15px;
+  text-align: center;
+  color: #7a1212; /* Dark red text for data */
+  font-weight: 700;
+  border: none;
+}
+
+/* Rounds the corners of the white boxes */
+.attendanceTable td:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.attendanceTable td:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* Optional: Subtle shadow to make the white boxes pop */
+.attendanceTable tr td {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+
+
+
+
+/* ... existing code ... */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.filterLabel {
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Helps visibility on image background */
+}
+
+.selectInput {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7a1212; /* Dark red text */
+  background: white;
+  min-width: 180px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  appearance: listbox; /* Standard dropdown appearance */
+}
+
+.selectInput:focus {
+  outline: 2px solid #7a1212;
+}
