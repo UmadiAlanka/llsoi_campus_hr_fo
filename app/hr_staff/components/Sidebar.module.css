@@ -3,8 +3,8 @@
   min-width: 280px;
   /* height: 100% ensures it fits perfectly inside the layout container */
   height: 100%; 
-  background: rgba(0, 0, 0, 0.4); /* Darker tint for better contrast against background */
-  backdrop-filter: blur(12px);
+  background: rgba(225, 221, 221, 0.443); /* Darker tint for better contrast against background */
+  
   color: white;
   display: flex;
   flex-direction: column;
@@ -25,14 +25,14 @@
   align-items: center;
   padding: 14px 25px;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: black;
+  font-weight:bolder;
   transition: all 0.2s ease;
   font-size: 0.9rem;
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffcc00; /* Text turns gold on hover */
+  background: rgba(255, 255, 255, 0.463);
   border-radius: 0 30px 30px 0;
   padding-left: 30px; /* Slight slide effect on hover */
 }
@@ -43,23 +43,3 @@
   align-items: center;
 }
 
-.logoutBtn {
-  margin-top: auto;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 15px 25px;
-  background: none;
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ff8080; /* Soft red for logout */
-  cursor: pointer;
-  width: 100%;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.logoutBtn:hover {
-  background: rgba(255, 128, 128, 0.1);
-}

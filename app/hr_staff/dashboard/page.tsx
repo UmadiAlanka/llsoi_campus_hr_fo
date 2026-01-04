@@ -1,14 +1,56 @@
-import React from 'react';
+'use client'; 
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link'; // Import Link for navigation
 import styles from './dashboard.module.css';
 import { Users, UserCheck, CalendarClock, AlertCircle } from 'lucide-react';
 
 export default function DashboardPage() {
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [presentToday, setPresentToday] = useState(0);
+  const [pendingLeave, setPendingLeave] = useState(0);
+  const [anomalies, setAnomalies] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Simulating a short delay like a real database fetch
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const dbData = {
+          total: 25,
+          present: 24,
+          leave: 2,
+          anomalies: 0
+        };
+
+        setTotalEmployees(dbData.total);
+        setPresentToday(dbData.present);
+        setPendingLeave(dbData.leave);
+        setAnomalies(dbData.anomalies);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Database fetch failed", err);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const attendanceRate = totalEmployees > 0 
+    ? Math.round((presentToday / totalEmployees) * 100) 
+    : 0;
+
   const stats = [
-    { label: 'Total Employees', value: 25, icon: <Users />, color: '#800000' },
-    { label: 'Employees present Today', value: 24, icon: <UserCheck />, color: '#800000' },
-    { label: 'Pending leave Requests', value: 2, icon: <CalendarClock />, color: '#800000' },
-    { label: 'Anomalies Detected', value: 0, icon: <AlertCircle />, color: '#800000' },
+    { label: 'Total Employees', value: totalEmployees, icon: <Users strokeWidth={2.5} /> },
+    { label: 'Employees present Today', value: presentToday, icon: <UserCheck strokeWidth={2.5} /> },
+    { label: 'Pending leave Requests', value: pendingLeave, icon: <CalendarClock strokeWidth={2.5} /> },
+    { label: 'Anomalies Detected', value: anomalies, icon: <AlertCircle strokeWidth={2.5} /> },
   ];
+
+  // While data is "fetching", we can show a simple loading message
+  if (isLoading) return <div className={styles.loading}>Loading Dashboard...</div>;
 
   return (
     <div className={styles.container}>
@@ -26,20 +68,31 @@ export default function DashboardPage() {
 
       <h3 className={styles.sectionTitle}>Quick Actions</h3>
       <div className={styles.actionGrid}>
-        <button className={styles.actionBtn}>Add new Employee</button>
-        <button className={styles.actionBtn}>Update Attendance</button>
-        <button className={styles.actionBtn}>Generate Monthly payroll</button>
-        <button className={styles.actionBtn}>Review Anomalies</button>
+        {/* Changed from <button> to <Link> */}
+        <Link href="/hr_staff/employees/add" className={styles.actionBtn}>
+          Add new Employee
+        </Link>
+        <Link href="/hr_staff/attendance/update" className={styles.actionBtn}>
+          Update Attendance
+        </Link>
+        <Link href="/hr_staff/payroll/generate" className={styles.actionBtn}>
+          Generate Monthly payroll
+        </Link>
+        <Link href="/hr_staff/anomalies/review" className={styles.actionBtn}>
+          Review Anomalies
+        </Link>
       </div>
 
       <div className={styles.chartSection}>
         <h3>Attendance Overview</h3>
         <div className={styles.chartPlaceholder}>
-          {/* Simple CSS representation of the pie chart */}
-          <div className={styles.pieChart}></div>
+          <div 
+            className={styles.pieChart} 
+            style={{ '--percentage': `${attendanceRate}%` } as React.CSSProperties}
+          ></div>
           <div className={styles.chartText}>
-            <p>Today : 90%</p>
-            <p>Attendance</p>
+            <p>Today : {attendanceRate}%</p>
+            <p className={styles.subText}>Attendance</p>
           </div>
         </div>
       </div>
