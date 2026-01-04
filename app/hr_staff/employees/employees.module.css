@@ -4,7 +4,7 @@
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -34,12 +34,13 @@
   outline: none;
   flex: 1;
   padding: 5px;
+  color: #333;
 }
 
 .searchBtn {
   background: none;
   border: none;
-  color: #666;
+  color: #741010;
   cursor: pointer;
 }
 
@@ -51,15 +52,25 @@
 
 .filters select {
   background: white;
-  border: none;
-  padding: 5px 10px;
+  border: 1px solid #ddd; /* Added a light border for visibility */
+  padding: 8px 12px;
   border-radius: 4px;
   font-size: 0.9rem;
+  color: #741010;
+  font-weight:bold;
+  cursor: pointer;
+  outline: none;
 }
 
+.filters select:focus {
+  border-color: #5a0000;
+}
+
+/* Ensure the table doesn't collapse if empty */
 .tableContainer {
   background: white;
   border-radius: 4px;
+  min-height: 300px; 
   overflow: hidden;
   position: relative;
 }
