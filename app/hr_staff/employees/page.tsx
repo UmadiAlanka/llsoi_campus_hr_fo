@@ -6,9 +6,9 @@ import { Search } from 'lucide-react';
 import Link from 'next/link';
 
 const initialEmployees = [
-  { id: '001', name: 'S.Perera', department: 'IT', position: 'Officer', contact: '0786543211', nic: '312456789087', dob: '09/08/2000', gender: 'male', email: 'Perera@gmail.com', dateJoined: '01/05/2020', type: 'Full-time' },
-  { id: '002', name: 'M.Silva', department: 'Management', position: 'Officer', contact: '0756543211', nic: '452456789088', dob: '12/04/1998', gender: 'female', email: 'Silva@gmail.com', dateJoined: '15/02/2021', type: 'Probation' },
-  { id: '003', name: 'K.Dias', department: 'IT', position: 'Officer', contact: '0756873211', nic: '982456789089', dob: '22/11/1999', gender: 'male', email: 'Dias@gmail.com', dateJoined: '10/10/2019', type: 'Full-time' },
+  { id: '001', name: 'S.Perera', department: 'IT', position: 'Lecturer', contact: '0786543211', nic: '312456789087', dob: '09/08/2000', gender: 'male', email: 'Perera@gmail.com', dateJoined: '01/05/2020', type: 'Academic' },
+  { id: '002', name: 'M.Silva', department: 'Management', position: 'Officer', contact: '0756543211', nic: '452456789088', dob: '12/04/1998', gender: 'female', email: 'Silva@gmail.com', dateJoined: '15/02/2021', type: 'Non-academic' },
+  { id: '003', name: 'K.Dias', department: 'IT', position: 'Officer', contact: '0756873211', nic: '982456789089', dob: '22/11/1999', gender: 'male', email: 'Dias@gmail.com', dateJoined: '10/10/2019', type: 'Non-academic' },
 ];
 
 export default function EmployeesPage() {
