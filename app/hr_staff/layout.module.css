@@ -2,6 +2,12 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  /* Apply background here so it covers everything */
+  background: linear-gradient(rgba(234, 224, 224, 0.27), rgba(234, 224, 224, 0.27)), 
+              url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
 }
 
@@ -9,10 +15,14 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  /* Ensure this container doesn't block the background */
+  background: transparent;
 }
 
 .contentArea {
   flex: 1;
   overflow-y: auto;
-  background-color: #f4f4f4; /* Fallback background */
+  /* Removed the solid #f4f4f4 color so the image shows through */
+  background: transparent; 
+  padding: 20px;
 }

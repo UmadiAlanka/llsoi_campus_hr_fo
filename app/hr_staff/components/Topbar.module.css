@@ -1,6 +1,6 @@
 .topbar {
   height: 60px;
-  background-color: #5c0000; /* Deep Maroon */
+  background-color: #741010; /* Deep Maroon */
   display: flex;
   justify-content: space-between; /* This keeps logo/title on left, profile on right */
   align-items: center;
@@ -20,7 +20,7 @@
 
 /* Styles for the logo image */
 .logoImage {
-  height: 40px; /* Adjust height to fit inside the 60px bar */
+  height: 50px; /* Adjust height to fit inside the 60px bar */
   width: auto;
   object-fit: contain;
 }
