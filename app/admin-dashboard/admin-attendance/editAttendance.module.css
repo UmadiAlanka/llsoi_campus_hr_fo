@@ -182,7 +182,7 @@
 }
 
 /* Green Submit Button */
-.submitBtn {
+.updateBtn {
   background-color: #0f5f1a;
   color:var(--text-color1);
   border: none;
@@ -195,4 +195,4 @@
   transition: background 0.3s;
 }
 
-.submitBtn:hover { background-color: #0d4d16; }
+.updateBtn:hover { background-color: #0d4d16; }
