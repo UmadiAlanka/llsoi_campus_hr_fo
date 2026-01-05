@@ -72,7 +72,7 @@ export default function DashboardPage() {
         <Link href="/hr_staff/employees/add" className={styles.actionBtn}>
           Add new Employee
         </Link>
-        <Link href="/hr_staff/attendance/update" className={styles.actionBtn}>
+        <Link href="/hr_staff/attendance" className={styles.actionBtn}>
           Update Attendance
         </Link>
         <Link href="/hr_staff/payroll/generate" className={styles.actionBtn}>
