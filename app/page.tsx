@@ -6,11 +6,12 @@ import AdminAddUser from '@/app/admin-dashboard/admin-manage-users/adminAddUser'
 import AdminAttendance from '@/app/admin-dashboard/admin-attendance/adminAttendance';  
 import AdminMarkAttendance from '@/app/admin-dashboard/admin-attendance/adminMarkAttendance';
 import EditAttendance from '@/app/admin-dashboard/admin-attendance/editAttendance';
+import AdminSalary from '@/app/admin-dashboard/salary/salary';
 
 export default function Home() {
   return (
    <div>
-     <EditAttendance/>
+     <AdminSalary/>
    </div>
   );
 }
