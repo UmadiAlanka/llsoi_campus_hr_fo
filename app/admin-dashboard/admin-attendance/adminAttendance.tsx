@@ -154,7 +154,9 @@ const adminAttendance: React.FC = () => {
                     <td>{record.timeMarked}</td>
                     <td>{record.type}</td>
                     <td>
-                      <button className={styles.editBtn}>EDIT/View</button>
+                      <Link href={`/EditAttendance/${record.id}`}>
+                       <button className={styles.editBtn}>EDIT/View</button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
