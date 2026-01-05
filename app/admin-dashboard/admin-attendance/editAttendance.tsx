@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from 'react';
-import styles from './adminMarkAttendance.module.css';
+import styles from './editAttendance.module.css';
 import Link from 'next/link';
 
 const adminMarkAttendance: React.FC = () => {
@@ -138,7 +138,7 @@ const adminMarkAttendance: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <button type="submit" className={styles.submitBtn}>Submit</button>
+              <button type="submit" className={styles.updateBtn}>UPDATE</button>
             </form>
           </div>
         </main>
