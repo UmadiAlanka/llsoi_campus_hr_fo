@@ -1,0 +1,145 @@
+.container {
+  padding: 20px;
+}
+
+.mainTitle {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #fff;
+}
+
+.sectionCard {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: #741010;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #741010;
+}
+
+.filters, .payrollFilters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Search Icon Wrapper */
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.searchWrapper {
+  margin-left: auto;
+}
+
+.searchInput {
+  padding: 10px 40px 10px 15px; /* Added right padding for icon space */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 280px;
+  outline: none;
+  font-size: 14px;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  color: #741010;
+  pointer-events: none; /* Allows user to click input through the icon */
+}
+
+.filterInput, .filterSelect {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 170px;
+  font-size: 14px;
+  outline: none;
+  background-color: #fff;
+}
+
+.filterInput:focus, .filterSelect:focus, .searchInput:focus {
+  border-color: #741010;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.table th {
+  background-color: #741010;
+  color: white;
+  text-align: left;
+  padding: 14px;
+  font-size: 14px;
+}
+
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+/* ROW HOVER EFFECT */
+.tableRow {
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background-color: #fff3b0; /* Light red highlight on hover */
+  cursor: pointer;
+}
+
+.editBtn {
+  background-color: #006400;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.approveBtn {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  width: 100px;
+  cursor: pointer;
+}
+
+.statusText {
+  color: #006400;
+  font-weight: bold;
+  background: none;
+  border: none;
+}
+
+.summaryBtn {
+  margin-top: 20px;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 5px 25px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
