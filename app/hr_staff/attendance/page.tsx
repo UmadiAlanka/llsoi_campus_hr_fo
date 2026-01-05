@@ -115,7 +115,7 @@ const AttendancePage = () => {
                 <td>{item.date}</td>
                 <td>{item.time}</td>
                 <td>
-                  <Link href={`/hr_staff/attendance/edit/${item.id}`}>
+                  <Link href={`/hr_staff/attendance/edit-attendance/${item.id}`}>
                     <button className={styles.editBtn}>Edit/View</button>
                   </Link>
                 </td>
@@ -168,7 +168,7 @@ const AttendancePage = () => {
                 <td>{item.basic}</td>
                 <td>{item.net}</td>
                 <td>
-                  <Link href={`/hr_staff/attendance/edit/${item.id}`}>
+                  <Link href={`/hr_staff/attendance/edit-salary/${item.id}`}>
                     <button className={styles.editBtn}>Edit/View</button>
                   </Link>
                 </td>
