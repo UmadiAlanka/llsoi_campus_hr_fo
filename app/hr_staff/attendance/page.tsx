@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './attendance.module.css';
-import { Search } from 'lucide-react'; // Make sure to install: npm install lucide-react
+import { Search } from 'lucide-react';
+import Link from 'next/link';
 
 const AttendancePage = () => {
   // Mock Data
@@ -12,11 +13,13 @@ const AttendancePage = () => {
     { id: '003', name: 'N.Fernando', date: '2025-09-10', time: '8.00AM', dept: 'Finance', type: 'Academic' },
   ];
 
-  const initialPayroll = [
+  const [payrollList, setPayrollList] = useState([
     { id: '001', name: 'S.Perera', basic: '50,000', net: '52,000', status: 'Approved', type: 'Academic' },
     { id: '002', name: 'K.Dias', basic: '60,000', net: '61,000', status: 'Approve', type: 'Non-Academic' },
-  ];
+  ]);
 
+  // UI States
+  const [showPopup, setShowPopup] = useState(false);
   const [attSearch, setAttSearch] = useState('');
   const [attDept, setAttDept] = useState('');
   const [attType, setAttType] = useState('');
@@ -24,6 +27,23 @@ const AttendancePage = () => {
   const [paySearch, setPaySearch] = useState('');
   const [payType, setPayType] = useState('');
 
+  // Handle Approve with Popup
+  const handleApprove = (id: string) => {
+    setPayrollList(prev => 
+      prev.map(item => item.id === id ? { ...item, status: 'Approved' } : item)
+    );
+    setShowPopup(true);
+  };
+
+  // Auto-hide popup after 3 seconds
+  useEffect(() => {
+    if (showPopup) {
+      const timer = setTimeout(() => setShowPopup(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showPopup]);
+
+  // Filter Logic
   const filteredAttendance = initialAttendance.filter((item) => {
     return (item.id.includes(attSearch) || item.name.toLowerCase().includes(attSearch.toLowerCase())) &&
            (attDept === '' || item.dept === attDept) &&
@@ -31,13 +51,23 @@ const AttendancePage = () => {
            (attDate === '' || item.date === attDate);
   });
 
-  const filteredPayroll = initialPayroll.filter((item) => {
+  const filteredPayroll = payrollList.filter((item) => {
     return (item.id.includes(paySearch) || item.name.toLowerCase().includes(paySearch.toLowerCase())) &&
            (payType === '' || item.type === payType);
   });
 
   return (
     <div className={styles.container}>
+      {/* Success Popup Message */}
+      {showPopup && (
+        <div className={styles.popupOverlay}>
+          <div className={styles.popupCard}>
+            <div className={styles.successIcon}>✔</div>
+            <p>Payroll Approved successfully!</p>
+          </div>
+        </div>
+      )}
+
       <h1 className={styles.mainTitle}>Attendance and payroll operations</h1>
 
       {/* Attendance Verifications Section */}
@@ -49,7 +79,6 @@ const AttendancePage = () => {
             <option value="">Filter by Department</option>
             <option value="HR">HR</option>
             <option value="IT">IT</option>
-            <option value="Finance">Finance</option>
           </select>
           <select className={styles.filterSelect} onChange={(e) => setAttType(e.target.value)}>
             <option value="">Select Type</option>
@@ -57,7 +86,6 @@ const AttendancePage = () => {
             <option value="Non-Academic">Non-Academic</option>
           </select>
           
-          {/* Search bar with Icon */}
           <div className={styles.searchContainer}>
             <input 
               type="text" 
@@ -86,7 +114,11 @@ const AttendancePage = () => {
                 <td>{item.name}</td>
                 <td>{item.date}</td>
                 <td>{item.time}</td>
-                <td><button className={styles.editBtn}>Edit/View</button></td>
+                <td>
+                  <Link href={`/hr_staff/attendance/edit/${item.id}`}>
+                    <button className={styles.editBtn}>Edit/View</button>
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -104,6 +136,7 @@ const AttendancePage = () => {
             <option value="Non-Academic">Non-Academic</option>
           </select>
           
+          <div className={styles.searchWrapper}>
             <div className={styles.searchContainer}>
               <input 
                 type="text" 
@@ -113,7 +146,7 @@ const AttendancePage = () => {
               />
               <Search className={styles.searchIcon} size={18} />
             </div>
-          
+          </div>
         </div>
 
         <table className={styles.table}>
@@ -134,17 +167,28 @@ const AttendancePage = () => {
                 <td>{item.name}</td>
                 <td>{item.basic}</td>
                 <td>{item.net}</td>
-                <td><button className={styles.editBtn}>Edit/View</button></td>
                 <td>
-                  <button className={item.status === 'Approved' ? styles.statusText : styles.approveBtn}>
-                    {item.status}
-                  </button>
+                  <Link href={`/hr_staff/attendance/edit/${item.id}`}>
+                    <button className={styles.editBtn}>Edit/View</button>
+                  </Link>
+                </td>
+                <td>
+                  {item.status === 'Approved' ? (
+                    <span className={styles.statusText}>Approved</span>
+                  ) : (
+                    <button className={styles.approveBtn} onClick={() => handleApprove(item.id)}>
+                      Approve
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button className={styles.summaryBtn}>Go To Payroll Summary</button>
+        
+        <Link href="/hr_staff/attendance/payroll-summary">
+          <button className={styles.summaryBtn}>Go To Payroll Summary</button>
+        </Link>
       </section>
     </div>
   );
