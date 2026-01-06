@@ -47,7 +47,7 @@ html, body, #root {
 .userProfile {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 12npx;
   color: #ffcc00; 
 }
 

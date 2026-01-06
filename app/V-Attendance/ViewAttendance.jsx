@@ -18,19 +18,28 @@ const ViewAttendance = () => {
   ];
 
   return (
-    <div className={styles.appContainer}>
-      {/* Red Header Section */}
+     <div className={styles.appContainer}>
+      {/* HEADER */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
-          <img src="/Logo.png" alt="LLSOI Logo" className={styles.mainLogo} />
-          <h1 className={styles.systemTitle}>LLSOI Campus HR Management System</h1>
+          <img src="/logo.png" alt="Logo" className={styles.mainLogo} />
+          <h1 className={styles.systemTitle}>
+            LLSOI Campus HR Management System
+          </h1>
         </div>
+
         <div className={styles.userProfile}>
           <div className={styles.userText}>
-            <p>welcome, <strong>Employee Name!</strong></p>
+            <p>
+              Welcome, <strong>Employee Name!</strong>
+            </p>
             <span>Employee ID</span>
           </div>
-          <div className={styles.avatarCircle}></div>
+          <img
+            src="/icons/user-profile.png"
+            alt="User"
+            className={styles.avatarImg}
+          />
         </div>
       </header>
 
