@@ -1,0 +1,229 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+}
+:root {
+    --main-color:#720e0e ;
+    --bg-color1:rgb(7, 7, 7);
+    --text-color1: #fff;
+    --main-color1:#FFD814;
+    --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Reusable Header & Sidebar Styles */
+.header { 
+    background-color: var(--main-color);
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color:var(--text-color1);
+    z-index: 100; 
+}
+.logoSection { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+.headerLogo { 
+    width: 45px; 
+    height: 45px; 
+}
+.brandName { 
+   font-size: 1.3rem; 
+   font-weight: bold; 
+   color: var(--main-color1);
+}
+.brandName span { 
+    color:var(--main-color1); 
+}
+.adminProfile { 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--main-color1);
+    font-weight: bold; 
+}
+.adminAvatar { 
+    width: 28px; 
+    height: 28px; 
+} 
+.layoutBody { 
+    display: flex; 
+    flex: 1;
+}
+
+.sidebar {
+  width: 370px;
+  background-color:var(--sidebar-color); /* Translucent background */
+  backdrop-filter: blur(10px);
+  padding-top: 45px;
+}
+.menuList {
+  display: flex;
+  flex-direction: column;
+}
+.menuItem {
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color:var(--bg-color1);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.6rem;
+}
+
+.activeItem {
+  background-color: var(--sidebar-color);
+  border-radius: 40px 40px 40px 40px;
+  margin-right: 25px;
+}
+
+.activeItem:hover {
+  background-color: var(--text-color1);
+}
+
+.menuIconImage { 
+  width: 30px;
+  height: 30px;
+  object-fit: contain; 
+}
+
+
+/* Main Area Layout */
+.mainContent { 
+    flex: 1; 
+    padding: 30px; 
+}
+.pageTitle { 
+    color:var(--text-color1); 
+    font-size: 2.2rem; 
+    margin-bottom: 20px; 
+    font-weight: bold; 
+}
+
+.topSection { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    margin-bottom: 25px; 
+}
+
+/* Filter Bar */
+.filterBar { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px; 
+}
+.filterBox { 
+    position: relative; 
+    background: var(--text-color1); 
+    border-radius: 4px; 
+    display: flex; 
+    align-items: center; 
+    border: 1px solid #ccc; 
+    cursor: pointer; 
+}
+.filterSelect, .monthInput { 
+    width: 100%; 
+    padding: 10px 15px; 
+    border: none; 
+    outline: none; 
+    font-weight: bold; 
+    appearance: none; 
+    background: transparent; 
+}
+.monthInput::-webkit-calendar-picker-indicator { 
+    opacity: 0; 
+    cursor: pointer; 
+}
+.monthPlaceholder { 
+    position: absolute; 
+    left: 15px; 
+    font-weight: bold; 
+    pointer-events: none; 
+    color:var(--bg-color1); 
+}
+.filterIcon { 
+    position: absolute; 
+    right: 12px; 
+    width: 18px; 
+    pointer-events: none; 
+}
+
+/* Action Button */
+.addSalaryBtn {
+  background-color: var(--main-color);
+  color:var(--main-color1);
+  border: none;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Table Card */
+
+.tableCard { 
+    background-color: rgba(255, 255, 255, 0.725); 
+    border-radius: 15px; 
+    overflow: hidden; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+}
+.salaryTable { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+.salaryTable th { 
+    background-color:var(--main-color); 
+    color:var(--text-color1); 
+    text-align: left; 
+    padding: 15px; 
+    font-size: 0.9rem; 
+}
+.salaryTable td { 
+    padding: 12px 15px; 
+    background:var(--text-color1); 
+    border-bottom: 2px ; 
+    font-weight: bold; 
+    font-size: 0.85rem; 
+}
+
+/* Table Actions */
+.pdfBtn { 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+}
+.pdfBtn img { 
+    width: 24px; 
+}
+
+.actions { 
+    display: flex; 
+    gap: 8px; 
+}
+.editBtn { 
+    background-color: #0f5f1a; 
+    color:var(--text-color1); 
+    border: none; 
+    padding: 5px 12px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+.deleteBtn { 
+    background-color: #d32f2f; 
+    color: var(--text-color1); 
+    border: none; 
+    padding: 5px 12px; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    cursor: pointer; }

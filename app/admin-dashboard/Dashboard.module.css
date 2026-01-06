@@ -10,7 +10,7 @@
 }
 :root {
     --main-color:#720e0e ;
-    --bg-color2:rgb(7, 7, 7);
+    --bg-color1:rgb(7, 7, 7);
     --text-color1: #fff;
     --main-color1:#FFD814;
     --sidebar-color: rgba(255, 255, 255, 0.25);
@@ -45,7 +45,7 @@
 }
 
 .brandName span {
-  color:var(--text-color1);
+  color:var(--main-color1);
 }
 
 .adminProfile {
@@ -84,7 +84,7 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  color:var(--bg-color2);
+  color:var(--bg-color1);
   font-weight: bold;
   cursor: pointer;
   font-size: 1.6rem;
