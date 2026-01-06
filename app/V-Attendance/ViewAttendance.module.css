@@ -13,7 +13,6 @@ html, body, #root {
   padding: 0;
 }
 
-/* HEADER STYLES */
 .topHeader {
   background-color: #7a1212;
   color: #ffcc00; 
@@ -119,7 +118,7 @@ html, body, #root {
 }
 
 .active {
-  background-color: #fff;
+  background-color: rgba(207, 207, 207, 0.25);
   border-left: 5px solid #7a1212;
   color: #0b0b0b;
 }
@@ -139,14 +138,12 @@ html, body, #root {
   margin-bottom: 20px;
 }
 
-
-
-/* --- Month/Year & Status Dropdowns --- */
 .filterRow {
   display: flex;
+  justify-content: flex-start; /* Align items to start */
   align-items: center;
-  gap: 30px;
-  margin-bottom: 25px;
+  gap: 60px;
+  margin-bottom: 30px;
 }
 
 .filterItem {
@@ -158,7 +155,7 @@ html, body, #root {
 .filterLabel {
   color: #fff; /* White text as per image */
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 17px;
 }
 
 .selectInput {
@@ -174,17 +171,6 @@ html, body, #root {
   appearance: auto;
 }
 
-/* --- Summary Card (Matching image_c41180.png) --- */
-.summaryCard {
-  background: rgba(255, 255, 255, 0.9); /* Transparent white */
-  border: 2px solid #7a1212; /* Dark red border */
-  border-radius: 12px;
-  padding: 18px 25px;
-  width: fit-content;
-  min-width: 520px;
-  margin-bottom: 30px;
-}
-
 .summaryHeader {
   display: flex;
   align-items: center;
@@ -193,7 +179,24 @@ html, body, #root {
   margin-bottom: 12px;
 }
 
-/* The red circle with dot icon */
+.summaryHeader h3 {
+  color: #7a1212 !important; 
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin: 0; 
+  display: block; 
+}
+
+.summaryCard {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #7a1212;
+  border-radius: 15px;
+  padding: 20px;
+  width: 550px; 
+  margin: 0 auto 40px auto; 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
 .redTargetIcon {
   width: 22px;
   height: 22px;
@@ -213,19 +216,17 @@ html, body, #root {
 
 .statsGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two column layout */
-  gap: 10px 40px;
-  padding-left: 35px;
+  grid-template-columns: 1fr 1fr; 
+  gap: 15px 40px;
+  padding-left: 45px;
   font-weight: 700;
   color: #7a1212;
 }
 
-
-/* Container to provide the semi-transparent overlay behind the table */
 .tableWrapper {
-  background: rgba(255, 255, 255, 0.3); /* Transparent overlay */
+  background: rgba(255, 255, 255, 0.3); 
   padding: 15px;
-  border-radius: 8px;
+  border-radius: none;
   margin-top: 20px;
 }
 
@@ -235,34 +236,21 @@ html, body, #root {
   border-spacing: 0 10px; /* Creates the 10px vertical gap between white boxes */
 }
 
+/* Styling for the table header */
 .attendanceTable th {
-  background: #7a1212; /* Dark red header */
-  color: #ffffff;
+  background: #7a1212;
+  color: #fff;
   padding: 15px;
-  font-size: 1rem;
-  text-transform: uppercase;
-  font-weight: 800;
+  text-align: center;
 }
 
 /* Styling for the white "boxes" (rows) */
 .attendanceTable td {
-  background: #ffffff; /* Solid white box for each row */
+  background: #fff;
   padding: 15px;
   text-align: center;
-  color: #7a1212; /* Dark red text for data */
-  font-weight: 700;
-  border: none;
-}
-
-/* Rounds the corners of the white boxes */
-.attendanceTable td:first-child {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
-.attendanceTable td:last-child {
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+  color: #7a1212;
+  font-weight: bold;
 }
 
 /* Optional: Subtle shadow to make the white boxes pop */
@@ -270,46 +258,3 @@ html, body, #root {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-
-
-
-
-
-/* ... existing code ... */
-.filterRow {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  margin-bottom: 25px;
-}
-
-.filterItem {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.filterLabel {
-  color: #fff;
-  font-weight: 800;
-  font-size: 1.1rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Helps visibility on image background */
-}
-
-.selectInput {
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #7a1212; /* Dark red text */
-  background: white;
-  min-width: 180px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  appearance: listbox; /* Standard dropdown appearance */
-}
-
-.selectInput:focus {
-  outline: 2px solid #7a1212;
-}

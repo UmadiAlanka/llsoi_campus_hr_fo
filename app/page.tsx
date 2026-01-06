@@ -1,11 +1,9 @@
-import LoginForm from '@/app/login/LoginForm';
-import Dashboard from './dashboard/Dashboard';
+import ViewAttendance from './V-Attendance/ViewAttendance';
+
 export default function Home() {
   return (
-   <div>
-     <Dashboard/>
-   </div>
+    <div>
+      <ViewAttendance /> 
+    </div>
   );
 }
-
-
