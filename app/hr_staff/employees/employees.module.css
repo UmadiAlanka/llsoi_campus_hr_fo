@@ -1,0 +1,155 @@
+.container {
+  padding: 20px;
+  color: #fff;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* Table Section Styles */
+.tableSection {
+  flex: 2;
+}
+
+.searchBar {
+  display: flex;
+  background: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  margin-bottom: 15px;
+  max-width: 400px;
+}
+
+.searchBar input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 5px;
+  color: #333;
+}
+
+.searchBtn {
+  background: none;
+  border: none;
+  color: #741010;
+  cursor: pointer;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.filters select {
+  background: white;
+  border: 1px solid #ddd; /* Added a light border for visibility */
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #741010;
+  font-weight:bold;
+  cursor: pointer;
+  outline: none;
+}
+
+.filters select:focus {
+  border-color: #741010;
+}
+
+/* Ensure the table doesn't collapse if empty */
+.tableContainer {
+  background: white;
+  border-radius: 4px;
+  min-height: 300px; 
+  overflow: hidden;
+  position: relative;
+}
+
+.employeeTable {
+  width: 100%;
+  border-collapse: collapse;
+  color: #333;
+}
+
+.employeeTable th {
+  background-color: #741010; /* Maroon color from prototype */
+  color: white;
+  text-align: left;
+  padding: 12px;
+}
+
+.employeeTable td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.activeRow {
+  background-color: #fff3b0; /* Highlighted yellow row */
+}
+
+.addBtn {
+  width: 100%;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Sidebar Details Styles */
+.detailsSidebar {
+  flex: 1;
+}
+
+.detailsSidebar h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.detailsCard {
+  background: white;
+  color: #333;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.detailsCard h4 {
+  color: #741010;
+  border-bottom: 2px solid #741010;
+  margin: 15px 0 10px 0;
+  padding-bottom: 5px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.infoRow span:first-child {
+  font-weight: bold;
+}
+
+.editBtn {
+  width: 100%;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}

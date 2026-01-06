@@ -23,13 +23,13 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value }) => 
 
 const Dashboard: React.FC = () => {
   const menuItems = [
-    { name: 'Dashboard', icon: '/icons/home.png', active: true },
-    { name: 'Manage Users', icon: '/icons/user.png', active: false },
-    { name: 'Attendence', icon: '/icons/dattendance.png', active: false },
-    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false },
-    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false },
-    { name: 'Report & Analytics', icon: '/icons/report.png', active: false },
-    { name: 'Leave management', icon: '/icons/leave.png', active: false },
+    { name: 'Dashboard', icon: '/icons/home.png', active: true,href: '/Dashboard' },
+    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/manage-users' },
+    { name: 'Attendence', icon: '/icons/dattendance.png', active: false, href: '/attendance' },
+    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false, href: '/salary' },
+    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false , href: '/anomaly'},
+    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/analytics' },
+    { name: 'Leave management', icon: '/icons/leave.png', active: false,href: '/leave' },
     { name: 'Logout', icon: '/icons/logout.png', active: false },
   ];
 
