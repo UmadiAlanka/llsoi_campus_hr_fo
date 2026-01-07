@@ -1,0 +1,271 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* HEADER STYLES */
+.topHeader {
+  background-color: #7a1212;
+  color: #ffcc00; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px;
+  height: 80px; 
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.mainLogo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.systemTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffcc00; 
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffcc00; 
+}
+
+.userText p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.userText span {
+  font-size: 0.8rem;
+  display: block;
+  text-align: right;
+}
+
+.avatarImg {
+  width: 30px;
+  height: 30px;
+  object-fit: contain; 
+}
+
+.dashboardBody {
+  display: flex;
+  flex: 1;
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+.sidebar {
+  width: 260px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLink {
+  padding: 15px 25px;
+  border-radius: 40px;
+  margin: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #0b0b0b;
+  transition: background 0.3s;
+}
+
+.navLink:hover {
+  background-color: #ffffff;
+}
+
+.navIcon {
+  width: 35px;
+  height: 35px;
+  margin-right: 15px;
+}
+
+.active {
+  background-color:  rgba(207, 207, 207, 0.25);
+  border-left: 5px solid #7a1212;
+  color: #0b0b0b;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 40px;
+}
+
+.pageTitle{
+  color: white;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.requestCard {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.balanceHeader {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #7a1212;
+  padding: 10px 20px;
+  border-radius: 10px;
+  width: 300px;
+  margin-bottom: 25px;
+  color: #7a1212;
+  background-color: #ffffff;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  color: #7a1212;
+  font-weight: bold;
+}
+
+.formGroup input, .formGroup select, .formGroup textarea {
+  padding: 10px 10px;
+  border-radius: 5px;
+  width: 100%;
+  height: 40px;                
+  line-height: 35px;      
+  font-size: 13px;        
+  background-color: #ffffff;
+  color: #000;
+  font-weight: bold;
+  resize: none;
+  border: 1px solid #e5e5e5;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.formGroup input::placeholder{
+  color: #000000; 
+  opacity: 1; 
+}
+
+.inputWrapper {
+  position: relative; 
+  width: 100%;
+}
+
+.dateInput {
+  width: 100%; 
+  padding-right: 40px; 
+  box-sizing: border-box;
+}
+
+.innerCalendarIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px; 
+  height: 20px;
+  pointer-events: none; 
+  z-index: 10;
+}
+
+.uploadSection {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  display: flex;        
+  align-items: center;    
+  gap: 10px;             
+}
+
+.uploadLabel {
+  display: flex;         
+  align-items: center;    
+  gap: 10px;           
+  cursor: pointer;       
+  width: fit-content;    
+}
+
+.uploadIcon {
+  width: 20px; 
+  height: 20px;
+  object-fit: contain;
+}
+
+.uploadText {
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  white-space: nowrap; 
+}
+
+.buttonRow {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.submitBtn {
+  background: #7a1212;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background: white;
+  color: #000;
+  border: 1px solid  #7a1212;
+  padding: 12px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+}
