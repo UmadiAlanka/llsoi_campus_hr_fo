@@ -37,10 +37,7 @@ export const authService = {
     }
   },
 
-  /**
-   * Logout user
-   * POST /api/auth/logout
-   */
+ 
   logout: async (): Promise<void> => {
     try {
       await apiClient.post('/auth/logout');
