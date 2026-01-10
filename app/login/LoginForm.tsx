@@ -5,67 +5,98 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import style from './LoginForm.module.css'
-
+import { useRouter } from 'next/navigation';
+import style from './LoginForm.module.css';
 
 const LoginForm: React.FC = () => {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // 
-    // TODO: Add your authentication logic here
-    // Example: const response = await fetch('/api/login', { /* ... */ });
-    // 
-    console.log('Attempting login with:', { username, password });
-    
-    // Simulate API delay
-    setTimeout(() => {
-      setLoading(false);
-      // Redirect on success or show error
-      if (username === 'admin' && password === 'pass') {
-        alert('Login Successful!');
-        // router.push('/dashboard'); 
+    setError('');
+
+    try {
+      // Get API URL from environment variable
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:2027/api';
+      
+      // Call login API
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store user info in localStorage
+        localStorage.setItem('user', JSON.stringify({
+          userId: data.userId,
+          username: data.username,
+          name: data.name,
+          role: data.role
+        }));
+
+        // Redirect based on role
+        if (data.role === 'ADMIN') {
+          router.push('/admin-dashboard/Dashboard');
+        } else if (data.role === 'HR') {
+          router.push('/hr_staff/dashboard');
+        } else if (data.role === 'EMPLOYEE') {
+          router.push('/dashboard');
+        } else {
+          router.push('/dashboard');
+        }
       } else {
-        alert('Invalid Credentials');
+        setError(data.message || 'Invalid credentials. Please try again.');
       }
-    }, 1500);
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Failed to connect to server. Please check if the backend is running.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    // Outer container to mimic the background image and overlay
     <div className={style.main}> 
       
-      {/* Background Image (Replace with your actual image path or URL) */}
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/loginBackground.jpg" // Placeholder path for the background image
+          src="/loginBackground.jpg"
           alt="Graduation Ceremony Background"
           layout="fill"
           objectFit="cover"
           quality={100}
-          
         />
       </div>
 
       {/* Login Form Card */}
-      <div className="relative z-0 flex  items-center justify-center p-20">
+      <div className="relative z-0 flex items-center justify-center p-20">
         <div className={style.loginCard}>
           
           <div className="text-center mb-6">
-            {/* Logo/Emblem (Replace with your actual logo path) */}
+            {/* Logo/Emblem */}
             <Image
-              src="/Logo.png" // Placeholder path for the LLSOI logo
+              src="/Logo.png"
               alt="LLSOI Campus Logo"
               width={60}
               height={60}
               className={style.logoImage}
             />
-            <h1><span className={style.titlePrimary}>LLSOI</span><span className={style.titleSecondary}> Campus</span> </h1>
-            <h2 className={style.subHeader }>
+            <h1>
+              <span className={style.titlePrimary}>LLSOI</span>
+              <span className={style.titleSecondary}> Campus</span>
+            </h1>
+            <h2 className={style.subHeader}>
               HR Management System
             </h2>
             <p className={style.subTitle}>
@@ -104,6 +135,13 @@ const LoginForm: React.FC = () => {
               />
             </div>
 
+            {/* Error Message Display */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span className="block sm:inline">{error}</span>
+              </div>
+            )}
+
             <button
               type="submit"
               className={style.loginButton}
@@ -118,15 +156,18 @@ const LoginForm: React.FC = () => {
               Forgot your password?
             </Link>
           </div>
+
+          {/* Test Credentials Info (Remove in production) */}
+          <div className="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
+            <p className="font-semibold mb-1">Test Credentials:</p>
+            <p>Admin: admin / admin123</p>
+            <p>HR: hrstaff / hr123</p>
+            <p>Employee: jane.smith / pass123</p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// To use this component, you would place it in your app/login/page.tsx file.
-// export default LoginForm; 
-
-// Note: Ensure you have the 'next/image' configured in your next.config.js 
-// if using external image sources.
 export default LoginForm;
