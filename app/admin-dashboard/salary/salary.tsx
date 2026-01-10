@@ -104,7 +104,9 @@ const AdminSalary: React.FC = () => {
             </div>
 
             {/* Add Salary Button */}
-            <button className={styles.addSalaryBtn}>ADD SALARY</button>
+            <Link href="/add-salary" className={styles.addSalaryLink}>
+             <button className={styles.addSalaryBtn}>ADD SALARY</button>
+            </Link>
           </div>
 
           {/* Table Container */}
