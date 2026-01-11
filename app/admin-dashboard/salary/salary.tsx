@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
-import styles from './salary.module.css';
-import Link from 'next/link';
+import React, { useState, useRef } from "react";
+import styles from "./salary.module.css";
+import Link from "next/link";
 
 interface SalaryRecord {
   id: string;
@@ -13,35 +13,36 @@ interface SalaryRecord {
   type: string;
 }
 
-const AdminSalary: React.FC = () => {
+export default function AdminSalary() {
   const monthInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [records] = useState<SalaryRecord[]>([
     {
-      id: '001',
-      name: 'S.Perera',
-      basicSalary: '50,000',
-      netSalary: '52,000',
-      date: '2025-10-10',
-      type: 'Academic',
-    }
+      id: "001",
+      name: "S.Perera",
+      basicSalary: "50,000",
+      netSalary: "52,000",
+      date: "2025-10-10",
+      type: "Academic",
+    },
   ]);
 
   const handleMonthClick = () => {
-    if (monthInputRef.current && 'showPicker' in HTMLInputElement.prototype) {
-      monthInputRef.current.showPicker();
+    if (monthInputRef.current) {
+      monthInputRef.current.showPicker?.();
     }
   };
 
+  // Correct routes for Admin Dashboard
   const menuItems = [
-    { name: 'Dashboard', icon: '/icons/dashboard.png', active: false, href: '/' },
-    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/manage-users' },
-    { name: 'Attendance', icon: '/icons/attendance.png', active: false, href: '/attendance' },
-    { name: 'Salary & Pay Slip', icon: '/icons/salary.png', active: true, href: '/salary' },
-    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false, href: '/anomaly' },
-    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/analytics' },
-    { name: 'Leave management', icon: '/icons/leave.png', active: false, href: '/leave' },
-    { name: 'Logout', icon: '/icons/logout.png', active: false, href: '/logout' },
+    { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
+    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
+    { name: "Attendance", icon: "/icons/dattendance.png", href: "/admin-dashboard/admin-attendance" },
+    { name: "Salary & Pay Slip", icon: "/icons/dsalary.png", href: "/admin-dashboard/salary" },
+    { name: "Anomaly Detections", icon: "/icons/anomaly.png", href: "/admin-dashboard/anomaly" },
+    { name: "Report & Analytics", icon: "/icons/report.png", href: "/admin-dashboard/analytics" },
+    { name: "Leave Management", icon: "/icons/leave.png", href: "/admin-dashboard/leave" },
+    { name: "Logout", icon: "/icons/logout.png", href: "/" },
   ];
 
   return (
@@ -49,8 +50,10 @@ const AdminSalary: React.FC = () => {
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
-          <img src="/logo.png" alt="Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>LLSOI Campus HR <span>Management System</span></h1>
+          <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
+          <h1 className={styles.brandName}>
+            LLSOI Campus HR <span>Management System</span>
+          </h1>
         </div>
         <div className={styles.adminProfile}>
           <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
@@ -65,7 +68,7 @@ const AdminSalary: React.FC = () => {
             <ul className={styles.menuList}>
               {menuItems.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className={`${styles.menuItem} ${item.active ? styles.activeItem : ''}`}>
+                  <Link href={item.href} className={styles.menuItem}>
                     <img src={item.icon} alt="" className={styles.menuIconImage} />
                     {item.name}
                   </Link>
@@ -78,7 +81,7 @@ const AdminSalary: React.FC = () => {
         {/* Main Content */}
         <main className={styles.mainContent}>
           <h2 className={styles.pageTitle}>Salary & Pay Slip</h2>
-          
+
           <div className={styles.topSection}>
             {/* Filter Bar */}
             <div className={styles.filterBar}>
@@ -104,12 +107,12 @@ const AdminSalary: React.FC = () => {
             </div>
 
             {/* Add Salary Button */}
-            <Link href="/add-salary" className={styles.addSalaryLink}>
-             <button className={styles.addSalaryBtn}>ADD SALARY</button>
+            <Link href="/admin-dashboard/salary/add-salary">
+              <button className={styles.addSalaryBtn}>ADD SALARY</button>
             </Link>
           </div>
 
-          {/* Table Container */}
+          {/* Salary Table */}
           <div className={styles.tableCard}>
             <table className={styles.salaryTable}>
               <thead>
@@ -140,7 +143,9 @@ const AdminSalary: React.FC = () => {
                     </td>
                     <td>
                       <div className={styles.actions}>
-                        <button className={styles.editBtn}>Edit</button>
+                        <Link href={`/admin-dashboard/salary/edit/${record.id}`}>
+                          <button className={styles.editBtn}>Edit</button>
+                        </Link>
                         <button className={styles.deleteBtn}>Delete</button>
                       </div>
                     </td>
@@ -153,6 +158,4 @@ const AdminSalary: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default AdminSalary;
+}
