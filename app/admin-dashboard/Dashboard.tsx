@@ -1,7 +1,9 @@
 "use client";
 
-import React from 'react';
-import styles from './Dashboard.module.css';
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import styles from "./Dashboard.module.css";
 
 interface SummaryCardProps {
   imageSrc: string;
@@ -21,21 +23,23 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value }) => 
   </div>
 );
 
-const Dashboard: React.FC = () => {
+export default function Dashboard() {
+  const pathname = usePathname();
+
   const menuItems = [
-    { name: 'Dashboard', icon: '/icons/home.png', active: true,href: '/Dashboard' },
-    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/manage-users' },
-    { name: 'Attendence', icon: '/icons/dattendance.png', active: false, href: '/attendance' },
-    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false, href: '/salary' },
-    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false , href: '/anomaly'},
-    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/analytics' },
-    { name: 'Leave management', icon: '/icons/leave.png', active: false,href: '/leave' },
-    { name: 'Logout', icon: '/icons/logout.png', active: false },
+    { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
+    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
+    { name: "Attendance", icon: "/icons/dattendance.png", href: "/admin-dashboard/admin-attendance" },
+    { name: "Salary & Pay Slip", icon: "/icons/dsalary.png", href: "/admin-dashboard/salary" },
+    { name: "Anomaly Detections", icon: "/icons/anomaly.png", href: "/admin-dashboard/anomaly" },
+    { name: "Report & Analytics", icon: "/icons/report.png", href: "/admin-dashboard/analytics" },
+    { name: "Leave Management", icon: "/icons/leave.png", href: "/admin-dashboard/leave" },
+    { name: "Logout", icon: "/icons/logout.png", href: "/" },
   ];
 
   return (
     <div className={styles.container}>
-      {/* --- Header --- */}
+      {/* Header */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
           <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
@@ -50,29 +54,34 @@ const Dashboard: React.FC = () => {
       </header>
 
       <div className={styles.layoutBody}>
-        {/* --- Sidebar --- */}
+        {/* Sidebar */}
         <aside className={styles.sidebar}>
-          <nav className={styles.nav}>
+          <nav>
             <ul className={styles.menuList}>
-              {menuItems.map((item) => (
-                <li 
-                  key={item.name} 
-                  className={`${styles.menuItem} ${item.active ? styles.activeItem : ''}`}
-                >
-                  <img src={item.icon} alt="" className={styles.menuIconImage} />
-                  {item.name}
-                </li>
-              ))}
+              {menuItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className={`${styles.menuLink} ${isActive ? styles.active : ""}`}
+                    >
+                      <img src={item.icon} alt="" className={styles.menuIconImage} />
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
         </aside>
 
-        {/* --- Main Content --- */}
+        {/* Main Content */}
         <main className={styles.mainContent}>
           <h2 className={styles.pageTitle}>Admin Dashboard</h2>
-          
+
           <div className={styles.cardGrid}>
-            <SummaryCard imageSrc="/icons/employee.png" title="Total Employee" value="25" />
+            <SummaryCard imageSrc="/icons/employee.png" title="Total Employees" value="25" />
             <SummaryCard imageSrc="/icons/absent.png" title="Absent Today" value="5" />
             <SummaryCard imageSrc="/icons/present.png" title="Present This Week" value="85%" />
             <SummaryCard imageSrc="/icons/paid.png" title="Salary Paid" value="Rs 150,000" />
@@ -81,6 +90,4 @@ const Dashboard: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Dashboard;
+}

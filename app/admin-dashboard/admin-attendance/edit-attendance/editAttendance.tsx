@@ -57,7 +57,7 @@ const adminMarkAttendance: React.FC = () => {
 
         {/* Main Form Content */}
         <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Mark Attendance</h2>
+          <h2 className={styles.pageTitle}>Edit Attendance</h2>
           
           <div className={styles.formCard}>
             <form className={styles.attendanceForm}>
