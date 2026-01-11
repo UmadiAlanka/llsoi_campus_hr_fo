@@ -126,7 +126,7 @@ const adminAttendance: React.FC = () => {
               </div>
             </div>
 
-            <Link href="/mark-attendance" className={styles.markAttendanceLink}>
+            <Link href="/admin-dashboard/admin-attendance/mark-attendance" className={styles.markAttendanceLink}>
               <button className={styles.markAttendanceBtn}>
                 Mark Attendance
               </button>
@@ -154,7 +154,7 @@ const adminAttendance: React.FC = () => {
                     <td>{record.timeMarked}</td>
                     <td>{record.type}</td>
                     <td>
-                      <Link href={`/EditAttendance/${record.id}`}>
+                      <Link href={`/admin-dashboard/admin-attendance/edit-attendance/${record.id}`}>
                        <button className={styles.editBtn}>EDIT/View</button>
                       </Link>
                     </td>

@@ -24,6 +24,7 @@ const LoginForm: React.FC = () => {
       // Get API URL from environment variable
       const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:2027/api';
       
+      console.log('Attempting login to:', `${API_URL}/auth/login`);
       // Call login API
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
@@ -46,7 +47,7 @@ const LoginForm: React.FC = () => {
 
         // Redirect based on role
         if (data.role === 'ADMIN') {
-          router.push('/admin-dashboard/Dashboard');
+          router.push('/admin-dashboard');
         } else if (data.role === 'HR') {
           router.push('/hr_staff/dashboard');
         } else if (data.role === 'EMPLOYEE') {
