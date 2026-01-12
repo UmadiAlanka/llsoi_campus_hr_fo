@@ -5,8 +5,7 @@ import styles from "./adminManage.module.css";
 import Link from "next/link";
 
 interface UserData {
-  dbId: number;            // Database ID (emp_id)
-  id: string;              // Employee ID (EMP-001)
+  employeeId: string;
   name: string;
   username: string;
   email: string;
@@ -20,62 +19,57 @@ export default function AdminManage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+  // ================= FETCH USERS =================
   const fetchUsers = async () => {
     try {
       const res = await fetch("http://localhost:2027/api/employees");
-      const data = await res.json();
+      const result = await res.json();
 
-      const mappedUsers = data.map((emp: any) => ({
-        dbId: emp.id,              // for delete
-        id: emp.employeeId,        // shown in UI
-        name: emp.name,
-        username: emp.username,
-        email: emp.email,
-        role: emp.role,
-        job: emp.job,
-        jobType: emp.jobType,
-        contactNumber: emp.contactNumber,
-      }));
+      console.log("Employees:", result);
 
-      setUsers(mappedUsers);
-    } catch (error) {
-      console.error("Failed to fetch employees", error);
+      if (!res.ok || !Array.isArray(result.data)) {
+        throw new Error("Invalid response");
+      }
+
+      setUsers(result.data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load employees");
     } finally {
       setLoading(false);
     }
   };
 
-  // DELETE FUNCTION MUST BE INSIDE COMPONENT
-const handleDelete = async (dbId: number) => {
-  if (!window.confirm("Are you sure you want to delete this user?")) return;
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  try {
-    const res = await fetch(`http://localhost:2027/api/employees/${dbId}`, {
-      method: "DELETE",
-    });
+  // ================= DELETE USER =================
+  const handleDelete = async (employeeId: string) => {
+    if (!confirm(`Delete employee ${employeeId}?`)) return;
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(err || "Delete failed");
+    try {
+      const res = await fetch(`http://localhost:2027/api/employees/${employeeId}`, {
+        method: "DELETE",
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || result.success === false) {
+        throw new Error("Delete failed");
+      }
+
+      setUsers((prev) => prev.filter((u) => u.employeeId !== employeeId));
+      alert("Employee deleted successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Delete error");
     }
-
-    // Remove deleted user from UI
-    setUsers(prev => prev.filter(user => user.dbId !== dbId));
-    alert("User deleted successfully");
-
-  } catch (err) {
-    console.error("Delete error:", err);
-    alert("Failed to delete user");
-  }
-};
+  };
 
   const menuItems = [
     { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
-    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
+    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users", active: true },
     { name: "Attendance", icon: "/icons/dattendance.png", href: "/admin-dashboard/admin-attendance" },
     { name: "Salary & Pay Slip", icon: "/icons/dsalary.png", href: "/admin-dashboard/salary" },
     { name: "Anomaly Detections", icon: "/icons/anomaly.png", href: "/admin-dashboard/anomaly" },
@@ -86,28 +80,31 @@ const handleDelete = async (dbId: number) => {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
+      {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
-          <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>
+          <img src="/Logo.png" className={styles.headerLogo} />
+          <h2 className={styles.brandName}>
             LLSOI Campus HR <span>Management System</span>
-          </h1>
+          </h2>
         </div>
         <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span className={styles.userName}>Admin</span>
+          <img src="/icons/user-profile.png" className={styles.adminAvatar} />
+          <span>Admin</span>
         </div>
       </header>
 
       <div className={styles.layoutBody}>
-        {/* Sidebar */}
+        {/* SIDEBAR */}
         <aside className={styles.sidebar}>
           <ul className={styles.menuList}>
             {menuItems.map((item) => (
               <li key={item.name}>
-                <Link href={item.href} className={styles.menuItem}>
-                  <img src={item.icon} alt="" className={styles.menuIconImage} />
+                <Link
+                  href={item.href}
+                  className={`${styles.menuItem} ${item.active ? styles.activeItem : ""}`}
+                >
+                  <img src={item.icon} className={styles.menuIconImage} />
                   {item.name}
                 </Link>
               </li>
@@ -115,9 +112,9 @@ const handleDelete = async (dbId: number) => {
           </ul>
         </aside>
 
-        {/* Main Content */}
+        {/* MAIN */}
         <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Manage Users</h2>
+          <h1 className={styles.pageTitle}>Manage Users</h1>
 
           <div className={styles.contentContainer}>
             <div className={styles.actionBar}>
@@ -128,7 +125,7 @@ const handleDelete = async (dbId: number) => {
                   className={styles.searchInput}
                 />
                 <button className={styles.searchButton}>
-                  <img src="/icons/search.png" alt="Search" />
+                  <img src="/icons/search.png" />
                 </button>
               </div>
 
@@ -140,65 +137,55 @@ const handleDelete = async (dbId: number) => {
               </Link>
             </div>
 
-            <div className={styles.tableContainer}>
-              {loading ? (
-                <p>Loading employees...</p>
-              ) : (
-                <table className={styles.userTable}>
-                  <thead>
-                    <tr>
-                      <th>Employee ID</th>
-                      <th>Name</th>
-                      <th>Username</th>
-                      <th>Email</th>
-                      <th>Role</th>
-                      <th>Job</th>
-                      <th>Job Type</th>
-                      <th>Contact</th>
-                      <th>Actions</th>
+            {loading ? (
+              <p>Loading employees...</p>
+            ) : (
+              <table className={styles.userTable}>
+                <thead>
+                  <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Job</th>
+                    <th>Job Type</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((u) => (
+                    <tr key={u.employeeId}>
+                      <td>{u.employeeId}</td>
+                      <td>{u.name}</td>
+                      <td>{u.username}</td>
+                      <td>{u.email}</td>
+                      <td>{u.role}</td>
+                      <td>{u.job}</td>
+                      <td>{u.jobType}</td>
+                      <td>{u.contactNumber}</td>
+                      <td>
+                        <div className={styles.actionButtons}>
+                          <Link
+                            href={`/admin-dashboard/admin-manage-users/edit-user/${u.employeeId}`}
+                            className={styles.editButton}
+                          >
+                            EDIT
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(u.employeeId)}
+                            className={styles.deleteButton}
+                          >
+                            DELETE
+                          </button>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {users.length === 0 ? (
-                      <tr>
-                        <td colSpan={9} style={{ textAlign: "center" }}>
-                          No employees found
-                        </td>
-                      </tr>
-                    ) : (
-                      users.map((user) => (
-                        <tr key={user.dbId}>
-                          <td>{user.id}</td>
-                          <td>{user.name}</td>
-                          <td>{user.username}</td>
-                          <td>{user.email}</td>
-                          <td>{user.role}</td>
-                          <td>{user.job}</td>
-                          <td>{user.jobType}</td>
-                          <td>{user.contactNumber}</td>
-                          <td>
-                            <div className={styles.actionButtons}>
-                              <Link
-                                href={`/admin-dashboard/admin-manage-users/edit-user/${user.dbId}`}
-                                className={styles.editButton}
-                              >
-                                EDIT
-                              </Link>
-                              <button
-                                className={styles.deleteButton}
-                                onClick={() => handleDelete(user.dbId)}
-                              >
-                                DELETE
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              )}
-            </div>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </main>
       </div>

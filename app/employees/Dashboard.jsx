@@ -29,12 +29,12 @@ const Dashboard = () => {
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
             {/* Link to Dashboard */}
-            <Link href="/dashboard" className={`${styles.navLink} ${styles.active}`}>
+            <Link href="/Dashboard" className={`${styles.navLink} ${styles.active}`}>
               <img src="/icons/dashboard.png" alt="" className={styles.navIcon} /> Dashboard
             </Link>
 
             {/* Link to Attendance */}
-            <Link href="/attendance" className={styles.navLink}>
+            <Link href="/employees/V-Attendence/" className={styles.navLink}>
               <img src="/icons/attendance.png" alt="" className={styles.navIcon} /> View Attendance
             </Link>
 
