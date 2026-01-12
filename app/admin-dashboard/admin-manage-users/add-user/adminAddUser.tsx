@@ -13,7 +13,7 @@ export default function AddUser() {
     employeeId: "",
     address: "",
     contactNumber: "",
-    role: "Employee",
+    role: "EMPLOYEE", // default role
     job: "",
     jobType: "Academic",
     username: "",
@@ -51,7 +51,7 @@ export default function AddUser() {
       employeeId: formData.employeeId,
       address: formData.address,
       contactNumber: formData.contactNumber,
-      role: formData.role,
+      role: formData.role,          // EMPLOYEE / ADMIN / HR
       job: formData.job,
       jobType: formData.jobType,
       username: formData.username,
@@ -70,19 +70,18 @@ export default function AddUser() {
 
       if (!response.ok) {
         const err = await response.text();
-        throw new Error(err || "Failed to create employee");
+        throw new Error(err || "Failed to create user");
       }
 
-      // success
-      alert("Employee added successfully!");
+      alert("User added successfully!");
 
-      // Clear form (optional)
+      // Reset form
       setFormData({
         name: "",
         employeeId: "",
         address: "",
         contactNumber: "",
-        role: "Employee",
+        role: "EMPLOYEE",
         job: "",
         jobType: "Academic",
         username: "",
@@ -91,12 +90,10 @@ export default function AddUser() {
         confirmPassword: "",
       });
 
-      // Redirect → Manage Users page will reload data
       router.push("/admin-dashboard/admin-manage-users");
-
     } catch (error) {
       console.error("Error:", error);
-      alert("Error while adding employee!");
+      alert("Error while adding user!");
     }
   };
 
@@ -133,7 +130,7 @@ export default function AddUser() {
 
         {/* Main */}
         <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Add Employee</h2>
+          <h2 className={styles.pageTitle}>Add User</h2>
 
           <div className={styles.formCard}>
             <form onSubmit={handleSubmit}>
@@ -144,14 +141,15 @@ export default function AddUser() {
                 <input name="contactNumber" placeholder="Contact Number" value={formData.contactNumber} className={styles.input} onChange={handleChange} />
                 <input name="job" placeholder="Job" value={formData.job} className={styles.input} onChange={handleChange} />
 
-                <select name="role" value={formData.role} className={styles.select} onChange={handleChange}>
-                  <option value="Employee">Employee</option>
-                  <option value="Admin">Admin</option>
-                </select>
-
                 <select name="jobType" value={formData.jobType} className={styles.select} onChange={handleChange}>
                   <option value="Academic">Academic</option>
                   <option value="Non-academic">Non-academic</option>
+                </select>
+
+                <select name="role" value={formData.role} className={styles.select} onChange={handleChange}>
+                  <option value="EMPLOYEE">Employee</option>
+                  <option value="ADMIN">Admin</option>
+                  <option value="HR">HR Staff</option>
                 </select>
 
                 <input name="username" placeholder="Username" value={formData.username} className={styles.input} onChange={handleChange} />
