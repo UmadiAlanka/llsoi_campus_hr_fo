@@ -1,216 +1,175 @@
+:root {
+  ---main-color: #720e0e;
+  --bg-color1: rgb(7, 7, 7);
+  --text-color1: #fff;
+  --main-color1: #FFD814;
+  --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+
+
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* Background Image */
-  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
+  background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('/background.jpg');
   background-size: cover;
   background-position: center;
-  font-family: Arial, sans-serif;
 }
 
-:root {
-    --main-color:#720e0e ;
-    --bg-color1:rgb(7, 7, 7);
-    --text-color1: #fff;
-    --main-color1:#FFD814;
-    --sidebar-color: rgba(255, 255, 255, 0.25);
-}
-
-/* Header Styles (Reused) */
 .header {
   background-color: var(--main-color);
   height: 65px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  color:var(--text-color1);
+  padding: 0 25px;
+  color: var(--text-color1);
   z-index: 100;
 }
 
 .logoSection {
-   display: flex;
-   align-items: center;
-   gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.headerLogo { 
-  width: 45px; 
-  height: 45px; 
+.headerLogo {
+  width: 45px;
+  height: 45px;
 }
-.brandName { 
-  font-size: 1.3rem; 
-  font-weight: bold; 
-  color: var(--main-color1); 
+
+.brandName {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--main-color1);
 }
-.brandName span { 
-  color:var(--main-color1); 
-}
-.adminProfile { 
+
+.adminProfile {
   display: flex;
   align-items: center;
   gap: 10px;
   color: var(--main-color1);
-  font-weight: bold; 
+  font-weight: bold;
 }
 
-.adminAvatar { 
-  width: 28px; 
-  height: 28px; 
+.adminAvatar {
+  width: 28px;
+  height: 28px;
 }
 
-/* Sidebar Styles (Reused) */
 .layoutBody {
-   display: flex; 
-   flex: 1; 
-  }
+  display: flex;
+  flex: 1;
+}
 
 .sidebar {
-  width: 370px;
-  background-color:var(--sidebar-color); /* Translucent background */
-  backdrop-filter: blur(10px);
-  padding-top: 45px;
-}
-
-.menuList { 
-  list-style: none; 
-  padding: 0; 
-  margin: 0; 
-}
-
-.menuItem {
-  padding: 12px 30px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  color:var(--bg-color1);
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1.6rem;
-}
-
-.activeItem {
+  width: 300px;
   background-color: var(--sidebar-color);
-  border-radius: 40px 40px 40px 40px;
-  margin-right: 25px;
+  backdrop-filter: blur(12px);
+  padding-top: 40px;
 }
-.activeItem:hover {
-  background-color: var(--text-color1);
-}
-
-.menuIconImage { 
-  width: 30px;
-  height: 30px;
-  object-fit: contain; 
-}
-
-/* Main Content Styles */
-.mainContent {
-  flex: 1;
-  padding: 50px;
+.menuList {
   display: flex;
   flex-direction: column;
 }
 
-.pageTitle {
-  color:var(--text-color1);
-  font-size: 2.7rem;
+.menuItem {
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--bg-color1);
   font-weight: bold;
-  margin-top: 0px;
-  margin-bottom: 45px;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: 0.3s;
+  border-radius: 30px;
+}
+.menuItem:hover {
+  background-color: rgba(255,255,255,0.6);
+}
+
+.activeItem {
+  background: rgba(255,255,255,0.7);
+  border-radius: 30px;
+}
+
+.menuIconImage {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 40px;
+}
+
+.pageTitle {
+  color: var(--text-color1);
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
   font-family: "Kanit", sans-serif;
 }
 
-/* Translucent Content Container */
 .contentContainer {
-  background-color: rgba(255, 255, 255, 0.747);
-  border-radius: 20px;
-  padding: 30px;
-  flex: 1;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: rgba(255,255,255,.85);
+  border-radius: 15px;
+  padding: 25px;
 }
 
-/* Action Bar */
 .actionBar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .searchContainer {
   display: flex;
-  align-items: center;
-  background-color:var(--text-color1);
-  border: 2px solid var(--main-color);
-  border-radius: 8px;
+  border: 2px solid #720e0e;
+  border-radius: 6px;
   overflow: hidden;
-  width: 400px;
+  height: 50px;
 }
 
 .searchInput {
+  padding: 10px;
   border: none;
-  padding: 10px 15px;
-  font-size: 1rem;
-  flex: 1;
   outline: none;
 }
 
 .searchButton {
   background: none;
   border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-.searchButton img { 
-  width: 20px; 
-  height: 20px; 
+  width: 28px;
+  height: 28px;
 }
 
 .addUserBtn {
-  background-color: var(--main-color);
-  color:var(--main-color1);
-  border: none;
-  padding: 10px 25px;
-  border-radius: 8px;
-  font-size: 1.3rem;
+  background: #720e0e;
+  color: #FFD814;
+  padding: 10px 20px;
+  border-radius: 6px;
   font-weight: bold;
-  cursor: pointer;
-}
-
-/* Table Styles */
-.tableContainer {
-  overflow-x: auto;
 }
 
 .userTable {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
 }
 
 .userTable th {
-  background-color: var(--main-color);
-  color:var(--text-color1);
-  text-align: center;
-  padding: 15px;
-  gap: 5px;
-  font-family: "Kanit", sans-serif;
-  font-weight: bold;
+  background: #720e0e;
+  color: white;
+  padding: 12px;
 }
 
 .userTable td {
-  padding: 15px;
-  border-bottom: 1px solid #5c5454;
-  color: #333;
-  background-color: var(--text-color1);
-  font-family:"Kanit", sans-serif ;
-  font-weight: 500;
+  background: white;
+  padding: 12px;
   text-align: center;
-  flex-direction: column;
-  
-  
 }
 
 .actionButtons {
@@ -219,19 +178,16 @@
   justify-content: center;
 }
 
-.editButton, .deleteButton {
-  border: none;
-  padding: 8px 15px;
+.editButton {
+  background: green;
+  color: white;
+  padding: 6px 12px;
   border-radius: 5px;
-  color:var(--text-color1);
-  font-weight: bold;
-  font-size: 0.8rem;
-  cursor: pointer;
 }
 
-.editButton { 
-  background-color: #27ae60; /* Green */ 
-}
-.deleteButton { 
-  background-color: #c0392b; /* Red */ 
+.deleteButton {
+  background: red;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import AdminEditUser from "../adminEditUser";
+import AdminEditUser from "./adminEditUser";
 
 
 export default function Page() {
