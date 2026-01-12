@@ -5,7 +5,8 @@ import styles from "./adminManage.module.css";
 import Link from "next/link";
 
 interface UserData {
-  id: string;
+  dbId: number;            // Database ID (emp_id)
+  id: string;              // Employee ID (EMP-001)
   name: string;
   username: string;
   email: string;
@@ -28,9 +29,9 @@ export default function AdminManage() {
       const res = await fetch("http://localhost:2027/api/employees");
       const data = await res.json();
 
-      // Map backend response → frontend format
       const mappedUsers = data.map((emp: any) => ({
-        id: emp.employeeId,
+        dbId: emp.id,              // for delete
+        id: emp.employeeId,        // shown in UI
         name: emp.name,
         username: emp.username,
         email: emp.email,
@@ -47,6 +48,30 @@ export default function AdminManage() {
       setLoading(false);
     }
   };
+
+  // DELETE FUNCTION MUST BE INSIDE COMPONENT
+const handleDelete = async (dbId: number) => {
+  if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+  try {
+    const res = await fetch(`http://localhost:2027/api/employees/${dbId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Delete failed");
+    }
+
+    // Remove deleted user from UI
+    setUsers(prev => prev.filter(user => user.dbId !== dbId));
+    alert("User deleted successfully");
+
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete user");
+  }
+};
 
   const menuItems = [
     { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
@@ -142,7 +167,7 @@ export default function AdminManage() {
                       </tr>
                     ) : (
                       users.map((user) => (
-                        <tr key={user.id}>
+                        <tr key={user.dbId}>
                           <td>{user.id}</td>
                           <td>{user.name}</td>
                           <td>{user.username}</td>
@@ -154,12 +179,17 @@ export default function AdminManage() {
                           <td>
                             <div className={styles.actionButtons}>
                               <Link
-                                href={`/admin-dashboard/admin-manage-users/edit-user/${user.id}`}
+                                href={`/admin-dashboard/admin-manage-users/edit-user/${user.dbId}`}
                                 className={styles.editButton}
                               >
                                 EDIT
                               </Link>
-                              <button className={styles.deleteButton}>DELETE</button>
+                              <button
+                                className={styles.deleteButton}
+                                onClick={() => handleDelete(user.dbId)}
+                              >
+                                DELETE
+                              </button>
                             </div>
                           </td>
                         </tr>
