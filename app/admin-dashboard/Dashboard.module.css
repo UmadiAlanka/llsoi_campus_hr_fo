@@ -1,30 +1,30 @@
+:root {
+  --main-color:#720e0e;
+  --bg-color1:rgb(7, 7, 7);
+  --text-color1: #fff;
+  --main-color1:#FFD814;
+  --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Layout */
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* Ensure the background image path is correct */
   background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
   background-size: cover;
   background-position: center;
   font-family: "Kanit", sans-serif;
 }
-:root {
-    --main-color:#720e0e ;
-    --bg-color1:rgb(7, 7, 7);
-    --text-color1: #fff;
-    --main-color1:#FFD814;
-    --sidebar-color: rgba(255, 255, 255, 0.25);
-}
 
 .header {
-  background-color:var(--main-color); /* Dark Maroon */
+  background-color:var(--main-color);
   height: 65px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   color:var(--text-color1);
-  z-index: 100;
 }
 
 .logoSection {
@@ -41,7 +41,7 @@
 .brandName {
   font-size: 1.3rem;
   font-weight: bold;
-  color: var(--main-color1); /* Yellow */
+  color: var(--main-color1);
 }
 
 .brandName span {
@@ -61,14 +61,16 @@
   height: 28px;
 }
 
+/* Body */
 .layoutBody {
   display: flex;
   flex: 1;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 370px;
-  background-color:var(--sidebar-color); /* Translucent background */
+  width: 360px;
+  background-color: var(--sidebar-color);
   backdrop-filter: blur(10px);
   padding-top: 45px;
 }
@@ -79,56 +81,65 @@
   margin: 0;
 }
 
-.menuItem {
-  padding: 12px 30px;
+.menuLink {
   display: flex;
   align-items: center;
   gap: 18px;
-  color:var(--bg-color1);
+  padding: 12px 30px;
+  color: var(--bg-color1);
   font-weight: bold;
-  cursor: pointer;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
+  text-decoration: none;
+  border-radius: 100px;
+  transition: all 0.3s ease;
 }
 
-.activeItem {
-  background-color: var(--sidebar-color);
-  border-radius: 40px 40px 40px 40px;
-  margin-right: 25px;
+/* Hover effect */
+.menuLink:hover {
+  background-color: rgba(255,255,255,0.5);
+  transform: translateX(6px);
+  padding: 10px 30px;
+
 }
 
+/* Active button */
+.active {
+  background-color: rgba(255,255,255,0.65);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  padding: 10px 30px;
+}
+
+/* Icons */
 .menuIconImage {
   width: 30px;
   height: 30px;
   object-fit: contain;
 }
 
+/* Main content */
 .mainContent {
   flex: 1;
   padding: 50px;
 }
 
 .pageTitle {
-  color:var(--text-color1);
+  color: var(--text-color1);
   font-size: 2.7rem;
   font-weight: bold;
-  margin-top: 0px;
   margin-bottom: 45px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  font-family: "Kanit", sans-serif;
-
 }
 
+/* Cards */
 .cardGrid {
   display: grid;
   grid-template-columns: repeat(2, 600px);
-  height: 600px;
   gap: 60px;
-  justify-content:first baseline;
   margin-left: 110px;
 }
 
 .card {
-  background-color:var(--text-color1);
+  background-color: white;
   border-radius: 35px;
   padding: 40px;
   display: flex;
@@ -145,25 +156,20 @@
 .cardIconImage {
   width: 100%;
   height: 100%;
-  
 }
 
 .cardTitle {
   font-size: 1.8rem;
-  color:var(--main-color) ;
-  margin-top: 15px;
+  color: var(--main-color);
   font-weight: 900;
 }
 
 .cardValue {
   font-size: 2.5rem;
-  margin: 5px 0 0 0;
-  justify-content: center;
   font-weight: 900;
   color: var(--main-color1);
-  /* Outline effect */
   text-shadow: 
-    -2px -2px 0 #000,  
+    -2px -2px 0 #000,
      2px -2px 0 #000,
     -2px  2px 0 #000,
      2px  2px 0 #000;

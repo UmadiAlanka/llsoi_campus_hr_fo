@@ -1,9 +1,8 @@
-
-import Login from './login/LoginForm';
+import Employee from './Dashboard';
 export default function Home() {
   return (
     <div>
-      <Login /> 
+      <Employee /> 
     </div>
   );
 }

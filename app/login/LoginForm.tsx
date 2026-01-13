@@ -1,76 +1,105 @@
-// src/components/LoginForm.tsx
-/** @jsxImportSource react */
-
 "use client";
-import Link from 'next/link';
-import React, { useState } from 'react';
-import Image from 'next/image';
-import style from './LoginForm.module.css'
 
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import style from "./LoginForm.module.css";
 
 const LoginForm: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // 
-    // TODO: Add your authentication logic here
-    // Example: const response = await fetch('/api/login', { /* ... */ });
-    // 
-    console.log('Attempting login with:', { username, password });
-    
-    // Simulate API delay
-    setTimeout(() => {
-      setLoading(false);
-      // Redirect on success or show error
-      if (username === 'admin' && password === 'pass') {
-        alert('Login Successful!');
-        // router.push('/dashboard'); 
+    setError("");
+
+    try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Save logged user info
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            userId: data.userId,
+            username: data.username,
+            name: data.name,
+            role: data.role,
+          })
+        );
+
+        // Redirect by role
+        if (data.role === "Admin") {
+          router.push("/admin-dashboard");
+        } else if (data.role === "HR") {
+          router.push("/hr_staff/dashboard");
+        } else if (data.role === "Employee") {
+          router.push("/employees");
+        } else {
+          router.push("/");
+        }
       } else {
-        alert('Invalid Credentials');
+        setError(data.message || "Invalid username or password");
       }
-    }, 1500);
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Failed to connect to server. Make sure backend is running.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    // Outer container to mimic the background image and overlay
-    <div className={style.main}> 
-      
-      {/* Background Image (Replace with your actual image path or URL) */}
+    <div className={style.main}>
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/loginBackground.jpg" // Placeholder path for the background image
+          src="/loginBackground.jpg"
           alt="Graduation Ceremony Background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: "cover" }}
           quality={100}
-          
+          priority
         />
       </div>
 
       {/* Login Form Card */}
-      <div className="relative z-0 flex  items-center justify-center p-20">
+      <div className="relative z-10 flex items-center justify-center p-20">
         <div className={style.loginCard}>
-          
           <div className="text-center mb-6">
-            {/* Logo/Emblem (Replace with your actual logo path) */}
             <Image
-              src="/Logo.png" // Placeholder path for the LLSOI logo
+              src="/Logo.png"
               alt="LLSOI Campus Logo"
               width={60}
               height={60}
               className={style.logoImage}
             />
-            <h1><span className={style.titlePrimary}>LLSOI</span><span className={style.titleSecondary}> Campus</span> </h1>
-            <h2 className={style.subHeader }>
-              HR Management System
-            </h2>
-            <p className={style.subTitle}>
-              Login to Your Account
-            </p>
+            <h1>
+              <span className={style.titlePrimary}>LLSOI</span>
+              <span className={style.titleSecondary}> Campus</span>
+            </h1>
+            <h2 className={style.subHeader}>HR Management System</h2>
+            <p className={style.subTitle}>Login to Your Account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -88,7 +117,7 @@ const LoginForm: React.FC = () => {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className={style.label}>
                 Password:
@@ -104,12 +133,18 @@ const LoginForm: React.FC = () => {
               />
             </div>
 
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
               className={style.loginButton}
               disabled={loading}
             >
-              {loading ? 'Logging' : 'Login'}
+              {loading ? "Logging..." : "Login"}
             </button>
           </form>
 
@@ -118,15 +153,18 @@ const LoginForm: React.FC = () => {
               Forgot your password?
             </Link>
           </div>
+
+          {/* Test info */}
+          <div className="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
+            <p className="font-semibold mb-1">Test Credentials:</p>
+            <p>Admin: admin / admin123</p>
+            <p>HR: hrstaff / hr123</p>
+            <p>Employee: employee1 / 12345</p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// To use this component, you would place it in your app/login/page.tsx file.
-// export default LoginForm; 
-
-// Note: Ensure you have the 'next/image' configured in your next.config.js 
-// if using external image sources.
 export default LoginForm;
