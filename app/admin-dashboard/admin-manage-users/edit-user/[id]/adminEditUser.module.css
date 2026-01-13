@@ -1,0 +1,238 @@
+/* ---------------- ROOT VARIABLES ---------------- */
+:root {
+  --main-color: #720e0e;
+  --bg-color1: rgb(7, 7, 7);
+  --text-color1: #fff;
+  --main-color1: #FFD814;
+  --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ---------------- CONTAINER ---------------- */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* ---------------- HEADER ---------------- */
+.header {
+  background-color: var(--main-color);
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  color: var(--text-color1);
+  z-index: 100;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerLogo {
+  width: 45px;
+  height: 45px;
+}
+
+.brandName {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--main-color1);
+}
+
+.brandName span {
+  color: var(--main-color1);
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--main-color1);
+  font-weight: bold;
+}
+
+.adminAvatar {
+  width: 28px;
+  height: 28px;
+}
+
+/* ---------------- LAYOUT ---------------- */
+.layoutBody {
+  display: flex;
+  flex: 1;
+}
+
+/* ---------------- SIDEBAR ---------------- */
+.sidebar {
+  width: 300px;
+  background-color: var(--sidebar-color);
+  backdrop-filter: blur(12px);
+  padding-top: 40px;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: column;
+}
+
+.menuItem {
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--bg-color1);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: 0.3s;
+  border-radius: 30px;
+}
+
+.menuItem:hover {
+  background-color: rgba(255,255,255,0.6);
+}
+
+.activeItem {
+  background-color: rgba(255,255,255,0.7);
+  margin-right: 15px;
+}
+
+.menuIconImage {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* ---------------- MAIN CONTENT ---------------- */
+.mainContent {
+  flex: 1;
+  padding: 30px 50px;
+}
+
+.pageTitle {
+  color: var(--text-color1);
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+  font-family: "Kanit", sans-serif;
+}
+
+/* ---------------- FORM CARD ---------------- */
+.formCard {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* ---------------- FORM GRID ---------------- */
+.topFormSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px 40px;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  color: var(--bg-color1);
+}
+
+/* ---------------- FORM ELEMENTS ---------------- */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #000;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: #fff;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+/* ---------------- CREDENTIAL ROW ---------------- */
+.credentialRow,
+.credentialsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px 40px;
+}
+
+/* ---------------- FILE INPUT ---------------- */
+.fileInputContainer {
+  position: relative;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filePlaceholder {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.attachIcon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+}
+
+.fileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ---------------- UPDATE BUTTON ---------------- */
+.updateBtn {
+  width: 100%;
+  padding: 14px;
+  background-color: #0f5f1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.updateBtn:hover {
+  background-color: #158f2a;
+}
