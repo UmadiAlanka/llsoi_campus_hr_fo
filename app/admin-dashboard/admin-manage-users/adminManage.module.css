@@ -158,6 +158,7 @@
 .userTable {
   width: 100%;
   border-collapse: collapse;
+  color: black;
 }
 
 .userTable th {

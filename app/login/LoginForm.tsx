@@ -20,8 +20,7 @@ const LoginForm: React.FC = () => {
     setError("");
 
     try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
 
       const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
@@ -36,8 +35,8 @@ const LoginForm: React.FC = () => {
 
       const data = await response.json();
 
-      if (data.success) {
-        // Save logged user info
+      if (response.ok && data.success) {
+        // 1. Save logged user info to localStorage
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -48,12 +47,16 @@ const LoginForm: React.FC = () => {
           })
         );
 
-        // Redirect by role
-        if (data.role === "Admin") {
+        // 2. Normalize role for comparison (prevents "Admin" vs "admin" errors)
+        const userRole = data.role ? data.role.toLowerCase() : "";
+
+        // 3. Redirect based on normalized role
+        if (userRole === "admin") {
           router.push("/admin-dashboard");
-        } else if (data.role === "HR") {
+          // Fallback if router fails: window.location.href = "/admin-dashboard";
+        } else if (userRole === "hr") {
           router.push("/hr_staff/dashboard");
-        } else if (data.role === "Employee") {
+        } else if (userRole === "employee") {
           router.push("/employees");
         } else {
           router.push("/");
@@ -63,7 +66,7 @@ const LoginForm: React.FC = () => {
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Failed to connect to server. Make sure backend is running.");
+      setError("Failed to connect to server. Check if Backend is running on port 2027.");
     } finally {
       setLoading(false);
     }
@@ -75,7 +78,7 @@ const LoginForm: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <Image
           src="/loginBackground.jpg"
-          alt="Graduation Ceremony Background"
+          alt="Background"
           fill
           style={{ objectFit: "cover" }}
           quality={100}
@@ -84,32 +87,28 @@ const LoginForm: React.FC = () => {
       </div>
 
       {/* Login Form Card */}
-      <div className="relative z-10 flex items-center justify-center p-20">
+      <div className="relative z-10 flex items-center justify-center min-h-screen">
         <div className={style.loginCard}>
           <div className="text-center mb-6">
             <Image
               src="/Logo.png"
-              alt="LLSOI Campus Logo"
+              alt="Logo"
               width={60}
               height={60}
-              className={style.logoImage}
+              className="mx-auto mb-2"
             />
             <h1>
               <span className={style.titlePrimary}>LLSOI</span>
               <span className={style.titleSecondary}> Campus</span>
             </h1>
             <h2 className={style.subHeader}>HR Management System</h2>
-            <p className={style.subTitle}>Login to Your Account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="username" className={style.label}>
-                Username:
-              </label>
+              <label className={style.label}>Username:</label>
               <input
                 type="text"
-                id="username"
                 className={style.Input}
                 placeholder="Enter Your Username"
                 value={username}
@@ -119,12 +118,9 @@ const LoginForm: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className={style.label}>
-                Password:
-              </label>
+              <label className={style.label}>Password:</label>
               <input
                 type="password"
-                id="password"
                 className={style.Input}
                 placeholder="Enter Your Password"
                 value={password}
@@ -134,7 +130,7 @@ const LoginForm: React.FC = () => {
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm">
                 {error}
               </div>
             )}
@@ -148,18 +144,10 @@ const LoginForm: React.FC = () => {
             </button>
           </form>
 
-          <div>
+          <div className="mt-4 text-center">
             <Link href="/forgot-password" className={style.forgotLink}>
               Forgot your password?
             </Link>
-          </div>
-
-          {/* Test info */}
-          <div className="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
-            <p className="font-semibold mb-1">Test Credentials:</p>
-            <p>Admin: admin / admin123</p>
-            <p>HR: hrstaff / hr123</p>
-            <p>Employee: employee1 / 12345</p>
           </div>
         </div>
       </div>

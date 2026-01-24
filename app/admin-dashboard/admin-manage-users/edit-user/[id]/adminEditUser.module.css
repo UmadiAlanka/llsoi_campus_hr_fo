@@ -132,6 +132,7 @@
   border-radius: 20px;
   padding: 35px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  color: #000;
 }
 
 /* ---------------- FORM GRID ---------------- */
@@ -171,6 +172,7 @@
   background-color: #fff;
   outline: none;
   transition: 0.2s;
+  color: #2e2727;
 }
 
 .input:focus,
