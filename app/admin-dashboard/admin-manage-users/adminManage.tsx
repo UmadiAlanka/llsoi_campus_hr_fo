@@ -21,20 +21,28 @@ export default function AdminManage() {
 
   // ================= FETCH USERS =================
   const fetchUsers = async () => {
+    setLoading(true);
     try {
+      // Ensure port matches your application.properties (2027)
       const res = await fetch("http://localhost:2027/api/employees");
-      const result = await res.json();
-
-      console.log("Employees:", result);
-
-      if (!res.ok || !Array.isArray(result.data)) {
-        throw new Error("Invalid response");
+      
+      if (!res.ok) {
+        throw new Error(`Server responded with status: ${res.status}`);
       }
 
-      setUsers(result.data);
+      const result = await res.json();
+
+      console.log("Fetched Data:", result);
+
+      // Your Controller returns: { "success": true, "data": [...] }
+      if (result.success && Array.isArray(result.data)) {
+        setUsers(result.data);
+      } else {
+        throw new Error(result.message || "Invalid data format received");
+      }
     } catch (err) {
-      console.error(err);
-      alert("Failed to load employees");
+      console.error("Fetch Error:", err);
+      alert("Failed to load employees. Please ensure the Backend is running on port 2027.");
     } finally {
       setLoading(false);
     }
@@ -46,7 +54,7 @@ export default function AdminManage() {
 
   // ================= DELETE USER =================
   const handleDelete = async (employeeId: string) => {
-    if (!confirm(`Delete employee ${employeeId}?`)) return;
+    if (!confirm(`Are you sure you want to delete employee ${employeeId}?`)) return;
 
     try {
       const res = await fetch(`http://localhost:2027/api/employees/${employeeId}`, {
@@ -56,14 +64,15 @@ export default function AdminManage() {
       const result = await res.json();
 
       if (!res.ok || result.success === false) {
-        throw new Error("Delete failed");
+        throw new Error(result.message || "Delete failed");
       }
 
+      // Locally update the list after successful deletion
       setUsers((prev) => prev.filter((u) => u.employeeId !== employeeId));
       alert("Employee deleted successfully!");
     } catch (err) {
-      console.error(err);
-      alert("Delete error");
+      console.error("Delete Error:", err);
+      alert("Error deleting employee. Please try again.");
     }
   };
 
@@ -83,13 +92,13 @@ export default function AdminManage() {
       {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
-          <img src="/Logo.png" className={styles.headerLogo} />
+          <img src="/Logo.png" alt="Logo" className={styles.headerLogo} />
           <h2 className={styles.brandName}>
             LLSOI Campus HR <span>Management System</span>
           </h2>
         </div>
         <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" className={styles.adminAvatar} />
+          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
           <span>Admin</span>
         </div>
       </header>
@@ -104,7 +113,7 @@ export default function AdminManage() {
                   href={item.href}
                   className={`${styles.menuItem} ${item.active ? styles.activeItem : ""}`}
                 >
-                  <img src={item.icon} className={styles.menuIconImage} />
+                  <img src={item.icon} alt={item.name} className={styles.menuIconImage} />
                   {item.name}
                 </Link>
               </li>
@@ -125,7 +134,7 @@ export default function AdminManage() {
                   className={styles.searchInput}
                 />
                 <button className={styles.searchButton}>
-                  <img src="/icons/search.png" />
+                  <img src="/icons/search.png" alt="Search" />
                 </button>
               </div>
 
@@ -138,7 +147,11 @@ export default function AdminManage() {
             </div>
 
             {loading ? (
-              <p>Loading employees...</p>
+              <div className={styles.loadingContainer}>
+                <p>Loading employees...</p>
+              </div>
+            ) : users.length === 0 ? (
+              <p className={styles.noData}>No employees found.</p>
             ) : (
               <table className={styles.userTable}>
                 <thead>
