@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./Dashboard.module.css";
@@ -8,7 +8,7 @@ import styles from "./Dashboard.module.css";
 interface SummaryCardProps {
   imageSrc: string;
   title: string;
-  value: string;
+  value: string | number; 
 }
 
 const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value }) => (
@@ -26,6 +26,41 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value }) => 
 export default function Dashboard() {
   const pathname = usePathname();
 
+  const [stats, setStats] = useState({
+    totalEmployees: 0,
+    absentToday: 0,
+    presentThisWeek: "None",
+    salaryPaid: "Rs 0"
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/dashboard/admin");
+        
+        // Safety: check for empty response before parsing JSON
+        const text = await response.text();
+        if (!text) return; 
+        
+        const result = JSON.parse(text);
+        
+        if (result && result.data) {
+          const { totalEmployees, todayAttendance, pendingSalaries } = result.data;
+          
+          setStats({
+            totalEmployees: totalEmployees || 0,
+            absentToday: (totalEmployees || 0) - (todayAttendance || 0),
+            presentThisWeek: todayAttendance > 0 ? "Active" : "None",
+            salaryPaid: `Rs ${pendingSalaries || 0}`,
+          });
+        }
+      } catch (error) {
+        console.error("Database connection failed:", error);
+      }
+    };
+    fetchStats();
+  }, []);
+
   const menuItems = [
     { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
     { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
@@ -39,7 +74,6 @@ export default function Dashboard() {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
           <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
@@ -54,7 +88,6 @@ export default function Dashboard() {
       </header>
 
       <div className={styles.layoutBody}>
-        {/* Sidebar */}
         <aside className={styles.sidebar}>
           <nav>
             <ul className={styles.menuList}>
@@ -76,15 +109,14 @@ export default function Dashboard() {
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Admin Dashboard</h2>
+          <h2 className={styles.pageTitle}>Admin Dashboard Summary</h2>
 
           <div className={styles.cardGrid}>
-            <SummaryCard imageSrc="/icons/employee.png" title="Total Employees" value="25" />
-            <SummaryCard imageSrc="/icons/absent.png" title="Absent Today" value="5" />
-            <SummaryCard imageSrc="/icons/present.png" title="Present This Week" value="85%" />
-            <SummaryCard imageSrc="/icons/paid.png" title="Salary Paid" value="Rs 150,000" />
+            <SummaryCard imageSrc="/icons/employee.png" title="Total Employees" value={stats.totalEmployees} />
+            <SummaryCard imageSrc="/icons/absent.png" title="Absent Today" value={stats.absentToday} />
+            <SummaryCard imageSrc="/icons/present.png" title="Present Status" value={stats.presentThisWeek} />
+            <SummaryCard imageSrc="/icons/paid.png" title="Salary Status" value={stats.salaryPaid} />
           </div>
         </main>
       </div>
