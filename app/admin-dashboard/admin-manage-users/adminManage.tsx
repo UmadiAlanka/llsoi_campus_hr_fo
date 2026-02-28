@@ -113,9 +113,9 @@ export default function AdminManage() {
             {menuItems.map((item) => (
               <li key={item.name}>
                 <Link
-                  href={item.href}
-                  className={`${styles.menuItem} ${item.active ? styles.activeItem : ""}`}
-                >
+                      href={item.href}
+                      className={`${styles.menuItem} ${item.active ? styles.active : ""}`}
+                    >
                   <img src={item.icon} alt={item.name} className={styles.menuIconImage} />
                   {item.name}
                 </Link>

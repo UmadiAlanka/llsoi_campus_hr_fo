@@ -76,14 +76,14 @@ export default function Dashboard() {
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.logoSection}>
-          <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>
+          <img src="/Logo.png" alt="Logo" className={styles.headerLogo} />
+          <h2 className={styles.brandName}>
             LLSOI Campus HR <span>Management System</span>
-          </h1>
+          </h2>
         </div>
         <div className={styles.adminProfile}>
           <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span className={styles.userName}>Admin</span>
+          <span>Admin</span>
         </div>
       </header>
 
@@ -97,7 +97,7 @@ export default function Dashboard() {
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      className={`${styles.menuLink} ${isActive ? styles.active : ""}`}
+                      className={`${styles.menuItem} ${isActive ? styles.active : ""}`}
                     >
                       <img src={item.icon} alt="" className={styles.menuIconImage} />
                       {item.name}
@@ -110,7 +110,7 @@ export default function Dashboard() {
         </aside>
 
         <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Admin Dashboard Summary</h2>
+          <h2 className={styles.pageTitle}>Admin Dashboard</h2>
 
           <div className={styles.cardGrid}>
             <SummaryCard imageSrc="/icons/employee.png" title="Total Employees" value={stats.totalEmployees} />

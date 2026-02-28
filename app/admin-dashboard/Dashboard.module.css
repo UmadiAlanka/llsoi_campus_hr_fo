@@ -19,7 +19,7 @@
 
 .header {
   background-color:var(--main-color);
-  height: 65px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,7 +39,7 @@
 }
 
 .brandName {
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   font-weight: bold;
   color: var(--main-color1);
 }
@@ -54,11 +54,12 @@
   gap: 10px;
   color: var(--main-color1);
   font-weight: bold;
+  font-size: 1rem;
 }
 
 .adminAvatar {
-  width: 28px;
-  height: 28px;
+  width: 50px;
+  height: 50px;
 }
 
 /* Body */
@@ -69,36 +70,38 @@
 
 /* Sidebar */
 .sidebar {
-  width: 360px;
-  background-color: var(--sidebar-color);
-  backdrop-filter: blur(10px);
-  padding-top: 45px;
+  width: 420px;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(3px);
+  padding-top: 30px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .menuList {
   list-style: none;
-  padding: 0;
-  margin: 0;
+  padding: 15px 30px;
+  gap: 100px;
 }
 
-.menuLink {
+.menuItem {
+  padding: 12px 25px;
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 12px 30px;
+  gap: 15px;
+  margin-bottom: 8px; 
   color: var(--bg-color1);
   font-weight: bold;
-  font-size: 1.5rem;
-  text-decoration: none;
-  border-radius: 100px;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 1.6rem;
+  transition: 0.3s;
+  border-radius: 30px;
 }
 
 /* Hover effect */
-.menuLink:hover {
+.menuItem:hover {
   background-color: rgba(255,255,255,0.5);
   transform: translateX(6px);
-  padding: 10px 30px;
+  padding: 15px 30px;
 
 }
 
@@ -106,7 +109,7 @@
 .active {
   background-color: rgba(255,255,255,0.65);
   box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-  padding: 10px 30px;
+  padding: 15px 30px;
 }
 
 /* Icons */
@@ -128,6 +131,7 @@
   font-weight: bold;
   margin-bottom: 45px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  color: var(--text-color1);
 }
 
 /* Cards */
