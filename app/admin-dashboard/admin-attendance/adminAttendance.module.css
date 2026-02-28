@@ -139,6 +139,7 @@
   outline: none;
   appearance: none; /* Removes default arrow for select */
   font-weight: bold;
+  color: black;
 }
 
 .filterIcon {
@@ -174,6 +175,7 @@
   background-color: rgba(255, 255, 255, 0.85);
   border-radius: 15px;
   overflow: hidden;
+  color: black;
 }
 
 .attendanceTable { 

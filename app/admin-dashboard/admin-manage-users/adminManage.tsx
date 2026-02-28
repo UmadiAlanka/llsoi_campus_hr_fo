@@ -17,13 +17,13 @@ interface UserData {
 
 export default function AdminManage() {
   const [users, setUsers] = useState<UserData[]>([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [loading, setLoading] = useState(true);
 
   // ================= FETCH USERS =================
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Ensure port matches your application.properties (2027)
       const res = await fetch("http://localhost:2027/api/employees");
       
       if (!res.ok) {
@@ -32,9 +32,6 @@ export default function AdminManage() {
 
       const result = await res.json();
 
-      console.log("Fetched Data:", result);
-
-      // Your Controller returns: { "success": true, "data": [...] }
       if (result.success && Array.isArray(result.data)) {
         setUsers(result.data);
       } else {
@@ -61,13 +58,10 @@ export default function AdminManage() {
         method: "DELETE",
       });
 
-      const result = await res.json();
-
-      if (!res.ok || result.success === false) {
-        throw new Error(result.message || "Delete failed");
+      if (!res.ok) {
+        throw new Error("Delete failed");
       }
 
-      // Locally update the list after successful deletion
       setUsers((prev) => prev.filter((u) => u.employeeId !== employeeId));
       alert("Employee deleted successfully!");
     } catch (err) {
@@ -75,6 +69,17 @@ export default function AdminManage() {
       alert("Error deleting employee. Please try again.");
     }
   };
+
+  // ================= SEARCH FILTER LOGIC =================
+  // This filters the users list based on Name or Employee ID
+  const filteredUsers = users.filter((user) => {
+    const query = searchTerm.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(query) || 
+      user.employeeId.toString().toLowerCase().includes(query) ||
+      user.username.toLowerCase().includes(query)
+    );
+  });
 
   const menuItems = [
     { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
@@ -89,7 +94,6 @@ export default function AdminManage() {
 
   return (
     <div className={styles.container}>
-      {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
           <img src="/Logo.png" alt="Logo" className={styles.headerLogo} />
@@ -104,7 +108,6 @@ export default function AdminManage() {
       </header>
 
       <div className={styles.layoutBody}>
-        {/* SIDEBAR */}
         <aside className={styles.sidebar}>
           <ul className={styles.menuList}>
             {menuItems.map((item) => (
@@ -121,7 +124,6 @@ export default function AdminManage() {
           </ul>
         </aside>
 
-        {/* MAIN */}
         <main className={styles.mainContent}>
           <h1 className={styles.pageTitle}>Manage Users</h1>
 
@@ -132,6 +134,8 @@ export default function AdminManage() {
                   type="text"
                   placeholder="Search Employee: Name / ID"
                   className={styles.searchInput}
+                  value={searchTerm} // Bind input to state
+                  onChange={(e) => setSearchTerm(e.target.value)} // Update state on change
                 />
                 <button className={styles.searchButton}>
                   <img src="/icons/search.png" alt="Search" />
@@ -150,8 +154,8 @@ export default function AdminManage() {
               <div className={styles.loadingContainer}>
                 <p>Loading employees...</p>
               </div>
-            ) : users.length === 0 ? (
-              <p className={styles.noData}>No employees found.</p>
+            ) : filteredUsers.length === 0 ? (
+              <p className={styles.noData}>No employees match your search.</p>
             ) : (
               <table className={styles.userTable}>
                 <thead>
@@ -168,7 +172,8 @@ export default function AdminManage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((u) => (
+                  {/* Map over filteredUsers instead of the full users array */}
+                  {filteredUsers.map((u) => (
                     <tr key={u.employeeId}>
                       <td>{u.employeeId}</td>
                       <td>{u.name}</td>
