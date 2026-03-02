@@ -1,0 +1,243 @@
+:root {
+  --main-color:#720e0e;
+  --bg-color1:rgb(7, 7, 7);
+  --text-color1: #fff;
+  --main-color1:#FFD814;
+  --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Layout */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  font-family: "Kanit", sans-serif;
+}
+
+.header {
+  background-color:var(--main-color);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color:var(--text-color1);
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerLogo {
+  width: 60px;
+  height: 60px;
+}
+
+.brandName {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--main-color1);
+}
+
+.brandName span {
+  color:var(--main-color1);
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--main-color1);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.adminAvatar {
+  width: 50px;
+  height: 50px;
+}
+
+/* Body */
+.layoutBody {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 420px;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(3px);
+  padding-top: 30px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menuList {
+  list-style: none;
+  padding: 15px 30px;
+  gap: 100px;
+}
+
+.menuItem {
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 8px; 
+  color: var(--bg-color1);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.6rem;
+  transition: 0.3s;
+  border-radius: 30px;
+}
+
+/* Hover effect */
+.menuItem:hover {
+  background-color: rgba(255,255,255,0.5);
+  transform: translateX(6px);
+  padding: 15px 30px;
+
+}
+
+/* Active button */
+.active {
+  background-color: rgba(255,255,255,0.65);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  padding: 15px 30px;
+}
+
+/* Icons */
+.menuIconImage {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* Main content */
+.mainContent {
+  flex: 1;
+  padding: 50px;
+}
+
+.pageTitle {
+  color: var(--text-color1);
+  font-size: 2.7rem;
+  font-weight: bold;
+  margin-bottom: 45px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  color: var(--text-color1);
+}
+
+/* Updated Stats Grid */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 350px); /* Specific width to prevent stretching */
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 30px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.cardIconContainer {
+  width: 80px;
+  height: 80px;
+}
+
+.cardIconImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  color: var(--main-color);
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.cardValue {
+  font-size: 3.5rem; /* Large yellow numbers */
+  font-weight: 900;
+  color: var(--main-color1);
+  text-align: center;
+  margin: 0;
+  /* Black outline */
+  text-shadow: 
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000;
+}
+
+/* SPECIALIZED RULE SECTION */
+.rulesContainer {
+  background-color: white;
+  border-radius: 40px;
+  padding: 40px;
+  width: 600px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.rulesHeader {
+  color: var(--main-color);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+}
+
+.rulesList {
+  list-style: none;
+  padding: 0;
+  display: inline-block;
+  text-align: left;
+}
+
+.rulesList li {
+  color: var(--main-color);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.checkIcon {
+  color: var(--main-color); /* Dark red checkmarks */
+  font-size: 1.5rem;
+}
+
+.actionCenter {
+  margin-top: 20px;
+}
+
+.detectButton {
+  background-color: var(--main-color);
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.detectButton:hover {
+  background-color: #5a0b0b;
+}
