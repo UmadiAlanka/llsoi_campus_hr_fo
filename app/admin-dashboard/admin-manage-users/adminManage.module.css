@@ -34,8 +34,8 @@
 }
 
 .headerLogo {
-  width: 45px;
-  height: 45px;
+  width: 60px;
+  height: 60px;
 }
 
 .brandName {
@@ -116,13 +116,18 @@
   padding: 15px 30px;
 }
 
+.mainContent { 
+  flex: 1;
+  padding: 50px;
+}
+
 .pageTitle {
   color: var(--text-color1);
-  font-size: 2.5rem;
+  font-size: 2.7rem;
   font-weight: bold;
-  margin-bottom: 25px;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
-  font-family: "Kanit", sans-serif;
+  margin-bottom: 45px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  color: var(--text-color1);
 }
 
 .contentContainer {

@@ -1,11 +1,3 @@
-.container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/background.jpg');
-  background-size: cover;
-  background-position: center;
-}
 
 :root {
     --main-color:#720e0e ;
@@ -15,100 +7,132 @@
     --sidebar-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Header & Sidebar Reused Theme */
-.header { 
-  background-color: var(--main-color);
-  height: 65px;
+/* Layout */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  font-family: "Kanit", sans-serif;
+}
+
+.header {
+  background-color:var(--main-color);
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   color:var(--text-color1);
-  z-index: 100; 
-}
-.logoSection { 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
 }
 
-.headerLogo { 
-    width: 45px; 
-    height: 45px; 
-}
-.brandName { 
-   font-size: 1.3rem; 
-   font-weight: bold; 
-   color: var(--main-color1);
-}
-
-.brandName span { 
-    color:var(--main-color1); 
-}
-.adminProfile { 
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--main-color1);
-    font-weight: bold;
-}
-.adminAvatar { 
-     width: 28px; 
-    height: 28px;  
-}
-.layoutBody { 
-    display: flex; 
-    flex: 1; 
-}
-.sidebar { 
-  width: 370px;
-  background-color:var(--sidebar-color); /* Translucent background */
-  backdrop-filter: blur(10px);
-  padding-top: 45px;
-}
-.menuList {
-  display: flex;
-  flex-direction: column;
-}
-
-.menuItem { 
-  padding: 12px 30px;
+.logoSection {
   display: flex;
   align-items: center;
-  gap: 18px;
-  color:var(--bg-color1);
+  gap: 12px;
+}
+
+.headerLogo {
+  width: 60px;
+  height: 60px;
+}
+
+.brandName {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--main-color1);
+}
+
+.brandName span {
+  color:var(--main-color1);
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--main-color1);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.adminAvatar {
+  width: 50px;
+  height: 50px;
+}
+
+/* Body */
+.layoutBody {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 420px;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(3px);
+  padding-top: 30px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menuList {
+  list-style: none;
+  padding: 15px 30px;
+  gap: 100px;
+}
+
+.menuItem {
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 8px; 
+  color: var(--bg-color1);
   font-weight: bold;
   cursor: pointer;
   font-size: 1.6rem;
-}
-.activeItem { 
-  background-color: var(--sidebar-color);
-  border-radius: 40px 40px 40px 40px;
-  margin-right: 25px;
-}
-.activeItem:hover {
-  background-color: var(--text-color1);
+  transition: 0.3s;
+  border-radius: 30px;
 }
 
-.menuIconImage { 
+/* Hover effect */
+.menuItem:hover {
+  background-color: rgba(255,255,255,0.5);
+  transform: translateX(6px);
+  padding: 15px 30px;
+
+}
+
+/* Active button */
+.active { 
+  background-color: rgba(255,255,255,0.65);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  padding: 15px 30px;
+}
+
+/* Icons */
+.menuIconImage {
   width: 30px;
   height: 30px;
-  object-fit: contain; 
-}
-/* Main Content */
-.mainContent { 
-    flex: 1; 
-    padding: 30px; 
+  object-fit: contain;
 }
 
-.pageTitle { 
-  color:var(--text-color1);
+/* Main content */
+.mainContent {
+  flex: 1;
+  padding: 50px;
+}
+
+.pageTitle {
+  color: var(--text-color1);
   font-size: 2.7rem;
   font-weight: bold;
-  margin-top: 0px;
-  margin-bottom: 20px;
+  margin-bottom: 45px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  font-family: "Kanit", sans-serif;  
+  color: var(--text-color1);
 }
 
 /* Filter Section */

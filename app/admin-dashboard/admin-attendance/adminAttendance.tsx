@@ -39,14 +39,14 @@ const adminAttendance: React.FC = () => {
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: '/icons/home.png', active: false, href: '/admin-dashboard/Dashboard' },
-    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/manage-users' },
-    { name: 'Attendence', icon: '/icons/dattendance.png', active: true, href: '/attendance' },
-    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false, href: '/salary' },
-    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false, href: '/anomaly' },
-    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/analytics' },
+    { name: 'Dashboard', icon: '/icons/home.png', active: false, href: '/admin-dashboard' },
+    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/admin-dashboard/admin-manage-users' },
+    { name: 'Attendence', icon: '/icons/dattendance.png', active: true, href: '/admin-dashboard/admin-attendance' },
+    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false, href: '/admin-dashboard/salary' },
+    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false, href: '/admin-dashboard/anomaly' },
+    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/admin-dashboard/analytics' },
     { name: 'Leave management', icon: '/icons/leave.png', active: false, href: '/leave' },
-    { name: 'Logout', icon: '/icons/logout.png', active: false, href: '/logout' },
+    { name: 'Logout', icon: '/icons/logout.png', active: false, href: '/' },
   ];
 
   return (
@@ -74,7 +74,7 @@ const adminAttendance: React.FC = () => {
                 <li key={item.name}>
                   <Link 
                     href={item.href} 
-                    className={`${styles.menuItem} ${item.active ? styles.activeItem : ''}`}
+                    className={`${styles.menuItem} ${item.active ? styles.active : ''}`}
                   >
                     <img src={item.icon} alt="" className={styles.menuIconImage} />
                     {item.name}
@@ -101,7 +101,7 @@ const adminAttendance: React.FC = () => {
                   className={styles.filterInputDate} 
                 />
                 {/* Placeholder text logic if no date is selected */}
-                {!selectedDate && <span className={styles.datePlaceholder}>Filter by Date</span>}
+                {!selectedDate && <span className={styles.filterSelect}>Filter by Date</span>}
                 <img src="/icons/calendar.png" alt="calendar" className={styles.filterIcon} />
               </div>
 
