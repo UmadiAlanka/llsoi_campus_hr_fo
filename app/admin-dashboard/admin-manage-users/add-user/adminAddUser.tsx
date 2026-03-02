@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import styles from "./adminAddUser.module.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function AddUser() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,7 +45,6 @@ export default function AddUser() {
       return;
     }
 
-    // Payload matches your NEW Employee.java (Long id is auto-generated)
     const payload = {
       name: formData.name,
       address: formData.address,
@@ -58,7 +58,6 @@ export default function AddUser() {
     };
 
     try {
-      // Note: Using Port 2027 as identified in your Spring Boot logs
       const response = await fetch("http://localhost:2027/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -96,14 +95,26 @@ export default function AddUser() {
       <div className={styles.layoutBody}>
         <aside className={styles.sidebar}>
           <ul className={styles.menuList}>
-            {menuItems.map((item) => (
-              <li key={item.name}>
-                <Link href={item.href} className={styles.menuItem}>
-                  <img src={item.icon} alt="" className={styles.menuIconImage} />
-                  {item.name}
-                </Link>
-              </li>
-            ))}
+            {menuItems.map((item) => {
+              // LOGIC FIX: 
+              // 1. Dashboard and Logout only active on EXACT match.
+              // 2. Other items active if the path starts with their href (so sub-pages work).
+              const isActive = (item.name === "Dashboard" || item.href === "/") 
+                ? pathname === item.href 
+                : pathname.startsWith(item.href);
+
+              return (
+                <li key={item.name}>
+                  <Link 
+                    href={item.href} 
+                    className={`${styles.menuItem} ${isActive ? styles.active : ""}`}
+                  >
+                    <img src={item.icon} alt="" className={styles.menuIconImage} />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </aside>
 
@@ -118,7 +129,6 @@ export default function AddUser() {
                   <input name="name" placeholder="Enter Full Name" value={formData.name} className={styles.input} onChange={handleChange} required />
                 </div>
 
-                {/* EMPLOYEE ID FIELD - READONLY WITH RED CIRCLE CURSOR */}
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Employee ID:</label>
                   <input 
