@@ -11,7 +11,6 @@ export default function AnomalyDetection() {
     resolvedAnomalies: 0 
   });
 
-  // Fetch real data from your backend API
   useEffect(() => {
     const fetchAnomalyData = async () => {
       try {
@@ -43,7 +42,6 @@ export default function AnomalyDetection() {
 
   return (
     <div className={styles.container}>
-      {/* HEADER - Reusing Dashboard Classes */}
       <header className={styles.header}>
         <div className={styles.logoSection}>
           <img src="/Logo.png" alt="Logo" className={styles.headerLogo} />
@@ -58,7 +56,6 @@ export default function AnomalyDetection() {
       </header>
 
       <div className={styles.layoutBody}>
-        {/* SIDEBAR - Reusing Dashboard Classes */}
         <aside className={styles.sidebar}>
           <nav>
             <ul className={styles.menuList}>
@@ -80,47 +77,42 @@ export default function AnomalyDetection() {
           </nav>
         </aside>
 
-        {/* MAIN CONTENT - Anomaly Detection Specific */}
         <main className={styles.mainContent}>
           <h2 className={styles.pageTitle}>Anomaly Detection</h2>
 
-          {/* Stats Grid - Using Dashboard card styles */}
           <div className={styles.cardGrid}>
+            {/* Total Anomalies Card */}
             <div className={styles.card}>
-              <div className={styles.cardIconContainer}>
-                <img src="/icons/total-anomaly.png" alt="Total" className={styles.cardIconImage} />
-              </div>
-              <div className={styles.cardContent}>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardIconContainer}>
+                  <img src="/icons/total-anomaly.png" alt="Total" className={styles.cardIconImage} />
+                </div>
                 <h3 className={styles.cardTitle}>Total Anomalies</h3>
-                <p className={`${styles.cardValue} ${styles.highlightValue}`}>
-                  {anomalyStats.totalAnomalies}
-                </p>
               </div>
+              <p className={styles.cardValue}>
+                {anomalyStats.totalAnomalies}
+              </p>
             </div>
 
+            {/* Resolved Card */}
             <div className={styles.card}>
-              <div className={styles.cardIconContainer}>
-                <img src="/icons/resolved-anomaly.png" alt="Resolved" className={styles.cardIconImage} />
-              </div>
-              <div className={styles.cardContent}>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardIconContainer}>
+                  <img src="/icons/resolved-anomaly.png" alt="Resolved" className={styles.cardIconImage} />
+                </div>
                 <h3 className={styles.cardTitle}>Resolved</h3>
-                <p className={`${styles.cardValue} ${styles.highlightValue}`}>
-                  {anomalyStats.resolvedAnomalies}
-                </p>
               </div>
+              <p className={styles.cardValue}>
+                {anomalyStats.resolvedAnomalies}
+              </p>
             </div>
           </div>
 
-          {/* Specialized Rule Section */}
           <div className={styles.rulesContainer}>
             <h3 className={styles.rulesHeader}>Currently Rule Being Used</h3>
             <ul className={styles.rulesList}>
-              <li>
-                <span className={styles.checkIcon}>✔</span> Salary Range Rule
-              </li>
-              <li>
-                <span className={styles.checkIcon}>✔</span> Rs.300 Sudden Change Rule
-              </li>
+              <li><span className={styles.checkIcon}>✔</span> Salary Range Rule</li>
+              <li><span className={styles.checkIcon}>✔</span> Rs.300 Sudden Change Rule</li>
             </ul>
             <div className={styles.actionCenter}>
               <button className={styles.detectButton}>Detect Anomaly</button>

@@ -25,7 +25,7 @@
   color: black;
   font-weight: bolder;
   transition: all 0.2s ease;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   border-radius: 0 30px 30px 0; /* Prepared for highlighting */
 }
 
@@ -35,13 +35,6 @@
   background: rgba(255, 255, 255, 0.463);
   padding-left: 30px; /* Slide effect */
 }
-
-/* Optional: If you want the active state to look slightly different than hover (e.g., solid white) */
-/*
-.active {
-  background: white !important;
-}
-*/
 
 .icon {
   margin-right: 15px;

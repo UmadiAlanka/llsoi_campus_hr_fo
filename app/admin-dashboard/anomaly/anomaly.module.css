@@ -1,30 +1,28 @@
 :root {
-  --main-color:#720e0e;
-  --bg-color1:rgb(7, 7, 7);
+  --main-color: #720e0e;
+  --bg-color1: rgb(7, 7, 7);
   --text-color1: #fff;
-  --main-color1:#FFD814;
-  --sidebar-color: rgba(255, 255, 255, 0.25);
+  --main-color1: #FFD814;
 }
 
-/* Layout */
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/background.jpg');
   background-size: cover;
   background-position: center;
   font-family: "Kanit", sans-serif;
 }
 
 .header {
-  background-color:var(--main-color);
+  background-color: var(--main-color);
   height: 90px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  color:var(--text-color1);
+  padding: 0 40px;
+  color: var(--text-color1);
 }
 
 .logoSection {
@@ -33,19 +31,12 @@
   gap: 12px;
 }
 
-.headerLogo {
-  width: 60px;
-  height: 60px;
-}
+.headerLogo { width: 60px; height: 60px; }
 
 .brandName {
   font-size: 1.8rem;
   font-weight: bold;
   color: var(--main-color1);
-}
-
-.brandName span {
-  color:var(--main-color1);
 }
 
 .adminProfile {
@@ -54,21 +45,12 @@
   gap: 10px;
   color: var(--main-color1);
   font-weight: bold;
-  font-size: 1rem;
 }
 
-.adminAvatar {
-  width: 50px;
-  height: 50px;
-}
+.adminAvatar { width: 45px; height: 45px; }
 
-/* Body */
-.layoutBody {
-  display: flex;
-  flex: 1;
-}
+.layoutBody { display: flex; flex: 1; }
 
-/* Sidebar */
 .sidebar {
   width: 420px;
   background-color: rgba(255, 255, 255, 0.25);
@@ -134,69 +116,82 @@
   color: var(--text-color1);
 }
 
-/* Updated Stats Grid */
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(2, 350px); /* Specific width to prevent stretching */
-  gap: 30px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(2, 600px);
+  gap: 60px;
+  margin-left: 110px;
+  grid-template-columns: repeat(2, 500px);
+  justify-content: center;
 }
 
 .card {
   background-color: white;
-  border-radius: 30px;
-  padding: 25px;
+  border-radius: 35px;
+  padding: 40px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  gap: 40px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardHeader {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .cardIconContainer {
-  width: 80px;
-  height: 80px;
-}
-
-.cardIconImage {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: 150px;
+  height: 150px;
 }
 
 .cardTitle {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
+  color: var(--main-color);
+  font-weight: 900;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
   color: var(--main-color);
   font-weight: 800;
-  margin-bottom: 5px;
 }
 
 .cardValue {
-  font-size: 3.5rem; /* Large yellow numbers */
+  font-size: 5rem;
   font-weight: 900;
   color: var(--main-color1);
-  text-align: center;
   margin: 0;
-  /* Black outline */
+  justify-content: center;
   text-shadow: 
-    -2px -2px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000;
+    -2px -2px 0 #000, 2px -2px 0 #000,
+    -2px  2px 0 #000, 2px  2px 0 #000;
 }
 
-/* SPECIALIZED RULE SECTION */
 .rulesContainer {
   background-color: white;
   border-radius: 40px;
-  padding: 40px;
-  width: 600px;
+  padding: 30px 40px;
+  /* Shrink width from full-screen to a fixed size */
+  width: 100%;
+  max-width: 600px; 
+  margin: 0 auto; /* This centers the box itself */
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .rulesHeader {
   color: var(--main-color);
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 800;
   margin-bottom: 25px;
 }
@@ -209,8 +204,8 @@
 }
 
 .rulesList li {
-  color: var(--main-color);
-  font-size: 1.3rem;
+  color: #a88a00; /* Gold/Yellow text for rules */
+  font-size: 1.4rem;
   font-weight: 700;
   margin: 15px 0;
   display: flex;
@@ -218,26 +213,16 @@
   gap: 15px;
 }
 
-.checkIcon {
-  color: var(--main-color); /* Dark red checkmarks */
-  font-size: 1.5rem;
-}
-
-.actionCenter {
-  margin-top: 20px;
-}
+.checkIcon { color: var(--main-color); font-size: 1.6rem; }
 
 .detectButton {
   background-color: var(--main-color);
   color: white;
-  padding: 12px 30px;
+  padding: 12px 35px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.detectButton:hover {
-  background-color: #5a0b0b;
+  margin-top: 15px;
 }
