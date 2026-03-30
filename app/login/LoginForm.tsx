@@ -112,6 +112,7 @@ const LoginForm: React.FC = () => {
                 className={style.Input}
                 placeholder="Enter Your Username"
                 value={username}
+                name="USERNAME_FIELD"
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
@@ -124,6 +125,7 @@ const LoginForm: React.FC = () => {
                 className={style.Input}
                 placeholder="Enter Your Password"
                 value={password}
+                name="PASSWORD_FIELD"
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
@@ -138,6 +140,7 @@ const LoginForm: React.FC = () => {
             <button
               type="submit"
               className={style.loginButton}
+              name="submit"
               disabled={loading}
             >
               {loading ? "Logging..." : "Login"}

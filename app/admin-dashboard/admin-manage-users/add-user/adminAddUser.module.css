@@ -176,6 +176,7 @@
   background: white;
   font-size: 1rem;
   color:var(--text-color1);
+  color: #2e2727;
 }
 
 .registerBtn {

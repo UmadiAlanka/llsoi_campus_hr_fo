@@ -1,14 +1,13 @@
 :root {
-  --main-color:#720e0e;
-  --bg-color1:rgb(7, 7, 7);
+  --main-color: #720e0e;
+  --bg-color1: rgb(7, 7, 7);
   --text-color1: #fff;
-  --main-color1:#FFD814;
-  --sidebar-color: rgba(255, 255, 255, 0.25);
+  --main-color1: #FFD814;
 }
 
 /* Layout */
 .container {
-  min-height: 100vh;
+   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
@@ -17,109 +16,12 @@
   font-family: "Kanit", sans-serif;
 }
 
-.header {
-  background-color:var(--main-color);
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  color:var(--text-color1);
-}
-
-.logoSection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.headerLogo {
-  width: 60px;
-  height: 60px;
-}
-
-.brandName {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--main-color1);
-}
-
-.brandName span {
-  color:var(--main-color1);
-}
-
-.adminProfile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--main-color1);
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.adminAvatar {
-  width: 50px;
-  height: 50px;
-}
-
-/* Body */
 .layoutBody {
   display: flex;
   flex: 1;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 420px;
-  background-color: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(3px);
-  padding-top: 30px;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.menuList {
-  list-style: none;
-  padding: 15px 30px;
-  gap: 100px;
-}
-
-.menuItem {
-  padding: 12px 25px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 8px; 
-  color: var(--bg-color1);
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1.6rem;
-  transition: 0.3s;
-  border-radius: 30px;
-}
-
-/* Hover effect */
-.menuItem:hover {
-  background-color: rgba(255,255,255,0.5);
-  transform: translateX(6px);
-  padding: 15px 30px;
-
-}
-
-/* Active button */
-.active {
-  background-color: rgba(255,255,255,0.65);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-  padding: 15px 30px;
-}
-
-/* Icons */
-.menuIconImage {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-/* Main content */
+/* Main content area */
 .mainContent {
   flex: 1;
   padding: 50px;
@@ -131,13 +33,12 @@
   font-weight: bold;
   margin-bottom: 45px;
   text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  color: var(--text-color1);
 }
 
-/* Cards */
+/* Cards Grid Alignment */
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(2, 600px);
+  grid-template-columns: repeat(2, 600px); /* Keeps your 2-column large cards */
   gap: 60px;
   margin-left: 110px;
 }
@@ -149,7 +50,8 @@
   display: flex;
   align-items: center;
   gap: 40px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Slightly deeper shadow for depth */
+  width: 350px;
 }
 
 .cardIconContainer {
@@ -160,6 +62,7 @@
 .cardIconImage {
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .cardTitle {
@@ -172,9 +75,24 @@
   font-size: 2.5rem;
   font-weight: 900;
   color: var(--main-color1);
+  /* Matching your yellow text with black outline */
   text-shadow: 
     -2px -2px 0 #000,
      2px -2px 0 #000,
     -2px  2px 0 #000,
      2px  2px 0 #000;
+}
+
+/* Loading Spinner for the cards */
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--main-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
