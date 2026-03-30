@@ -1,98 +1,150 @@
-:root {
-  --main-color: #720e0e;
-  --bg-color1: rgb(7, 7, 7);
-  --text-color1: #fff;
-  --main-color1: #FFD814;
-}
+/* ================================================
+   Dashboard.module.css — Admin main dashboard
+   ================================================ */
 
-/* Layout */
 .container {
-   min-height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url('/background.jpg');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   font-family: "Kanit", sans-serif;
 }
 
+/* ── Layout ──────────────────────────────────── */
 .layoutBody {
   display: flex;
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
-/* Main content area */
+/* ── Main content ────────────────────────────── */
 .mainContent {
   flex: 1;
-  padding: 50px;
+  padding: 40px 48px;
+  overflow-y: auto;
+}
+
+/* ── Page title ──────────────────────────────── */
+.pageTitleRow {
+  margin-bottom: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .pageTitle {
-  color: var(--text-color1);
-  font-size: 2.7rem;
-  font-weight: bold;
-  margin-bottom: 45px;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  line-height: 1.1;
 }
 
-/* Cards Grid Alignment */
+.pageSubtitle {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Card grid ───────────────────────────────── */
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(2, 600px); /* Keeps your 2-column large cards */
-  gap: 60px;
-  margin-left: 110px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 860px;
 }
 
+/* ── Individual card ─────────────────────────── */
 .card {
-  background-color: white;
-  border-radius: 35px;
-  padding: 40px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 28px 24px;
   display: flex;
   align-items: center;
-  gap: 40px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Slightly deeper shadow for depth */
-  width: 350px;
+  gap: 20px;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(255,255,255,0.8) inset;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
 }
 
-.cardIconContainer {
-  width: 150px;
-  height: 150px;
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.18),
+    0 1px 0 rgba(255,255,255,0.8) inset;
+}
+
+.cardIconWrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(114, 14, 14, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .cardIconImage {
-  width: 100%;
-  height: 100%;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
 }
 
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .cardTitle {
-  font-size: 1.8rem;
-  color: var(--main-color);
-  font-weight: 900;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
 }
 
 .cardValue {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 900;
-  color: var(--main-color1);
-  /* Matching your yellow text with black outline */
-  text-shadow: 
-    -2px -2px 0 #000,
-     2px -2px 0 #000,
-    -2px  2px 0 #000,
-     2px  2px 0 #000;
+  color: #720e0e;
+  margin: 0;
+  line-height: 1;
+  /* Gold outline on large numbers */
+  text-shadow:
+    -1px -1px 0 rgba(255, 216, 20, 0.4),
+     1px -1px 0 rgba(255, 216, 20, 0.4),
+    -1px  1px 0 rgba(255, 216, 20, 0.4),
+     1px  1px 0 rgba(255, 216, 20, 0.4);
 }
 
-/* Loading Spinner for the cards */
-.spinner {
-  width: 30px;
-  height: 30px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--main-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 1100px) {
+  .cardGrid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@media (max-width: 700px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mainContent {
+    padding: 24px 20px;
+  }
 }
