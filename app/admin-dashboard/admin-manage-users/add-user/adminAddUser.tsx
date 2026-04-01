@@ -2,199 +2,104 @@
 
 import React, { useState } from "react";
 import styles from "./adminAddUser.module.css";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AddUser() {
   const router = useRouter();
-  const pathname = usePathname();
-
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    contactNumber: "",
-    role: "EMPLOYEE",
-    job: "",
-    jobType: "Academic",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    name: "", address: "", contactNumber: "", role: "EMPLOYEE",
+    job: "", jobType: "Academic", username: "", email: "",
+    password: "", confirmPassword: "",
   });
 
-  const menuItems = [
-    { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
-    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
-    { name: "Attendance", icon: "/icons/dattendance.png", href: "/admin-dashboard/admin-attendance" },
-    { name: "Salary & Pay Slip", icon: "/icons/dsalary.png", href: "/admin-dashboard/salary" },
-    { name: "Anomaly Detections", icon: "/icons/anomaly.png", href: "/admin-dashboard/anomaly" },
-    { name: "Report & Analytics", icon: "/icons/report.png", href: "/admin-dashboard/analytics" },
-    { name: "Leave Management", icon: "/icons/leave.png", href: "/admin-dashboard/leave" },
-    { name: "Logout", icon: "/icons/logout.png", href: "/" },
-  ];
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    const payload = {
-      name: formData.name,
-      address: formData.address,
-      contactNumber: formData.contactNumber,
-      role: formData.role,
-      job: formData.job,
-      jobType: formData.jobType,
-      username: formData.username,
-      email: formData.email,
-      password: formData.password
-    };
-
+    if (formData.password !== formData.confirmPassword) { alert("Passwords do not match!"); return; }
     try {
-      const response = await fetch("http://localhost:2027/api/employees", {
+      const res = await fetch("http://localhost:2027/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...formData, confirmPassword: undefined }),
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to create user");
-      }
-
+      if (!res.ok) throw new Error(await res.text());
       alert("User added successfully!");
       router.push("/admin-dashboard/admin-manage-users");
-    } catch (error: any) {
-      console.error("Submission Error:", error);
-      alert(`Backend Error: ${error.message}`);
+    } catch (err: any) {
+      alert(`Error: ${err.message}`);
     }
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.logoSection}>
-          <img src="/Logo.png" alt="Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>
-            LLSOI Campus <span>HR Management System</span>
-          </h1>
-        </div>
-        <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span>Admin</span>
-        </div>
-      </header>
-
-      <div className={styles.layoutBody}>
-        <aside className={styles.sidebar}>
-          <ul className={styles.menuList}>
-            {menuItems.map((item) => {
-              // LOGIC FIX: 
-              // 1. Dashboard and Logout only active on EXACT match.
-              // 2. Other items active if the path starts with their href (so sub-pages work).
-              const isActive = (item.name === "Dashboard" || item.href === "/") 
-                ? pathname === item.href 
-                : pathname.startsWith(item.href);
-
-              return (
-                <li key={item.name}>
-                  <Link 
-                    href={item.href} 
-                    className={`${styles.menuItem} ${isActive ? styles.active : ""}`}
-                  >
-                    <img src={item.icon} alt="" className={styles.menuIconImage} />
-                    {item.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </aside>
-
-        <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Add User</h2>
-          <div className={styles.formCard}>
-            <form onSubmit={handleSubmit}>
-              <h3 className={styles.sectionTitle}>User Details</h3>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Name:</label>
-                  <input name="name" placeholder="Enter Full Name" value={formData.name} className={styles.input} onChange={handleChange} required />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Employee ID:</label>
-                  <input 
-                    name="employeeId" 
-                    placeholder="AutoGenerated" 
-                    readOnly 
-                    className={styles.input} 
-                    style={{ cursor: "not-allowed", backgroundColor: "#f9f9f9" }}
-                    title="ID is generated automatically upon registration"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Address:</label>
-                  <input name="address" placeholder="Residential Address" value={formData.address} className={styles.input} onChange={handleChange} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Contact Number:</label>
-                  <input name="contactNumber" placeholder="07xxxxxxxx" value={formData.contactNumber} className={styles.input} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Job Title:</label>
-                  <input name="job" placeholder="Lecturer" value={formData.job} className={styles.input} onChange={handleChange} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Role:</label>
-                  <select name="role" value={formData.role} className={styles.select} onChange={handleChange}>
-                    <option value="EMPLOYEE">Employee</option>
-                    <option value="ADMIN">Admin</option>
-                    <option value="HR">HR Staff</option>
-                  </select>
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Job Type:</label>
-                  <select name="jobType" value={formData.jobType} className={styles.select} onChange={handleChange}>
-                    <option value="Academic">Academic</option>
-                    <option value="Non-academic">Non-academic</option>
-                  </select>
-                </div>
-              </div>
-
-              <h3 className={styles.sectionTitle}>Login Credentials</h3>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Username:</label>
-                  <input name="username" placeholder="Username" value={formData.username} className={styles.input} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Email Address:</label>
-                  <input name="email" placeholder="email@campus.com" value={formData.email} className={styles.input} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Password:</label>
-                  <input type="password" name="password" placeholder="••••••••" value={formData.password} className={styles.input} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Confirm Password:</label>
-                  <input type="password" name="confirmPassword" placeholder="••••••••" value={formData.confirmPassword} className={styles.input} onChange={handleChange} required />
-                </div>
-              </div>
-
-              <button type="submit" className={styles.registerBtn}>REGISTER</button>
-            </form>
+    <>
+      <h2 className={styles.pageTitle}>Add User</h2>
+      <div className={styles.formCard}>
+        <form onSubmit={handleSubmit}>
+          <h3 className={styles.sectionTitle}>User Details</h3>
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Name:</label>
+              <input name="name" value={formData.name} onChange={handleChange} className={styles.input} placeholder="Full Name" required />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Employee ID:</label>
+              <input readOnly className={styles.input} placeholder="Auto Generated" style={{ background: '#f9f9f9', cursor: 'not-allowed' }} />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Address:</label>
+              <input name="address" value={formData.address} onChange={handleChange} className={styles.input} placeholder="Residential Address" />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Contact Number:</label>
+              <input name="contactNumber" value={formData.contactNumber} onChange={handleChange} className={styles.input} placeholder="07xxxxxxxx" required />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Job Title:</label>
+              <input name="job" value={formData.job} onChange={handleChange} className={styles.input} placeholder="Lecturer / Officer" />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Role:</label>
+              <select name="role" value={formData.role} onChange={handleChange} className={styles.select}>
+                <option value="EMPLOYEE">Employee</option>
+                <option value="ADMIN">Admin</option>
+                <option value="HR">HR Staff</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Job Type:</label>
+              <select name="jobType" value={formData.jobType} onChange={handleChange} className={styles.select}>
+                <option value="Academic">Academic</option>
+                <option value="Non-academic">Non-academic</option>
+              </select>
+            </div>
           </div>
-        </main>
+
+          <h3 className={styles.sectionTitle}>Login Credentials</h3>
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Username:</label>
+              <input name="username" value={formData.username} onChange={handleChange} className={styles.input} required />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Email:</label>
+              <input name="email" type="email" value={formData.email} onChange={handleChange} className={styles.input} required />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Password:</label>
+              <input name="password" type="password" value={formData.password} onChange={handleChange} className={styles.input} required />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Confirm Password:</label>
+              <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} className={styles.input} required />
+            </div>
+          </div>
+
+          <button type="submit" className={styles.registerBtn}>REGISTER USER</button>
+        </form>
       </div>
-    </div>
+    </>
   );
 }
