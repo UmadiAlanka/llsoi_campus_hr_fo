@@ -1,228 +1,106 @@
-:root {
-  --main-color: #720e0e;
-  --bg-color1: rgb(7, 7, 7);
-  --text-color1: #fff;
-  --main-color1: #FFD814;
-}
-
-.container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/background.jpg');
-  background-size: cover;
-  background-position: center;
-  font-family: "Kanit", sans-serif;
-}
-
-.header {
-  background-color: var(--main-color);
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  color: var(--text-color1);
-}
-
-.logoSection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.headerLogo { width: 60px; height: 60px; }
-
-.brandName {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--main-color1);
-}
-
-.adminProfile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--main-color1);
-  font-weight: bold;
-}
-
-.adminAvatar { width: 45px; height: 45px; }
-
-.layoutBody { display: flex; flex: 1; }
-
-.sidebar {
-  width: 420px;
-  background-color: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(3px);
-  padding-top: 30px;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.menuList {
-  list-style: none;
-  padding: 15px 30px;
-  gap: 100px;
-}
-
-.menuItem {
-  padding: 12px 25px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 8px; 
-  color: var(--bg-color1);
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1.6rem;
-  transition: 0.3s;
-  border-radius: 30px;
-}
-
-/* Hover effect */
-.menuItem:hover {
-  background-color: rgba(255,255,255,0.5);
-  transform: translateX(6px);
-  padding: 15px 30px;
-
-}
-
-/* Active button */
-.active {
-  background-color: rgba(255,255,255,0.65);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-  padding: 15px 30px;
-}
-
-/* Icons */
-.menuIconImage {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-/* Main content */
-.mainContent {
-  flex: 1;
-  padding: 50px;
-}
-
 .pageTitle {
-  color: var(--text-color1);
-  font-size: 2.7rem;
-  font-weight: bold;
-  margin-bottom: 45px;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  color: var(--text-color1);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  margin-bottom: 36px;
 }
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(2, 600px);
-  gap: 60px;
-  margin-left: 110px;
-  grid-template-columns: repeat(2, 500px);
-  justify-content: center;
+  grid-template-columns: repeat(2, minmax(0, 420px));
+  gap: 32px;
+  margin-bottom: 40px;
 }
 
 .card {
-  background-color: white;
-  border-radius: 35px;
-  padding: 40px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px;
   display: flex;
-  align-items: center;
-  gap: 40px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .cardHeader {
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   width: 100%;
-  justify-content: center;
-  margin-bottom: 10px;
 }
 
 .cardIconContainer {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
 }
 
 .cardTitle {
-  font-size: 1.8rem;
-  color: var(--main-color);
-  font-weight: 900;
-}
-
-.cardTitle {
-  font-size: 1.5rem;
-  color: var(--main-color);
+  font-size: 1.4rem;
+  color: #720e0e;
   font-weight: 800;
+  margin: 0;
 }
 
 .cardValue {
   font-size: 5rem;
   font-weight: 900;
-  color: var(--main-color1);
+  color: #FFD814;
   margin: 0;
-  justify-content: center;
-  text-shadow: 
+  text-shadow:
     -2px -2px 0 #000, 2px -2px 0 #000,
     -2px  2px 0 #000, 2px  2px 0 #000;
 }
 
 .rulesContainer {
-  background-color: white;
-  border-radius: 40px;
+  background: #fff;
+  border-radius: 20px;
   padding: 30px 40px;
-  /* Shrink width from full-screen to a fixed size */
-  width: 100%;
-  max-width: 600px; 
-  margin: 0 auto; /* This centers the box itself */
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .rulesHeader {
-  color: var(--main-color);
-  font-size: 2rem;
+  color: #720e0e;
+  font-size: 1.6rem;
   font-weight: 800;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .rulesList {
   list-style: none;
   padding: 0;
-  display: inline-block;
   text-align: left;
+  display: inline-block;
 }
 
 .rulesList li {
-  color: #a88a00; /* Gold/Yellow text for rules */
-  font-size: 1.4rem;
+  color: #a88a00;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin: 15px 0;
+  margin: 14px 0;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
-.checkIcon { color: var(--main-color); font-size: 1.6rem; }
+.checkIcon { color: #720e0e; font-size: 1.3rem; }
 
 .detectButton {
-  background-color: var(--main-color);
-  color: white;
-  padding: 12px 35px;
+  background-color: #720e0e;
+  color: #fff;
+  padding: 12px 36px;
   border: none;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
-  margin-top: 15px;
+  margin-top: 20px;
+  font-family: "Kanit", sans-serif;
+  transition: background 0.2s;
 }
+
+.detectButton:hover { background-color: #5a0b0b; }

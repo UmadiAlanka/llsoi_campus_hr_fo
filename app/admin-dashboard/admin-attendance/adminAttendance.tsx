@@ -1,172 +1,140 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './adminAttendance.module.css';
 import Link from 'next/link';
 
+// Updated interface to match your Spring Boot model structure
 interface AttendanceRecord {
-  id: string;
-  name: string;
+  id: number;
   date: string;
-  timeMarked: string;
-  type: string;
+  clockInTime: string;
+  employee?: {
+    id: number;
+    name: string;
+    department: string;
+  };
 }
 
-const adminAttendance: React.FC = () => {
-  const [records] = useState<AttendanceRecord[]>([
-    {
-      id: '001',
-      name: 'S.Perera',
-      date: '10/09/2025',
-      timeMarked: '8.00AM',
-      type: 'Academic',
-    }
-  ]);
-  
-  const [selectedDate, setSelectedDate] = useState<string>('');
+const AdminAttendance: React.FC = () => {
+  // Initialize as an empty array to hold real data
+  const [records, setRecords] = useState<AttendanceRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState('');
   const dateInputRef = useRef<HTMLInputElement>(null);
 
-  // Function to trigger the native calendar picker
+  // Fetch real data from the backend
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      try {
+        // Port 2027 based on your application.properties
+        const response = await fetch("http://localhost:2027/api/attendance/all");
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setRecords(result.data);
+        }
+      } catch (error) {
+        console.error("Error loading attendance records:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAttendance();
+  }, []);
+
   const handleIconClick = () => {
     if (dateInputRef.current) {
-      // showPicker() is the modern standard for triggering date inputs
       if ('showPicker' in HTMLInputElement.prototype) {
-        dateInputRef.current.showPicker();
+        (dateInputRef.current as any).showPicker();
       } else {
         dateInputRef.current.focus();
       }
     }
   };
 
-  const menuItems = [
-    { name: 'Dashboard', icon: '/icons/home.png', active: false, href: '/admin-dashboard' },
-    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/admin-dashboard/admin-manage-users' },
-    { name: 'Attendence', icon: '/icons/dattendance.png', active: true, href: '/admin-dashboard/admin-attendance' },
-    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false, href: '/admin-dashboard/salary' },
-    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false, href: '/admin-dashboard/anomaly' },
-    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/admin-dashboard/analytics' },
-    { name: 'Leave management', icon: '/icons/leave.png', active: false, href: '/leave' },
-    { name: 'Logout', icon: '/icons/logout.png', active: false, href: '/' },
-  ];
-
   return (
-    <div className={styles.container}>
-      {/* --- Header --- */}
-      <header className={styles.header}>
-        <div className={styles.logoSection}>
-          <img src="/logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>
-            LLSOI Campus HR <span>Management System</span>
-          </h1>
-        </div>
-        <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span className={styles.userName}>Admin</span>
-        </div>
-      </header>
+    <>
+      <h2 className={styles.pageTitle}>Attendance</h2>
 
-      <div className={styles.layoutBody}>
-        {/* --- Sidebar --- */}
-        <aside className={styles.sidebar}>
-          <nav>
-            <ul className={styles.menuList}>
-              {menuItems.map((item) => (
-                <li key={item.name}>
-                  <Link 
-                    href={item.href} 
-                    className={`${styles.menuItem} ${item.active ? styles.active : ''}`}
-                  >
-                    <img src={item.icon} alt="" className={styles.menuIconImage} />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Attendance</h2>
-          
-          <div className={styles.filterSection}>
-            <div className={styles.filterGrid}>
-              
-              {/* --- UPDATED DATE FILTER --- */}
-              <div className={styles.filterBox} onClick={handleIconClick}>
-                <input 
-                  type="date" 
-                  ref={dateInputRef}
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className={styles.filterInputDate} 
-                />
-                {/* Placeholder text logic if no date is selected */}
-                {!selectedDate && <span className={styles.filterSelect}>Filter by Date</span>}
-                <img src="/icons/calendar.png" alt="calendar" className={styles.filterIcon} />
-              </div>
-
-              <div className={styles.filterBox}>
-                <select className={styles.filterSelect}>
-                  <option>Filter by Department</option>
-                  <option>HR</option>
-                  <option>Management</option>
-                  <option>Language</option>
-                  <option>IT</option>
-                  <option>Behavioral</option>
-                </select>
-                <img src="/icons/dropdown.png" alt="arrow" className={styles.filterIcon} />
-              </div>
-              <div className={styles.filterBox}>
-                <select className={styles.filterSelect}>
-                  <option>Select Type</option>
-                  <option>Acedemic</option>
-                  <option>Non-Acedemic</option>
-                </select>
-                <img src="/icons/dropdown.png" alt="arrow" className={styles.filterIcon} />
-              </div>
-            </div>
-
-            <Link href="/admin-dashboard/admin-attendance/mark-attendance" className={styles.markAttendanceLink}>
-              <button className={styles.markAttendanceBtn}>
-                Mark Attendance
-              </button>
-            </Link>
+      <div className={styles.filterSection}>
+        <div className={styles.filterGrid}>
+          <div className={styles.filterBox} onClick={handleIconClick} style={{ cursor: 'pointer' }}>
+            <input
+              type="date"
+              ref={dateInputRef}
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className={styles.filterInput}
+            />
+            <img src="/icons/calendar.png" alt="calendar" className={styles.filterIcon} />
           </div>
-
-          <div className={styles.tableContainer}>
-            <table className={styles.attendanceTable}>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Date</th>
-                  <th>Time Marked</th>
-                  <th>Type</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record) => (
-                  <tr key={record.id}>
-                    <td>{record.id}</td>
-                    <td>{record.name}</td>
-                    <td>{record.date}</td>
-                    <td>{record.timeMarked}</td>
-                    <td>{record.type}</td>
-                    <td>
-                      <Link href={`/admin-dashboard/admin-attendance/edit-attendance/${record.id}`}>
-                       <button className={styles.editBtn}>EDIT/View</button>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className={styles.filterBox}>
+            <select className={styles.filterSelect}>
+              <option>Filter by Department</option>
+              <option>HR</option>
+              <option>Management</option>
+              <option>Language</option>
+              <option>IT</option>
+              <option>Behavioral</option>
+            </select>
+            <img src="/icons/dropdown.png" alt="arrow" className={styles.filterIcon} />
           </div>
-        </main>
+          <div className={styles.filterBox}>
+            <select className={styles.filterSelect}>
+              <option>Select Type</option>
+              <option>Academic</option>
+              <option>Non-Academic</option>
+            </select>
+            <img src="/icons/dropdown.png" alt="arrow" className={styles.filterIcon} />
+          </div>
+        </div>
+
+        <Link href="/admin-dashboard/admin-attendance/mark-attendance">
+          <button className={styles.markAttendanceBtn}>+ Mark Attendance</button>
+        </Link>
       </div>
-    </div>
+
+      <div className={styles.tableContainer}>
+        <table className={styles.attendanceTable}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Time Marked</th>
+              <th>Type</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>Loading Attendance Records...</td></tr>
+            ) : records.length > 0 ? (
+              records.map((record) => (
+                <tr key={record.id}>
+                  {/* Pulls data from the nested employee object in your Java model */}
+                  <td>{record.employee?.id?.toString().padStart(3, '0') || 'N/A'}</td>
+                  <td>{record.employee?.name || 'Unknown'}</td>
+                  <td>{record.date}</td>
+                  <td>{record.clockInTime || 'Not Marked'}</td>
+                  <td>{record.employee?.department || 'Staff'}</td>
+                  <td>
+                    <Link href={`/admin-dashboard/admin-attendance/edit-attendance/${record.id}`}>
+                      <button className={styles.editBtn}>EDIT / View</button>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr><td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>No records found in database.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 
-export default adminAttendance;
+export default AdminAttendance;

@@ -1,0 +1,96 @@
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom: 28px;
+}
+
+.formCard {
+  background: rgba(255,255,255,0.88);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #720e0e;
+  margin: 24px 0 16px;
+  border-bottom: 3px solid #720e0e;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+  margin-bottom: 10px;
+}
+
+.formGroup { display: flex; flex-direction: column; gap: 6px; }
+
+.label { font-weight: 700; font-size: 0.95rem; color: #111; }
+
+.input, .select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+  font-family: "Kanit", sans-serif;
+  font-size: 0.95rem;
+  color: #333;
+  transition: border 0.2s;
+}
+
+.input:focus, .select:focus { border-color: #720e0e; }
+
+.submitBtn {
+  width: 100%;
+  background-color: #0f5f1a;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 24px;
+  font-family: "Kanit", sans-serif;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover:not(:disabled) { background-color: #0d4d16; }
+.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupCard {
+  background: #fff;
+  padding: 30px 50px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: popIn 0.3s ease-out;
+}
+
+.successIcon { font-size: 3rem; color: #28a745; margin-bottom: 10px; }
+.popupCard p { color: #333; font-weight: bold; font-size: 1.1rem; }
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
