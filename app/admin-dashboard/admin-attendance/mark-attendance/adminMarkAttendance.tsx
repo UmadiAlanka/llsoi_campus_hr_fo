@@ -1,150 +1,123 @@
 "use client";
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './adminMarkAttendance.module.css';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-const adminMarkAttendance: React.FC = () => {
+const AdminMarkAttendance: React.FC = () => {
+  const [employeeId, setEmployeeId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dateInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const handleCalendarClick = () => {
     if (dateInputRef.current && 'showPicker' in HTMLInputElement.prototype) {
-      dateInputRef.current.showPicker();
+      (dateInputRef.current as any).showPicker();
     }
   };
 
-  const menuItems = [
-    { name: 'Dashboard', icon: '/icons/home.png', active: false, href: '/admin-dashboard/Dashboard' },
-    { name: 'Manage Users', icon: '/icons/user.png', active: false, href: '/manage-users' },
-    { name: 'Attendence', icon: '/icons/dattendance.png', active: true, href: '/attendance' },
-    { name: 'Salary & Pay Slip', icon: '/icons/dsalary.png', active: false, href: '/salary' },
-    { name: 'Anomaly Detections', icon: '/icons/anomaly.png', active: false, href: '/anomaly' },
-    { name: 'Report & Analytics', icon: '/icons/report.png', active: false, href: '/analytics' },
-    { name: 'Leave management', icon: '/icons/leave.png', active: false, href: '/leave' },
-    { name: 'Logout', icon: '/icons/logout.png', active: false, href: '/logout' },
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validating ID (Assuming your DB uses numeric IDs)
+    if (!employeeId) {
+      alert("Please enter a valid Employee ID number");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Your Controller uses @RequestParam, so we append them to the URL
+      const response = await fetch(
+        `http://localhost:2027/api/attendance/clock-in?employeeId=${employeeId}&markedBy=Admin`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Attendance marked successfully in database!");
+        router.push('/admin-dashboard/admin-attendance'); // Redirect back to table
+      } else {
+        // This will show "Attendance already marked for today" or "Employee not found"
+        alert("Error: " + result.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+      alert("Could not connect to the server. Check if Backend is running on 2027.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.logoSection}>
-          <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>LLSOI Campus HR <span>Management System</span></h1>
-        </div>
-        <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span className={styles.userName}>Admin</span>
-        </div>
-      </header>
-
-      <div className={styles.layoutBody}>
-        {/* Sidebar */}
-        <aside className={styles.sidebar}>
-          <nav>
-            <ul className={styles.menuList}>
-              {menuItems.map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className={`${styles.menuItem} ${item.active ? styles.activeItem : ''}`}>
-                    <img src={item.icon} alt="" className={styles.menuIconImage} />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Main Form Content */}
-        <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Mark Attendance</h2>
+    <>
+      <h2 className={styles.pageTitle}>Mark Attendance</h2>
+      <div className={styles.formCard}>
+        <form className={styles.attendanceForm} onSubmit={handleSubmit}>
           
-          <div className={styles.formCard}>
-            <form className={styles.attendanceForm}>
-              {/* Name Row */}
-              <div className={styles.fullWidth}>
-                <label className={styles.label}>Name:</label>
-                <input type="text" className={styles.input} />
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Employee ID (Numeric):</label>
+              <input 
+                type="number" 
+                className={styles.input} 
+                placeholder="Ex: 1" 
+                value={employeeId}
+                onChange={(e) => setEmployeeId(e.target.value)}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Select Type:</label>
+              <div className={styles.selectWrapper}>
+                <select className={styles.select}>
+                  <option value="">-- Select --</option>
+                  <option value="academic">Academic</option>
+                  <option value="non-academic">Non-academic</option>
+                </select>
+                <img src="/icons/dropdown.png" alt="" className={styles.selectIcon} />
               </div>
-
-              {/* ID and Type Row */}
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Employee ID:</label>
-                  <input type="text" className={styles.input} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Select Type:</label>
-                  <div className={styles.selectWrapper}>
-                    <select className={styles.select}>
-                      <option value=""></option>
-                      <option value="academic">Academic</option>
-                      <option value="non-academic">Non-academic</option>
-                    </select>
-                    <img src="/icons/dropdown.png" alt="arrow" className={styles.selectIcon} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Course and Department Row */}
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Select Course:</label>
-                  <div className={styles.selectWrapper}>
-                    <select className={styles.select}>
-                      <option value=""></option>
-                    </select>
-                    <img src="/icons/dropdown.png" alt="arrow" className={styles.selectIcon} />
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Select Department:</label>
-                  <div className={styles.selectWrapper}>
-                    <select className={styles.select}>
-                      <option value=""></option>
-                      <option>HR</option>
-                      <option>Management</option>
-                      <option>Language</option>
-                      <option>IT</option>
-                      <option>Behavioral</option>
-                    </select>
-                    <img src="/icons/dropdown.png" alt="arrow" className={styles.selectIcon} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Time Row */}
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Time in:</label>
-                  <input type="text" className={styles.input} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Time out:</label>
-                  <input type="text" className={styles.input} />
-                </div>
-              </div>
-
-              {/* Date Row */}
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Date:</label>
-                  <div className={styles.dateWrapper} onClick={handleCalendarClick}>
-                    <input type="date" ref={dateInputRef} className={styles.dateInput} />
-                    <img src="/icons/calendar.png" alt="calendar" className={styles.calendarIcon} />
-                  </div>
-                </div>
-                <div className={styles.emptyGroup}></div>
-              </div>
-
-              {/* Submit Button */}
-              <button type="submit" className={styles.submitBtn}>Submit</button>
-            </form>
+            </div>
           </div>
-        </main>
+
+          {/* ... Other fields like Course/Dept can stay for UI, 
+              but ID is the key that saves to DB ... */}
+
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Time In:</label>
+              <input type="time" className={styles.input} defaultValue="08:00" />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Date:</label>
+              <div className={styles.dateWrapper} onClick={handleCalendarClick}>
+                <input 
+                  type="date" 
+                  ref={dateInputRef} 
+                  className={styles.dateInput} 
+                  defaultValue={new Date().toISOString().split('T')[0]} 
+                />
+                <img src="/icons/calendar.png" alt="calendar" className={styles.calendarIcon} />
+              </div>
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            className={styles.submitBtn} 
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "SAVING..." : "SUBMIT"}
+          </button>
+        </form>
       </div>
-    </div>
+    </>
   );
 };
 
-export default adminMarkAttendance;
+export default AdminMarkAttendance;
