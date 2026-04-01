@@ -1,93 +1,107 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import styles from "./Dashboard.module.css";
 
 interface SummaryCardProps {
   imageSrc: string;
   title: string;
-  value: string;
+  value: string | number;
+  accent?: string;
 }
 
-const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value }) => (
+const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value, accent }) => (
   <div className={styles.card}>
-    <div className={styles.cardIconContainer}>
+    <div className={styles.cardIconWrapper} style={accent ? { background: accent } : undefined}>
       <img src={imageSrc} alt={title} className={styles.cardIconImage} />
     </div>
     <div className={styles.cardContent}>
-      <h3 className={styles.cardTitle}>{title}</h3>
+      <p className={styles.cardTitle}>{title}</p>
       <p className={styles.cardValue}>{value}</p>
     </div>
   </div>
 );
 
 export default function Dashboard() {
-  const pathname = usePathname();
+  const [stats, setStats] = useState({
+    totalEmployees: 0,
+    absentToday: 0,
+    presentStatus: "None",
+    pendingSalary: "Rs 0",
+  });
 
-  const menuItems = [
-    { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
-    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
-    { name: "Attendance", icon: "/icons/dattendance.png", href: "/admin-dashboard/admin-attendance" },
-    { name: "Salary & Pay Slip", icon: "/icons/dsalary.png", href: "/admin-dashboard/salary" },
-    { name: "Anomaly Detections", icon: "/icons/anomaly.png", href: "/admin-dashboard/anomaly" },
-    { name: "Report & Analytics", icon: "/icons/report.png", href: "/admin-dashboard/analytics" },
-    { name: "Leave Management", icon: "/icons/leave.png", href: "/admin-dashboard/leave" },
-    { name: "Logout", icon: "/icons/logout.png", href: "/" },
-  ];
+  useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      // Ensure port 2027 is used
+      const response = await fetch("http://localhost:2027/api/dashboard/admin");
+      const result = await response.json();
+
+      console.log("Backend Response:", result); // DEBUG: Check your browser console
+
+      if (result?.success && result?.data) {
+        // We destructure based on the EXACT keys in your Java HashMap
+        const { 
+          totalEmployees, 
+          todayAttendance, 
+          pendingSalaries 
+        } = result.data;
+        
+        setStats({
+          // If totalEmployees is undefined, default to 0
+          totalEmployees: totalEmployees || 0,
+          
+          // Math: Total - Today's Present
+          absentToday: (totalEmployees || 0) - (todayAttendance || 0),
+          
+          // Logic for status text
+          presentStatus: todayAttendance > 0 ? "Active Today" : "None",
+          
+          // Format currency
+          pendingSalary: `Rs ${new Intl.NumberFormat('en-IN').format(pendingSalaries || 0)}`,
+        });
+      }
+    } catch (error) {
+      console.error("Dashboard fetch failed:", error);
+    }
+  };
+
+  fetchStats();
+}, []);
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.logoSection}>
-          <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>
-            LLSOI Campus HR <span>Management System</span>
-          </h1>
-        </div>
-        <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span className={styles.userName}>Admin</span>
-        </div>
-      </header>
-
-      <div className={styles.layoutBody}>
-        {/* Sidebar */}
-        <aside className={styles.sidebar}>
-          <nav>
-            <ul className={styles.menuList}>
-              {menuItems.map((item) => {
-                const isActive = pathname === item.href;
-                return (
-                  <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className={`${styles.menuLink} ${isActive ? styles.active : ""}`}
-                    >
-                      <img src={item.icon} alt="" className={styles.menuIconImage} />
-                      {item.name}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Admin Dashboard</h2>
-
-          <div className={styles.cardGrid}>
-            <SummaryCard imageSrc="/icons/employee.png" title="Total Employees" value="25" />
-            <SummaryCard imageSrc="/icons/absent.png" title="Absent Today" value="5" />
-            <SummaryCard imageSrc="/icons/present.png" title="Present This Week" value="85%" />
-            <SummaryCard imageSrc="/icons/paid.png" title="Salary Paid" value="Rs 150,000" />
-          </div>
-        </main>
+    <>
+      <div className={styles.pageTitleRow}>
+        <h2 className={styles.pageTitle}>Dashboard</h2>
+        <span className={styles.pageSubtitle}>Welcome back, Admin</span>
       </div>
-    </div>
+      
+      <div className={styles.cardGrid}>
+        <SummaryCard 
+          imageSrc="/icons/employee.png" 
+          title="Total Employees" 
+          value={stats.totalEmployees} 
+          accent="rgba(114,14,14,0.12)" 
+        />
+        <SummaryCard 
+          imageSrc="/icons/absent.png" 
+          title="Absent Today" 
+          value={stats.absentToday} 
+          accent="rgba(220,38,38,0.12)" 
+        />
+        <SummaryCard 
+          imageSrc="/icons/present.png" 
+          title="Attendance Status" 
+          value={stats.presentStatus} 
+          accent="rgba(22,163,74,0.12)" 
+        />
+        <SummaryCard 
+          imageSrc="/icons/paid.png" 
+          title="Pending Salaries" 
+          value={stats.pendingSalary} 
+          accent="rgba(234,179,8,0.15)" 
+        />
+      </div>
+    </>
   );
 }

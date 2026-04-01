@@ -1,0 +1,106 @@
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  margin-bottom: 36px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 420px));
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.cardIconContainer {
+  width: 100px;
+  height: 100px;
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  color: #720e0e;
+  font-weight: 800;
+  margin: 0;
+}
+
+.cardValue {
+  font-size: 5rem;
+  font-weight: 900;
+  color: #FFD814;
+  margin: 0;
+  text-shadow:
+    -2px -2px 0 #000, 2px -2px 0 #000,
+    -2px  2px 0 #000, 2px  2px 0 #000;
+}
+
+.rulesContainer {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px 40px;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.rulesHeader {
+  color: #720e0e;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.rulesList {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.rulesList li {
+  color: #a88a00;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.checkIcon { color: #720e0e; font-size: 1.3rem; }
+
+.detectButton {
+  background-color: #720e0e;
+  color: #fff;
+  padding: 12px 36px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  font-family: "Kanit", sans-serif;
+  transition: background 0.2s;
+}
+
+.detectButton:hover { background-color: #5a0b0b; }
