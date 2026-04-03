@@ -14,20 +14,23 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Simulating a short delay like a real database fetch
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Calling our Spring Boot API (Port: 2027)
+        const response = await fetch('http://localhost:2027/api/dashboard/hr-staff');
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
 
-        const dbData = {
-          total: 25,
-          present: 24,
-          leave: 2,
-          anomalies: 0
-        };
+        const result = await response.json();
 
-        setTotalEmployees(dbData.total);
-        setPresentToday(dbData.present);
-        setPendingLeave(dbData.leave);
-        setAnomalies(dbData.anomalies);
+        if (result.success) {
+          // Mapping Backend DTO fields to Frontend state variables
+          setTotalEmployees(result.data.totalEmployees);
+          setPresentToday(result.data.presentToday);
+          setPendingLeave(result.data.pendingLeaveRequests);
+          setAnomalies(result.data.anomaliesDetected);
+        }
+        
         setIsLoading(false);
       } catch (err) {
         console.error("Database fetch failed", err);
