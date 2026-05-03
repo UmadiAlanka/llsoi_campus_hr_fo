@@ -4,56 +4,131 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import styles from './edit-attendance.module.css';
 
-// Mock data 
-const initialAttendanceRecords = [
-  { id: '001', name: 'S.Perera', employeeId: '001', type: 'Academic', course: 'BSc IT', department: 'IT', timeIn: '08:30', timeOut: '16:30', date: '2023-10-27' },
-  { id: '002', name: 'M.Silva', employeeId: '002', type: 'Non-academic', course: 'Finance Management', department: 'Finance', timeIn: '09:00', timeOut: '17:00', date: '2023-10-27' },
-  { id: '003', name: 'N.Fernando', employeeId: '003', type: 'Academic', course: 'BSc IT', department: 'Finance', timeIn: '08:00', timeOut: '16:00', date: '2025-09-10' },
-];
-
 const EditAttendancePage = () => {
   const router = useRouter();
-  const params = useParams();
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const params = useParams(); // params.id contains the Employee ID from URL
+  
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
+  // Form state to hold the attendance record details
   const [formData, setFormData] = useState({
+    attendanceId: '',
     name: '',
     employeeId: '',
-    type: '',
-    course: '',
-    department: '',
+    type: 'Academic',
+    course: 'BSc IT',
+    department: 'IT',
     timeIn: '',
     timeOut: '',
     date: ''
   });
 
+  /**
+   * Fetch a specific employee's attendance record using their ID.
+   * This runs when the page loads or the ID in the URL changes.
+   */
   useEffect(() => {
-    const record = initialAttendanceRecords.find(rec => rec.id === params.id);
-    if (record) {
-      setFormData(record);
+    const fetchAttendance = async () => {
+      try {
+        // Fetching data from the filter endpoint using employeeId
+        const response = await fetch(`http://localhost:2027/api/attendance/filter?employeeId=${params.id}`);
+        
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+
+        // Check if data was returned successfully
+        if (result.success && result.data && result.data.length > 0) {
+          // Get the most recent record (last item in the array)
+          const record = result.data[result.data.length - 1]; 
+          
+          setFormData({
+            attendanceId: record.id?.toString() || '', // This is the Primary Key (e.g., ID 4)
+            name: record.employeeName || '', 
+            employeeId: record.employeeId?.toString() || params.id as string,
+            type: record.jobType || 'Academic',
+            course: record.course || 'N/A', 
+            department: record.department || '',
+            timeIn: record.clockInTime || '', 
+            timeOut: record.clockOutTime || '', 
+            date: record.date || '' 
+          });
+        } else {
+          // If no record found, at least set the employee ID from URL
+          setFormData(prev => ({ ...prev, employeeId: params.id as string }));
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setStatus('error'); // Trigger error UI if needed
+      }
+    };
+
+    if (params.id) {
+      fetchAttendance();
     }
   }, [params.id]);
 
+  // Handle input field changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Submit the updated attendance data to the backend.
+   * Uses the Attendance Record ID (attendanceId) for the PUT request.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setStatus('success');
-    setTimeout(() => {
-      setStatus('idle');
-      router.push('/hr_staff/attendance');
-    }, 2000);
-  };
 
-  if (!formData.employeeId) return <div className={styles.loading}>Loading Attendance Data...</div>;
+    // Data payload to be sent to Spring Boot
+    const payload = {
+      clockInTime: formData.timeIn,
+      clockOutTime: formData.timeOut,
+      date: formData.date,
+      status: "PRESENT" 
+    };
+
+    try {
+      const updateId = formData.attendanceId;
+      if (!updateId) {
+        alert("Cannot update: Attendance Record ID is missing!");
+        setStatus('error');
+        return;
+      }
+
+      // PUT request to update the record
+      const response = await fetch(`http://localhost:2027/api/attendance/${updateId}?updatedBy=HR_Staff`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus('success');
+        // Redirect back to the main list after 2 seconds
+        setTimeout(() => {
+          router.push('/hr_staff/attendance');
+        }, 2000);
+      } else {
+        alert("Update failed: " + result.message);
+        setStatus('error');
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      setStatus('error');
+      alert("Failed to connect to the server.");
+    }
+  };
 
   return (
     <div className={styles.container}>
+      {/* Success Notification */}
       {status === 'success' && (
         <div className={styles.popupOverlay}>
           <div className={styles.popupCard}>
@@ -63,123 +138,45 @@ const EditAttendancePage = () => {
         </div>
       )}
 
-      <h1 className={styles.title}>Attendance and payroll operations</h1>
+      <h1 className={styles.title}>Edit Attendance Record</h1>
       
-      <div className={styles.subHeader}>
-        <h2 className={styles.subtitle}>Edit / View Attendance form</h2>
-      </div>
-
       <form className={styles.formCard} onSubmit={handleSubmit}>
-        {/* Name Field */}
         <div className={styles.inputWrapper}>
           <label className={styles.fieldLabel}>Name:</label>
-          <input 
-            type="text" 
-            name="name" 
-            value={formData.name} 
-            className={styles.whiteInput} 
-            onChange={handleChange} 
-            required 
-          />
+          <input type="text" name="name" value={formData.name} className={styles.whiteInput} readOnly />
         </div>
 
-        {/* Employee ID and Select Type */}
         <div className={styles.row}>
           <div className={styles.inputWrapper}>
             <label className={styles.fieldLabel}>Employee ID:</label>
-            <input 
-              type="text" 
-              name="employeeId" 
-              value={formData.employeeId} 
-              className={styles.whiteInput} 
-              readOnly 
-            />
+            <input type="text" name="employeeId" value={formData.employeeId} className={styles.whiteInput} readOnly />
           </div>
           <div className={styles.inputWrapper}>
-            <label className={styles.fieldLabel}>Select Type:</label>
-            <select 
-              name="type" 
-              value={formData.type} 
-              className={styles.whiteInput} 
-              onChange={handleChange}
-            >
+            <label className={styles.fieldLabel}>Job Type:</label>
+            <select name="type" value={formData.type} className={styles.whiteInput} onChange={handleChange}>
               <option value="Academic">Academic</option>
-              <option value="Non-academic">Non-academic</option>
+              <option value="Non-Academic">Non-Academic</option>
             </select>
           </div>
         </div>
 
-        {/* Select Course and Select Department */}
-        <div className={styles.row}>
-          <div className={styles.inputWrapper}>
-            <label className={styles.fieldLabel}>Select Course:</label>
-            <select 
-              name="course" 
-              value={formData.course} 
-              className={styles.whiteInput} 
-              onChange={handleChange}
-            >
-              <option value="BSc IT">BSc IT</option>
-              <option value="Finance Management">Finance Management</option>
-            </select>
-          </div>
-          <div className={styles.inputWrapper}>
-            <label className={styles.fieldLabel}>Select Department:</label>
-            <select 
-              name="department" 
-              value={formData.department} 
-              className={styles.whiteInput} 
-              onChange={handleChange}
-            >
-              <option value="IT">IT</option>
-              <option value="Management">Management</option>
-              <option value="Finance">Finance</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Time In and Time Out */}
         <div className={styles.row}>
           <div className={styles.inputWrapper}>
             <label className={styles.fieldLabel}>Time in:</label>
-            <input 
-              type="time" 
-              name="timeIn" 
-              value={formData.timeIn} 
-              className={styles.whiteInput} 
-              onChange={handleChange} 
-            />
+            <input type="time" name="timeIn" value={formData.timeIn} className={styles.whiteInput} onChange={handleChange} />
           </div>
           <div className={styles.inputWrapper}>
             <label className={styles.fieldLabel}>Time out:</label>
-            <input 
-              type="time" 
-              name="timeOut" 
-              value={formData.timeOut} 
-              className={styles.whiteInput} 
-              onChange={handleChange} 
-            />
+            <input type="time" name="timeOut" value={formData.timeOut} className={styles.whiteInput} onChange={handleChange} />
           </div>
         </div>
 
-        {/* Date Field */}
         <div className={styles.inputWrapper}>
           <label className={styles.fieldLabel}>Date:</label>
-          <input 
-            type="date" 
-            name="date" 
-            value={formData.date} 
-            className={styles.whiteInput} 
-            onChange={handleChange} 
-            required 
-          />
+          <input type="date" name="date" value={formData.date} className={styles.whiteInput} onChange={handleChange} required />
         </div>
 
-        <button 
-          type="submit" 
-          className={styles.submitBtn} 
-          disabled={status === 'loading'}
-        >
+        <button type="submit" className={styles.submitBtn} disabled={status === 'loading'}>
           {status === 'loading' ? 'Updating...' : 'Update Attendance'}
         </button>
       </form>
