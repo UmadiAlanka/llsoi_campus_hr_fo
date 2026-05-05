@@ -1,93 +1,85 @@
-/* Reuses same form styles as mark-attendance */
+.container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .pageTitle {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #ffffff;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  margin-bottom: 28px;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    align-self: flex-start;
+    margin-left: 10%;
 }
 
 .formCard {
-  background-color: rgba(255, 255, 255, 0.88);
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 900px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.85); /* White semi-transparent */
+    padding: 40px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.attendanceForm { display: flex; flex-direction: column; gap: 22px; }
-.formGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-.fullWidth { width: 100%; }
-.formGroup { display: flex; flex-direction: column; gap: 6px; }
+.attendanceForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-.label { font-weight: 700; font-size: 0.95rem; color: #111; }
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns like Figma */
+    gap: 20px;
+}
+
+.formGroupFull {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup label, .formGroupFull label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
 
 .input, .select {
-  width: 100%;
-  padding: 11px 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-  outline: none;
-  font-family: "Kanit", sans-serif;
-  font-size: 0.95rem;
-  color: #333;
-  transition: border 0.2s;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    font-size: 14px;
+    color: black;
 }
-
-.input:focus, .select:focus { border-color: #720e0e; }
-
-.selectWrapper, .dateWrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  background: #fff;
-}
-
-.select { appearance: none; padding-right: 36px; }
-.selectIcon, .calendarIcon { position: absolute; right: 12px; width: 18px; pointer-events: none; }
-
-.dateInput {
-  width: 100%;
-  padding: 11px 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-family: "Kanit", sans-serif;
-  cursor: pointer;
-}
-
-.dateInput::-webkit-calendar-picker-indicator { opacity: 0; cursor: pointer; }
-
-.buttonRow { display: flex; gap: 16px; margin-top: 6px; }
 
 .updateBtn {
-  flex: 1;
-  background-color: #0f5f1a;
-  color: #fff;
-  border: none;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  font-family: "Kanit", sans-serif;
-  transition: background 0.3s;
+    background-color: #1b4d3e; /* Dark green matching Figma */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
 }
 
-.updateBtn:hover { background-color: #0d4d16; }
-
-.cancelBtn {
-  background-color: transparent;
-  color: #720e0e;
-  border: 2px solid #720e0e;
-  padding: 14px 28px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  font-family: "Kanit", sans-serif;
-  transition: all 0.2s;
+.updateBtn:hover {
+    background-color: #143a2f;
 }
 
-.cancelBtn:hover { background-color: #720e0e; color: #fff; }
+.loading {
+    color: white;
+    text-align: center;
+    margin-top: 50px;
+}

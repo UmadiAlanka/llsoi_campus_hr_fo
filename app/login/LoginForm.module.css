@@ -1,182 +1,287 @@
-/* LoginForm.module.css */
-
-/* The main container taking up the full screen */
-.container {
-  position: relative;
+.page {
   min-height: 100vh;
-  width: 100%;
   display: flex;
-  align-items:first baseline;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  position: relative;
   overflow: hidden;
-  font-family: sans-serif; /* Use a standard readable font */
-}
-:root {
-    --bg-color:rgba(255, 255, 255, 0.75) ;
-    --bg-color2:rgb(7, 7, 7);
-    --text-color1: #323946;
-    --main-color1:#FFD814;
-    --main-color2: rgb(171, 23, 12);
+  background: linear-gradient(135deg, #1a0505 0%, #720e0e 45%, #3a0505 100%);
+  font-family: "Kanit", sans-serif;
 }
 
-/* Background Image handling. 
-   We use a pseudo-element to blur the background without blurring the login card content.
-*/
-.container::before {
-  
+/* Background image */
+.bgImage {
   position: absolute;
-  width: 100%;
-  height: 100vh;
-  /* REPLACE '/bg-graduates.jpg' with your actual image path inside the public folder */
- 
-  background-size: cover;
-  background-position: center;
-  filter: blur(8px) brightness(0.8); /* Blur and darken slightly */
-  z-index: -1;
-  transform: scale(1.1); /* Scale up slightly to avoid blurred edges showing */
+  inset: 0;
+  z-index: 0;
 }
 
-/* The central login card */
-.loginCard {
-  /* Frosted glass effect */
-  background-color: var(--bg-color); /* Semi-transparent white */
-  backdrop-filter: blur(15px); /* This creates the frosted look */
-  -webkit-backdrop-filter: blur(45px); /* Safari support */
-  border-radius: 45px;
-  padding: 60px;
-  width:820;
-  height:780;
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10,0,0,0.65) 0%, rgba(114,14,14,0.55) 50%, rgba(30,0,0,0.7) 100%);
+  z-index: 1;
+}
+
+/* Decorative circles */
+.circle1 {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: #FFD814;
+  opacity: 0.06;
+  top: -90px;
+  left: -90px;
+  z-index: 1;
+}
+
+.circle2 {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: #FFD814;
+  opacity: 0.05;
+  bottom: -70px;
+  right: -70px;
+  z-index: 1;
+}
+
+/* Card */
+.card {
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 28px;
+  padding: 44px 48px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
+}
+
+/* Logo */
+.logoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.logoCircle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #720e0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.brandName {
+  font-size: 22px;
+  font-weight: 900;
+  color: #720e0e;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  color: var(--text-color1);
-  justify-items: center;
+  line-height: 1.1;
 }
 
-
-/* Header section with logo and titles */
-.header {
-  margin-bottom: 30px;
+.brandSub {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin-top: 2px;
 }
 
-.logoImage {
-  width: 115px;
-  height: 115px;
-  margin-left: 200px;
-  margin-right: auto;
-  margin-bottom: 0.5rem;
-  margin-top: 0;
-  
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin-bottom: 22px;
 }
 
-/* "LLSOI Campus" part */
-.titlePrimary {
-  font-size: 50px;
-  font-weight:900;
-  font-family: "Kanit", sans-serif;
-  color: var(--main-color1); 
-  margin: 5;
-  -webkit-text-stroke: 2px rgb(39, 39, 39); ;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* Makes yellow text pop against white */
-}
-
-/* "LLSOI Campus" part */
-.titleSecondary {
-  font-size: 50px;
-  font-weight: 900;
-  font-family: "Kanit", sans-serif;
-  color:var(--text-color1);
-  margin: 5px 0;
-}
-/* "HR Management System" part */
-.subHeader {
-  font-size: 40px;
-  font-weight: 900;
-  font-family: "Kanit", sans-serif;
-  color:var(--bg-color2); 
-  
-}
-
-/* "Login to Your Account" text */
-.subTitle {
-  color: var(--main-color2);
-  font-weight: 100;
-  font-family: "Kanit", sans-serif;
-  margin-top: 10px;
-  font-size: 25px;
-  font-weight: 600;
-}
-
-/* Form styling */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  text-align: left; /* Align labels to the left */
-}
-
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-weight: 300;
-  margin-bottom: 8px;
-  color: var(--text-color1);
-  font-size: 1rem;
+.signInLabel {
   display: block;
-  margin-right: 325px;
-  font-size: 25px;
-  font-family: "Kanit", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #720e0e;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 0.3px;
 }
 
-.Input {
-  padding: 10px;
-  border-radius: 13px;
+/* Error */
+.errorBox {
+  background: #fff0f0;
+  border: 1px solid #f5c0c0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #991b1b;
+  margin-bottom: 16px;
+}
+
+/* Fields */
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #444;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.fieldWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fieldIcon {
+  position: absolute;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  color: #666;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.fieldWrap input {
   width: 100%;
-  background-color:var(--bg-color); /* Light gray, slightly transparent */
-  font-size: 1rem;
-  border:var(--text-color1) solid 2px;
+  height: 46px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 0 42px 0 42px;
+  font-size: 14px;
+  font-family: "Kanit", sans-serif;
+  color: #222;
+  background: #f9f9f9;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-.input:focus {
-  border-color: var(--bg-color2); /* Highlight border on focus */
-  background-color: #fff;
+.fieldWrap input:focus {
+  border-color: #720e0e;
+  background: #fff;
 }
 
-/* Login Button */
-.loginButton {
-  margin-top: 10px;
-  padding: 15px;
-  width: 150px;
-  background-color: var(--bg-color2);
-  color: var(--bg-color);
+.eyeBtn {
+  position: absolute;
+  right: 14px;
+  width: 18px;
+  height: 18px;
+  color: #888;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.2s;
+}
+
+.eyeBtn:hover { opacity: 0.7; }
+
+/* Options row */
+.optionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.rememberLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+}
+
+.rememberLabel input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #720e0e;
+  cursor: pointer;
+}
+
+.forgotLink {
+  font-size: 13px;
+  color: #720e0e;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.forgotLink:hover { text-decoration: underline; }
+
+/* Login button */
+.loginBtn {
+  width: 100%;
+  height: 50px;
+  background: #720e0e;
+  color: #FFD814;
   border: none;
   border-radius: 12px;
-  font-size:25px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+  font-family: "Kanit", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s, transform 0.1s;
+  margin-bottom: 0;
 }
 
-.loginButton:hover {
-  background-color: var(--text-color1);
+.loginBtn:hover:not(:disabled) { background: #8a1010; }
+.loginBtn:active:not(:disabled) { transform: scale(0.98); }
+.loginBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 216, 20, 0.3);
+  border-top-color: #FFD814;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 
-.loginButton:active {
-  transform: scale(0.98);
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Footer */
+.footerText {
+  text-align: center;
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 18px;
+  margin-bottom: 14px;
 }
 
-/* Forgot Password Link */
-.forgotLink {
-  display: inline-block;
-  margin-top: 5px;
-  color: var(--bg-color2);
-  text-decoration: none;
-  font-weight: 600;
-  font-size:25px;
+.roleChips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }
 
-.forgotLink:hover {
-  text-decoration: underline;
+.chip {
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.chipAdmin { background: #fff0f0; color: #720e0e; border: 1px solid #f5c0c0; }
+.chipHr    { background: #fff8e0; color: #a06010; border: 1px solid #f5d890; }
+.chipEmp   { background: #f0fff4; color: #166534; border: 1px solid #b6e7c4; }
+
+@media (max-width: 500px) {
+  .card { padding: 36px 28px; }
 }

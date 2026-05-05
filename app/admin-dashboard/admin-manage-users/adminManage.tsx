@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./adminManage.module.css";
 import Link from "next/link";
+import MessageBox from "../components/MessageBox"; 
 
 interface UserData {
   employeeId: string;
@@ -19,6 +20,19 @@ export default function AdminManage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  
+  // Track which ID we want to delete
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  
+  const [modal, setModal] = useState<{
+    show: boolean;
+    type: "success" | "error" | "confirm"; // Added confirm type
+    msg: string;
+  }>({
+    show: false,
+    type: "success",
+    msg: "",
+  });
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -36,19 +50,53 @@ export default function AdminManage() {
 
   useEffect(() => { fetchUsers(); }, []);
 
-  const handleDelete = async (employeeId: string) => {
-    if (!confirm(`Delete employee ${employeeId}?`)) return;
+  // 1. Trigger the confirmation MessageBox
+  const handleDeleteClick = (employeeId: string) => {
+    setPendingDeleteId(employeeId);
+    setModal({
+      show: true,
+      type: "confirm",
+      msg: `Are you sure you want to delete employee ${employeeId}?`
+    });
+  };
+
+  // 2. The actual API call (Runs when "Yes, Delete" is clicked)
+  const executeDelete = async () => {
+    if (!pendingDeleteId) return;
+
     try {
-      await fetch(`http://localhost:2027/api/employees/${employeeId}`, { method: "DELETE" });
-      setUsers((prev) => prev.filter((u) => u.employeeId !== employeeId));
-    } catch (err) {
-      console.error("Delete Error:", err);
+      const res = await fetch(`http://localhost:2027/api/employees/${pendingDeleteId}`, { 
+        method: "DELETE" 
+      });
+
+      if (res.ok) {
+        setUsers((prev) => prev.filter((u) => u.employeeId !== pendingDeleteId));
+        setModal({ 
+          show: true, 
+          type: "success", 
+          msg: "Employee deleted successfully!" 
+        });
+      } else {
+        throw new Error("Failed to delete user.");
+      }
+    } catch (err: any) {
+      setModal({ 
+        show: true, 
+        type: "error", 
+        msg: err.message || "Error deleting employee." 
+      });
+    } finally {
+      setPendingDeleteId(null);
     }
   };
 
   const filteredUsers = users.filter((user) => {
     const q = searchTerm.toLowerCase();
-    return user.name.toLowerCase().includes(q) || user.employeeId.toString().includes(q) || user.username.toLowerCase().includes(q);
+    return (
+      user.name.toLowerCase().includes(q) || 
+      user.employeeId.toString().includes(q) || 
+      user.username.toLowerCase().includes(q)
+    );
   });
 
   return (
@@ -101,7 +149,8 @@ export default function AdminManage() {
                     <td>
                       <div className={styles.actionButtons}>
                         <Link href={`/admin-dashboard/admin-manage-users/edit-user/${u.employeeId}`} className={styles.editButton}>EDIT</Link>
-                        <button onClick={() => handleDelete(u.employeeId)} className={styles.deleteButton}>DELETE</button>
+                        {/* Updated onClick to use our new trigger */}
+                        <button onClick={() => handleDeleteClick(u.employeeId)} className={styles.deleteButton}>DELETE</button>
                       </div>
                     </td>
                   </tr>
@@ -111,6 +160,16 @@ export default function AdminManage() {
           </div>
         )}
       </div>
+
+      {/* The Beautiful Modal */}
+      {modal.show && (
+        <MessageBox 
+          type={modal.type} 
+          message={modal.msg} 
+          onClose={() => setModal({ ...modal, show: false })} 
+          onConfirm={executeDelete} // Only fires if type is 'confirm'
+        />
+      )}
     </>
   );
 }

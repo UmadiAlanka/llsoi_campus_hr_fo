@@ -3,16 +3,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Dashboard.module.css";
 
-interface SummaryCardProps {
-  imageSrc: string;
-  title: string;
-  value: string | number;
-  accent?: string;
-}
-
-const SummaryCard: React.FC<SummaryCardProps> = ({ imageSrc, title, value, accent }) => (
+// Keeping your SummaryCard component helper
+const SummaryCard = ({ imageSrc, title, value, accent }) => (
   <div className={styles.card}>
-    <div className={styles.cardIconWrapper} style={accent ? { background: accent } : undefined}>
+    <div className={styles.cardIconWrapper} style={{ background: accent }}>
       <img src={imageSrc} alt={title} className={styles.cardIconImage} />
     </div>
     <div className={styles.cardContent}>
@@ -31,49 +25,32 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-  const fetchStats = async () => {
-    try {
-      // Ensure port 2027 is used
-      const response = await fetch("http://localhost:2027/api/dashboard/admin");
-      const result = await response.json();
-
-      console.log("Backend Response:", result); // DEBUG: Check your browser console
-
-      if (result?.success && result?.data) {
-        // We destructure based on the EXACT keys in your Java HashMap
-        const { 
-          totalEmployees, 
-          todayAttendance, 
-          pendingSalaries 
-        } = result.data;
-        
-        setStats({
-          // If totalEmployees is undefined, default to 0
-          totalEmployees: totalEmployees || 0,
-          
-          // Math: Total - Today's Present
-          absentToday: (totalEmployees || 0) - (todayAttendance || 0),
-          
-          // Logic for status text
-          presentStatus: todayAttendance > 0 ? "Active Today" : "None",
-          
-          // Format currency
-          pendingSalary: `Rs ${new Intl.NumberFormat('en-IN').format(pendingSalaries || 0)}`,
-        });
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("http://localhost:2027/api/dashboard/admin");
+        const result = await response.json();
+        if (result?.success && result?.data) {
+          const { totalEmployees, todayAttendance, pendingSalaries } = result.data;
+          setStats({
+            totalEmployees: totalEmployees || 0,
+            absentToday: (totalEmployees || 0) - (todayAttendance || 0),
+            presentStatus: todayAttendance > 0 ? `${todayAttendance} Present` : "None",
+            pendingSalary: `Rs ${new Intl.NumberFormat('en-IN').format(pendingSalaries || 0)}`,
+          });
+        }
+      } catch (error) {
+        console.error("Dashboard fetch failed:", error);
       }
-    } catch (error) {
-      console.error("Dashboard fetch failed:", error);
-    }
-  };
-
-  fetchStats();
-}, []);
+    };
+    fetchStats();
+  }, []);
 
   return (
-    <>
+    /* REMOVED <Topbar /> and <Sidebar /> from here */
+    <main className={styles.mainContent}>
       <div className={styles.pageTitleRow}>
-        <h2 className={styles.pageTitle}>Dashboard</h2>
-        <span className={styles.pageSubtitle}>Welcome back, Admin</span>
+        <h2 className={styles.pageTitle}>Admin Dashboard</h2>
+        <span className={styles.pageSubtitle}>System Overview</span>
       </div>
       
       <div className={styles.cardGrid}>
@@ -97,11 +74,11 @@ export default function Dashboard() {
         />
         <SummaryCard 
           imageSrc="/icons/paid.png" 
-          title="Pending Salaries" 
+          title="Salary Status" 
           value={stats.pendingSalary} 
           accent="rgba(234,179,8,0.15)" 
         />
       </div>
-    </>
+    </main>
   );
 }

@@ -1,137 +1,145 @@
-/** @jsxImportSource react */
 "use client";
-import Link from 'next/link';
-import React, { useState } from 'react';
-import Image from 'next/image';
-import style from './ForgotPasswordForm.module.css';
 
-const ForgotPasswordForm: React.FC = () => {
-  const [email, setEmail] = useState('');
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import styles from "./ForgotPasswordForm.module.css";
+
+export default function ForgotPasswordForm() {
+  const [email, setEmail]     = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
+  const [sent, setSent]       = useState(false);
+  const [error, setError]     = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
-    setIsError(false);
-    
+    setError("");
     try {
-      // 1. Connect to your Spring Boot backend
-      const response = await fetch("http://localhost:2027/api/auth/forgot-password", {
+      const res = await fetch("http://localhost:2027/api/auth/forgot-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email }), // Sending email as a JSON object
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // 2. Success message from your Java Controller
-        setMessage(data.message || 'A password reset link has been sent to your email address.');
-        setEmail(''); // Clear input on success
+      const data = await res.json();
+      if (res.ok) {
+        setSent(true);
       } else {
-        // 3. Handle 404 Email Not Found or other errors
-        setIsError(true);
-        setMessage(data.message || 'Email address not found in our system.');
+        setError(data.message || "Email not found in our system.");
       }
-    } catch (err) {
-      console.error('Mail Error:', err);
-      setIsError(true);
-      setMessage('Failed to connect to the server. Please check if the backend is running.');
+    } catch {
+      setError("Cannot connect to server. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={style.main}> 
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/loginBackground.jpg"
-          alt="Graduation Ceremony Background"
-          fill
-          style={{ objectFit: 'cover' }}
-          quality={100}
-          priority
-        />
+    <div className={styles.page}>
+      <div className={styles.bgImage}>
+        <Image src="/loginBackground.jpg" alt="" fill style={{ objectFit: "cover" }} priority />
       </div>
+      <div className={styles.bgOverlay} />
+      <div className={styles.circle1} />
+      <div className={styles.circle2} />
 
-      {/* Forgot Password Card */}
-      <div className="relative z-10 flex items-center justify-center p-20 min-h-screen">
-        <div className={style.loginCard}>
-          
-          <div className="text-center mb-6">
-            <Image
-              src="/Logo.png"
-              alt="LLSOI Campus Logo"
-              width={60}
-              height={60}
-              className="mx-auto"
-            />
-            <h1>
-              <span className={style.titlePrimary}>LLSOI</span>
-              <span className={style.titleSecondary}> Campus</span> 
-            </h1>
-            <h2 className={style.subHeader}>
-              HR Management System
-            </h2>
+      <div className={styles.card}>
+        {/* Back link */}
+        <Link href="/login" className={styles.backBtn}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+          Back to login
+        </Link>
+
+        {/* Icon */}
+        <div className={styles.iconWrap}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#720e0e" strokeWidth={2}>
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
+
+        <h1 className={styles.cardTitle}>Forgot password?</h1>
+        <p className={styles.cardDesc}>
+          Enter your registered email address below. We'll send you a secure link to reset your password.
+        </p>
+
+        {/* Steps */}
+        <div className={styles.stepRow}>
+          <div className={`${styles.step} ${styles.stepDone}`}>
+            <div className={styles.stepNum}>1</div>
+            <span>Enter email</span>
           </div>
-
-          <div className={style.forgotPasswordContent}>
-            <p className={style.forgotTitle}>
-              Forgot your password?
-            </p>
-            <p className={style.subInstruction}>
-              Enter your email address below and we'll send a link to reset your password.
-            </p>
+          <div className={styles.stepDiv} />
+          <div className={`${styles.step} ${sent ? styles.stepDone : styles.stepPending}`}>
+            <div className={styles.stepNum}>2</div>
+            <span>Check inbox</span>
           </div>
+          <div className={styles.stepDiv} />
+          <div className={`${styles.step} ${styles.stepPending}`}>
+            <div className={styles.stepNum}>3</div>
+            <span>Reset password</span>
+          </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 mt-8">
-            <div className={style.inputGroup}>
-              <label htmlFor="email" className={style.label}>
-                Email Address:
-              </label>
-              <input
-                type="email"
-                id="email"
-                className={style.Input}
-                placeholder="Enter Your Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+        {/* Success state */}
+        {sent && (
+          <div className={styles.successBox}>
+            <div className={styles.successIcon}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#166534" strokeWidth={2.5}>
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
             </div>
-            
-            {message && (
-              <p className={isError ? "text-red-500 text-sm" : "text-green-500 text-sm"}>
-                {message}
-              </p>
-            )}
+            <p className={styles.successTitle}>Reset link sent!</p>
+            <p className={styles.successDesc}>
+              Check your inbox at <strong>{email}</strong> and click the link to reset your password. The link expires in 15 minutes.
+            </p>
+            <Link href="/login" className={styles.returnBtn}>Return to login</Link>
+          </div>
+        )}
 
-            <button
-              type="submit"
-              className={style.resetButton}
-              disabled={loading}
-            >
-              {loading ? 'Sending...' : 'Send reset link'}
+        {/* Form */}
+        {!sent && (
+          <form onSubmit={handleSubmit}>
+            {error && <div className={styles.errorBox}>{error}</div>}
+
+            <div className={styles.field}>
+              <label>Email address</label>
+              <div className={styles.fieldWrap}>
+                <svg className={styles.fieldIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M2 7l10 7 10-7" />
+                </svg>
+                <input
+                  type="email"
+                  placeholder="yourname@llsoi.edu.lk"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <p className={styles.hint}>Use the email associated with your LLSOI staff account.</p>
+            </div>
+
+            <button type="submit" className={styles.sendBtn} disabled={loading}>
+              {loading ? (
+                <span className={styles.spinner} />
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD814">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+              )}
+              {loading ? "Sending…" : "SEND RESET LINK"}
             </button>
           </form>
+        )}
 
-          <div className="mt-6 text-center">
-            <Link href="/login" className={style.backLink}>
-              Back to Login
-            </Link>
-          </div>
-
+        <div className={styles.altLink}>
+          Remember your password?{" "}
+          <Link href="/login">Sign in instead</Link>
         </div>
       </div>
     </div>
   );
-};
-
-export default ForgotPasswordForm;
+}

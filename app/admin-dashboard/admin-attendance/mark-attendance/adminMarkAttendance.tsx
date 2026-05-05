@@ -3,12 +3,25 @@
 import React, { useRef, useState } from 'react';
 import styles from './adminMarkAttendance.module.css';
 import { useRouter } from 'next/navigation';
+import MessageBox from '../../components/MessageBox';
 
 const AdminMarkAttendance: React.FC = () => {
+  // 1. Unified State for Form
   const [employeeId, setEmployeeId] = useState('');
+  const [attendanceType, setAttendanceType] = useState('Academic'); // Default value
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dateInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const [modal, setModal] = useState<{
+    show: boolean;
+    type: 'success' | 'error';
+    msg: string;
+  }>({
+    show: false,
+    type: 'success',
+    msg: '',
+  });
 
   const handleCalendarClick = () => {
     if (dateInputRef.current && 'showPicker' in HTMLInputElement.prototype) {
@@ -16,21 +29,33 @@ const AdminMarkAttendance: React.FC = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    const isSuccess = modal.type === 'success';
+    setModal({ ...modal, show: false });
+    if (isSuccess) router.push('/admin-dashboard/admin-attendance');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validating ID (Assuming your DB uses numeric IDs)
-    if (!employeeId) {
-      alert("Please enter a valid Employee ID number");
+    // Clean ID: Convert "001" -> 1
+    const cleanId = Number(employeeId);
+
+    if (!cleanId || isNaN(cleanId)) {
+      setModal({
+        show: true,
+        type: 'error',
+        msg: "Please enter a valid numeric Employee ID"
+      });
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Your Controller uses @RequestParam, so we append them to the URL
+      // Added 'type' to the query parameters so it saves the dropdown choice
       const response = await fetch(
-        `http://localhost:2027/api/attendance/clock-in?employeeId=${employeeId}&markedBy=Admin`,
+        `http://localhost:2027/api/attendance/clock-in?employeeId=${cleanId}&markedBy=Admin&type=${attendanceType}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' }
@@ -40,15 +65,24 @@ const AdminMarkAttendance: React.FC = () => {
       const result = await response.json();
 
       if (result.success) {
-        alert("Attendance marked successfully in database!");
-        router.push('/admin-dashboard/admin-attendance'); // Redirect back to table
+        setModal({
+          show: true,
+          type: 'success',
+          msg: "Attendance marked successfully!"
+        });
       } else {
-        // This will show "Attendance already marked for today" or "Employee not found"
-        alert("Error: " + result.message);
+        setModal({
+          show: true,
+          type: 'error',
+          msg: result.message || "Attendance already marked for today"
+        });
       }
     } catch (error) {
-      console.error("Fetch error:", error);
-      alert("Could not connect to the server. Check if Backend is running on 2027.");
+      setModal({
+        show: true,
+        type: 'error',
+        msg: "Backend Connection Error."
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +96,7 @@ const AdminMarkAttendance: React.FC = () => {
           
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Employee ID (Numeric):</label>
+              <label className={styles.label}>Employee ID:</label>
               <input 
                 type="number" 
                 className={styles.input} 
@@ -75,18 +109,18 @@ const AdminMarkAttendance: React.FC = () => {
             <div className={styles.formGroup}>
               <label className={styles.label}>Select Type:</label>
               <div className={styles.selectWrapper}>
-                <select className={styles.select}>
-                  <option value="">-- Select --</option>
-                  <option value="academic">Academic</option>
-                  <option value="non-academic">Non-academic</option>
+                <select 
+                  className={styles.select}
+                  value={attendanceType}
+                  onChange={(e) => setAttendanceType(e.target.value)}
+                >
+                  <option value="Academic">Academic</option>
+                  <option value="Non-Academic">Non-academic</option>
                 </select>
                 <img src="/icons/dropdown.png" alt="" className={styles.selectIcon} />
               </div>
             </div>
           </div>
-
-          {/* ... Other fields like Course/Dept can stay for UI, 
-              but ID is the key that saves to DB ... */}
 
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
@@ -116,6 +150,14 @@ const AdminMarkAttendance: React.FC = () => {
           </button>
         </form>
       </div>
+
+      {modal.show && (
+        <MessageBox 
+          type={modal.type} 
+          message={modal.msg} 
+          onClose={handleCloseModal} 
+        />
+      )}
     </>
   );
 };
