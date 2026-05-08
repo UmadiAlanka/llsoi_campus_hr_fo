@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./salary.module.css";
 import Link from "next/link";
 
@@ -15,10 +15,41 @@ interface SalaryRecord {
 
 export default function AdminSalary() {
   const monthInputRef = useRef<HTMLInputElement>(null);
-  const [records] = useState<SalaryRecord[]>([
-    { id: "001", name: "S.Perera", basicSalary: "50,000", netSalary: "52,000", date: "2025-10-10", type: "Academic" },
-    { id: "002", name: "K.Dias",   basicSalary: "60,000", netSalary: "61,000", date: "2025-10-10", type: "Non-Academic" },
-  ]);
+  
+  // Initialize as an empty array to prevent .map() errors on first render
+  const [records, setRecords] = useState<SalaryRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSalaries = async () => {
+      try {
+        // Adjust the port/URL to match your Spring Boot configuration
+        const response = await fetch("http://localhost:2027/api/salary/all");
+        const result = await response.json();
+
+        /* 
+           CRITICAL FIX: Check if result is the array itself or a wrapper object.
+           If your Java backend returns List<Salary>, it's result.
+           If it returns an ApiResponse object, it's likely result.data.
+        */
+        if (Array.isArray(result)) {
+          setRecords(result);
+        } else if (result && result.data && Array.isArray(result.data)) {
+          setRecords(result.data);
+        } else {
+          console.error("Data received is not an array:", result);
+          setRecords([]); 
+        }
+      } catch (error) {
+        console.error("Failed to fetch salary data:", error);
+        setRecords([]); // Fallback to empty array on network error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalaries();
+  }, []);
 
   const handleMonthClick = () => {
     if (monthInputRef.current) {
@@ -61,32 +92,62 @@ export default function AdminSalary() {
             </tr>
           </thead>
           <tbody>
-            {records.map((record) => (
-              <tr key={record.id}>
-                <td>{record.id}</td>
-                <td>{record.name}</td>
-                <td>Rs {record.basicSalary}</td>
-                <td>Rs {record.netSalary}</td>
-                <td>{record.date}</td>
-                <td>{record.type}</td>
-                <td>
-                  <button className={styles.pdfBtn}>
-                    <img src="/icons/pdf.png" alt="PDF" style={{ width: 24 }} />
-                  </button>
-                </td>
-                <td>
-                  <div className={styles.actions}>
-                    <Link href={`/admin-dashboard/salary/edit/${record.id}`}>
-                      <button className={styles.editBtn}>Edit</button>
-                    </Link>
-                    <button className={styles.deleteBtn}>Delete</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+              <tr><td colSpan={8} style={{textAlign: 'center', padding: '20px'}}>Loading Data...</td></tr>
+            ) : records.length === 0 ? (
+              <tr><td colSpan={8} style={{textAlign: 'center', padding: '20px'}}>No records found.</td></tr>
+            ) : (
+              records.map((record) => (
+                <tr key={record.id}>
+                  <td>{record.id}</td>
+                  <td>{record.name}</td>
+                  {/* Formatting strings to numbers for currency view */}
+                  <td>Rs {Number(record.basicSalary).toLocaleString()}</td>
+                  <td>Rs {Number(record.netSalary).toLocaleString()}</td>
+                  <td>{record.date}</td>
+                  <td>{record.type}</td>
+                  <td>
+                    <button className={styles.pdfBtn}>
+                      <img src="/icons/pdf.png" alt="PDF" style={{ width: 24 }} />
+                    </button>
+                  </td>
+                  <td>
+                    <div className={styles.actions}>
+                      <Link href={`/admin-dashboard/salary/edit/${record.id}`}>
+                        <button className={styles.editBtn}>Edit</button>
+                      </Link>
+                      <button className={styles.deleteBtn}>Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
     </>
   );
-}
+}const fetchSalaries = async () => {
+  try {
+    const response = await fetch("http://localhost:2027/api/salary/all");
+    const result = await response.json();
+
+    // Check if result is an array or if it's an object with a 'data' array
+    if (Array.isArray(result)) {
+      setRecords(result);
+    } else if (result && Array.isArray(result.data)) {
+      setRecords(result.data);
+    } else {
+      // If we get {}, we treat it as an empty list to avoid crashing
+      setRecords([]); 
+      if (Object.keys(result).length > 0) {
+        console.error("Data received is not an array:", result);
+      }
+    }
+  } catch (error) {
+    console.error("Network Error:", error);
+    setRecords([]); 
+  } finally {
+    setLoading(false);
+  }
+};

@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import styles from "./anomaly.module.css";
 
 export default function AnomalyDetection() {
+  const router = useRouter(); // Initialize the router
   const [anomalyStats, setAnomalyStats] = useState({ totalAnomalies: 0, resolvedAnomalies: 0 });
 
   useEffect(() => {
@@ -24,12 +26,22 @@ export default function AnomalyDetection() {
     fetchAnomalyData();
   }, []);
 
+  // Function to navigate to the list page
+  const handleViewAnomalies = () => {
+    router.push("/admin-dashboard/anomaly/list"); // Adjust this path to match your folder structure
+  };
+
   return (
     <>
       <h2 className={styles.pageTitle}>Anomaly Detection</h2>
 
       <div className={styles.cardGrid}>
-        <div className={styles.card}>
+        {/* Added onClick and a pointer style to make this card act as a link */}
+        <div 
+          className={`${styles.card} ${styles.clickableCard}`} 
+          onClick={handleViewAnomalies}
+          title="Click to view all anomalies"
+        >
           <div className={styles.cardHeader}>
             <div className={styles.cardIconContainer}>
               <img src="/icons/total-anomaly.png" alt="Total" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
