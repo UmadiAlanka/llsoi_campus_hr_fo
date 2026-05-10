@@ -225,3 +225,173 @@ html, body, #root {
   justify-content: center;
   gap: 10px;
 }
+
+/* HOLIDAY MODAL STYLES */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modalContent {
+  background: rgba(255, 255, 255, 0.95);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalHeader {
+  background: #7a1212;
+  color: white;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modalBody {
+  padding: 10px 20px 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 120px);
+}
+
+.calendarControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.navBtn {
+  background: #7a1212;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.monthLabel {
+  font-weight: bold;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.dayHeader {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+  color: #7a1212;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.calendarDay {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eee;
+  position: relative;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.emptyDay {
+  aspect-ratio: 1;
+}
+
+.dayNum {
+  font-size: 1rem;
+  color: #444;
+}
+
+.isHoliday {
+  background: #fff8f8;
+  border: 2px solid #7a1212;
+  cursor: pointer;
+}
+
+.isHoliday .dayNum {
+  color: #7a1212;
+  font-weight: bold;
+}
+
+.holidayIndicator {
+  width: 6px;
+  height: 6px;
+  background: #7a1212;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+
+.holidayPopup {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+  margin-bottom: 5px;
+}
+
+.calendarDay:hover .holidayPopup {
+  opacity: 1;
+}
+
+.calendarDay:hover {
+  background: #f0f0f0;
+}
