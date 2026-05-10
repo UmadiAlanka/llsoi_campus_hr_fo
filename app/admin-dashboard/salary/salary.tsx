@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./salary.module.css";
 import Link from "next/link";
 
@@ -15,147 +15,139 @@ interface SalaryRecord {
 
 export default function AdminSalary() {
   const monthInputRef = useRef<HTMLInputElement>(null);
+  
+  // Initialize as an empty array to prevent .map() errors on first render
+  const [records, setRecords] = useState<SalaryRecord[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [records] = useState<SalaryRecord[]>([
-    {
-      id: "001",
-      name: "S.Perera",
-      basicSalary: "50,000",
-      netSalary: "52,000",
-      date: "2025-10-10",
-      type: "Academic",
-    },
-  ]);
+  useEffect(() => {
+    const fetchSalaries = async () => {
+      try {
+        // Adjust the port/URL to match your Spring Boot configuration
+        const response = await fetch("http://localhost:2027/api/salary/all");
+        const result = await response.json();
+
+        /* 
+           CRITICAL FIX: Check if result is the array itself or a wrapper object.
+           If your Java backend returns List<Salary>, it's result.
+           If it returns an ApiResponse object, it's likely result.data.
+        */
+        if (Array.isArray(result)) {
+          setRecords(result);
+        } else if (result && result.data && Array.isArray(result.data)) {
+          setRecords(result.data);
+        } else {
+          console.error("Data received is not an array:", result);
+          setRecords([]); 
+        }
+      } catch (error) {
+        console.error("Failed to fetch salary data:", error);
+        setRecords([]); // Fallback to empty array on network error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalaries();
+  }, []);
 
   const handleMonthClick = () => {
     if (monthInputRef.current) {
-      monthInputRef.current.showPicker?.();
+      (monthInputRef.current as any).showPicker?.();
     }
   };
 
-  // Correct routes for Admin Dashboard
-  const menuItems = [
-    { name: "Dashboard", icon: "/icons/home.png", href: "/admin-dashboard" },
-    { name: "Manage Users", icon: "/icons/user.png", href: "/admin-dashboard/admin-manage-users" },
-    { name: "Attendance", icon: "/icons/dattendance.png", href: "/admin-dashboard/admin-attendance" },
-    { name: "Salary & Pay Slip", icon: "/icons/dsalary.png", href: "/admin-dashboard/salary" },
-    { name: "Anomaly Detections", icon: "/icons/anomaly.png", href: "/admin-dashboard/anomaly" },
-    { name: "Report & Analytics", icon: "/icons/report.png", href: "/admin-dashboard/analytics" },
-    { name: "Leave Management", icon: "/icons/leave.png", href: "/admin-dashboard/leave" },
-    { name: "Logout", icon: "/icons/logout.png", href: "/" },
-  ];
-
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.logoSection}>
-          <img src="/Logo.png" alt="LLSOI Logo" className={styles.headerLogo} />
-          <h1 className={styles.brandName}>
-            LLSOI Campus HR <span>Management System</span>
-          </h1>
-        </div>
-        <div className={styles.adminProfile}>
-          <img src="/icons/user-profile.png" alt="Admin" className={styles.adminAvatar} />
-          <span className={styles.userName}>Admin</span>
-        </div>
-      </header>
+    <>
+      <h2 className={styles.pageTitle}>Salary &amp; Pay Slip</h2>
 
-      <div className={styles.layoutBody}>
-        {/* Sidebar */}
-        <aside className={styles.sidebar}>
-          <nav>
-            <ul className={styles.menuList}>
-              {menuItems.map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className={styles.menuItem}>
-                    <img src={item.icon} alt="" className={styles.menuIconImage} />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className={styles.mainContent}>
-          <h2 className={styles.pageTitle}>Salary & Pay Slip</h2>
-
-          <div className={styles.topSection}>
-            {/* Filter Bar */}
-            <div className={styles.filterBar}>
-              <div className={styles.filterBox}>
-                <select className={styles.filterSelect}>
-                  <option>Filter by Name</option>
-                </select>
-                <img src="/icons/dropdown.png" alt="arrow" className={styles.filterIcon} />
-              </div>
-
-              <div className={styles.filterBox} onClick={handleMonthClick}>
-                <input type="month" ref={monthInputRef} className={styles.monthInput} />
-                <span className={styles.monthPlaceholder}>Filter by Month</span>
-                <img src="/icons/calendar.png" alt="calendar" className={styles.filterIcon} />
-              </div>
-
-              <div className={styles.filterBox}>
-                <select className={styles.filterSelect}>
-                  <option>Filter by Type</option>
-                </select>
-                <img src="/icons/dropdown.png" alt="arrow" className={styles.filterIcon} />
-              </div>
-            </div>
-
-            {/* Add Salary Button */}
-            <Link href="/admin-dashboard/salary/add-salary">
-              <button className={styles.addSalaryBtn}>ADD SALARY</button>
-            </Link>
+      <div className={styles.topSection}>
+        <div className={styles.filterBar}>
+          <div className={styles.filterBox}>
+            <select className={styles.filterSelect}><option>Filter by Name</option></select>
+            <img src="/icons/dropdown.png" alt="" className={styles.filterIcon} />
           </div>
-
-          {/* Salary Table */}
-          <div className={styles.tableCard}>
-            <table className={styles.salaryTable}>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Basic Salary</th>
-                  <th>Net Salary</th>
-                  <th>Date</th>
-                  <th>Type</th>
-                  <th>Download</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record) => (
-                  <tr key={record.id}>
-                    <td>{record.id}</td>
-                    <td>{record.name}</td>
-                    <td>{record.basicSalary}</td>
-                    <td>{record.netSalary}</td>
-                    <td>{record.date}</td>
-                    <td>{record.type}</td>
-                    <td>
-                      <button className={styles.pdfBtn}>
-                        <img src="/icons/pdf.png" alt="PDF" />
-                      </button>
-                    </td>
-                    <td>
-                      <div className={styles.actions}>
-                        <Link href={`/admin-dashboard/salary/edit/${record.id}`}>
-                          <button className={styles.editBtn}>Edit</button>
-                        </Link>
-                        <button className={styles.deleteBtn}>Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className={styles.filterBox} onClick={handleMonthClick} style={{ cursor: 'pointer' }}>
+            <input type="month" ref={monthInputRef} className={styles.monthInput} />
+            <span className={styles.monthPlaceholder}>Filter by Month</span>
+            <img src="/icons/calendar.png" alt="" className={styles.filterIcon} />
           </div>
-        </main>
+          <div className={styles.filterBox}>
+            <select className={styles.filterSelect}><option>Filter by Type</option></select>
+            <img src="/icons/dropdown.png" alt="" className={styles.filterIcon} />
+          </div>
+        </div>
+
+        <Link href="/admin-dashboard/salary/add-salary">
+          <button className={styles.addSalaryBtn}>+ ADD SALARY</button>
+        </Link>
       </div>
-    </div>
+
+      <div className={styles.tableCard}>
+        <table className={styles.salaryTable}>
+          <thead>
+            <tr>
+              <th>ID</th><th>Name</th><th>Basic Salary</th><th>Net Salary</th>
+              <th>Date</th><th>Type</th><th>Download</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={8} style={{textAlign: 'center', padding: '20px'}}>Loading Data...</td></tr>
+            ) : records.length === 0 ? (
+              <tr><td colSpan={8} style={{textAlign: 'center', padding: '20px'}}>No records found.</td></tr>
+            ) : (
+              records.map((record) => (
+                <tr key={record.id}>
+                  <td>{record.id}</td>
+                  <td>{record.name}</td>
+                  {/* Formatting strings to numbers for currency view */}
+                  <td>Rs {Number(record.basicSalary).toLocaleString()}</td>
+                  <td>Rs {Number(record.netSalary).toLocaleString()}</td>
+                  <td>{record.date}</td>
+                  <td>{record.type}</td>
+                  <td>
+                    <button className={styles.pdfBtn}>
+                      <img src="/icons/pdf.png" alt="PDF" style={{ width: 24 }} />
+                    </button>
+                  </td>
+                  <td>
+                    <div className={styles.actions}>
+                      <Link href={`/admin-dashboard/salary/edit/${record.id}`}>
+                        <button className={styles.editBtn}>Edit</button>
+                      </Link>
+                      <button className={styles.deleteBtn}>Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
-}
+}const fetchSalaries = async () => {
+  try {
+    const response = await fetch("http://localhost:2027/api/salary/all");
+    const result = await response.json();
+
+    // Check if result is an array or if it's an object with a 'data' array
+    if (Array.isArray(result)) {
+      setRecords(result);
+    } else if (result && Array.isArray(result.data)) {
+      setRecords(result.data);
+    } else {
+      // If we get {}, we treat it as an empty list to avoid crashing
+      setRecords([]); 
+      if (Object.keys(result).length > 0) {
+        console.error("Data received is not an array:", result);
+      }
+    }
+  } catch (error) {
+    console.error("Network Error:", error);
+    setRecords([]); 
+  } finally {
+    setLoading(false);
+  }
+};
