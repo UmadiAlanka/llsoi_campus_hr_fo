@@ -1,0 +1,88 @@
+.header {
+  height: 68px;
+  background: linear-gradient(135deg, #720e0e 0%, #8b1212 60%, #720e0e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 18px rgba(114, 14, 14, 0.45);
+  position: relative;
+  z-index: 50;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #FFD814 40%, #FFD814 60%, transparent 100%);
+  opacity: 0.55;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+}
+
+.brand {
+  font-family: "Kanit", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1;
+}
+
+.brandGold  { color: #FFD814; }
+.brandWhite { color: rgba(255,255,255,0.88); font-weight: 600; }
+
+.profilePill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 40px;
+  padding: 5px 16px 5px 5px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.profilePill:hover { background: rgba(255,255,255,0.22); }
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: rgba(255, 216, 20, 0.18);
+  padding: 2px;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.profileName {
+  font-family: "Kanit", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #FFD814;
+}
+
+.profileRole {
+  font-family: "Kanit", sans-serif;
+  font-size: 0.70rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.65);
+}

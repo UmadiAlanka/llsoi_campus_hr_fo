@@ -1,4 +1,5 @@
-import LeaveRequest from './Leave';
+import LeaveRequest from "./Leave";
+
 export default function Page() {
-    return <LeaveRequest />;
+  return <LeaveRequest />;
 }

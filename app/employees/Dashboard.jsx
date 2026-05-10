@@ -224,20 +224,12 @@ const Dashboard = () => {
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
             {/* Link to Dashboard */}
-<<<<<<< Updated upstream:app/dashboard/Dashboard.jsx
-            <Link href="/dashboard" className={`${styles.navLink} ${styles.active}`}>
-=======
             <Link href="/employees" className={`${styles.navLink} ${styles.active}`}>
->>>>>>> Stashed changes:app/employees/Dashboard.jsx
               <img src="/icons/dashboard.png" alt="" className={styles.navIcon} /> Dashboard
             </Link>
 
             {/* Link to Attendance */}
-<<<<<<< Updated upstream:app/dashboard/Dashboard.jsx
-            <Link href="/attendance" className={styles.navLink}>
-=======
             <Link href="/employees/V-Attendance" className={styles.navLink}>
->>>>>>> Stashed changes:app/employees/Dashboard.jsx
               <img src="/icons/attendance.png" alt="" className={styles.navIcon} /> View Attendance
             </Link>
 

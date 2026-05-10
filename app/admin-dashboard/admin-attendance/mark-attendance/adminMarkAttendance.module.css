@@ -1,0 +1,198 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+:root {
+    --main-color:#720e0e ;
+    --bg-color1:rgb(7, 7, 7);
+    --text-color1: #fff;
+    --main-color1:#FFD814;
+    --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+/* Header & Sidebar (Reuse your consistent theme) */
+.header { 
+    background-color: var(--main-color);
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color:var(--text-color1);
+    z-index: 100; 
+}
+.logoSection { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+.headerLogo { 
+    width: 45px; 
+    height: 45px; 
+}
+.brandName { 
+   font-size: 1.3rem; 
+   font-weight: bold; 
+   color: var(--main-color1);
+}
+.brandName span { 
+    color:var(--main-color1); 
+}
+.adminProfile { 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--main-color1);
+    font-weight: bold; 
+}
+.adminAvatar { 
+    width: 28px; 
+    height: 28px; 
+} 
+.layoutBody { 
+    display: flex; 
+    flex: 1;
+}
+
+.sidebar {
+  width: 370px;
+  background-color:var(--sidebar-color); /* Translucent background */
+  backdrop-filter: blur(10px);
+  padding-top: 45px;
+}
+.menuList {
+  display: flex;
+  flex-direction: column;
+}
+.menuItem {
+  padding: 12px 30px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color:var(--bg-color1);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.6rem;
+}
+
+.activeItem {
+  background-color: var(--sidebar-color);
+  border-radius: 40px 40px 40px 40px;
+  margin-right: 25px;
+}
+
+.activeItem:hover {
+  background-color: var(--text-color1);
+}
+
+.menuIconImage { 
+  width: 30px;
+  height: 30px;
+  object-fit: contain; 
+}
+
+
+/* Form Layout */
+.mainContent { 
+    flex: 1; 
+    padding: 30px; 
+}
+.pageTitle { 
+    color:var(--text-color1); 
+    font-size: 2.2rem; 
+    margin-bottom: 20px; 
+    font-weight: bold; 
+}
+
+.formCard {
+  background-color: rgba(255, 255, 255, 0.725);
+  border-radius: 20px;
+  padding: 40px;
+  width:1500px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.attendanceForm { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.fullWidth { 
+    width: 100%; 
+}
+
+.formGroup { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+}
+.label { 
+    font-weight: bold; 
+    font-size: 1rem; 
+    color:var(--bg-color1); 
+}
+
+.input, .select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background:var(--text-color1);
+  outline: none;
+}
+
+/* Select & Date Wrappers for Icons */
+.selectWrapper, .dateWrapper { 
+    position: relative; 
+    width: 100%; display: flex; 
+    align-items: center; 
+    background-color: var(--text-color1);
+}
+.select { 
+    appearance: none; 
+}
+.selectIcon, .calendarIcon {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  pointer-events: none;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.dateInput::-webkit-calendar-picker-indicator { 
+    opacity: 0; 
+    cursor: pointer; 
+}
+
+/* Green Submit Button */
+.submitBtn {
+  background-color: #0f5f1a;
+  color:var(--text-color1);
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover { background-color: #0d4d16; }

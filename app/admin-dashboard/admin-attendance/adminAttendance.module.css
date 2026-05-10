@@ -1,0 +1,234 @@
+
+:root {
+    --main-color:#720e0e ;
+    --bg-color1:rgb(7, 7, 7);
+    --text-color1: #fff;
+    --main-color1:#FFD814;
+    --sidebar-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Layout */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  font-family: "Kanit", sans-serif;
+}
+
+.header {
+  background-color:var(--main-color);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  color:var(--text-color1);
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerLogo {
+  width: 60px;
+  height: 60px;
+}
+
+.brandName {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--main-color1);
+}
+
+.brandName span {
+  color:var(--main-color1);
+}
+
+.adminProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--main-color1);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.adminAvatar {
+  width: 50px;
+  height: 50px;
+}
+
+/* Body */
+.layoutBody {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 420px;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(3px);
+  padding-top: 30px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menuList {
+  list-style: none;
+  padding: 15px 30px;
+  gap: 100px;
+}
+
+.menuItem {
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 8px; 
+  color: var(--bg-color1);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.6rem;
+  transition: 0.3s;
+  border-radius: 30px;
+}
+
+/* Hover effect */
+.menuItem:hover {
+  background-color: rgba(255,255,255,0.5);
+  transform: translateX(6px);
+  padding: 15px 30px;
+
+}
+
+/* Active button */
+.active { 
+  background-color: rgba(255,255,255,0.65);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  padding: 15px 30px;
+}
+
+/* Icons */
+.menuIconImage {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* Main content */
+.mainContent {
+  flex: 1;
+  padding: 50px;
+}
+
+.pageTitle {
+  color: var(--text-color1);
+  font-size: 2.7rem;
+  font-weight: bold;
+  margin-bottom: 45px;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  color: var(--text-color1);
+}
+
+/* Filter Section */
+.filterSection {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.filterBox {
+  position: relative;
+  background:var(--text-color1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.filterInput, .filterSelect {
+  width: 100%;
+  padding: 10px 40px 10px 15px;
+  border: 1px solid #ccc;
+  outline: none;
+  appearance: none; /* Removes default arrow for select */
+  font-weight: bold;
+  color: black;
+}
+
+.filterIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+/* Mark Attendance Button Styling */
+.markAttendanceBtn {
+  background-color:var(--main-color);
+  color:var(--main-color1);
+  border: none;
+  padding: 10px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  width: 500px;
+}
+
+/* Table Styling */
+.tableContainer {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 15px;
+  overflow: hidden;
+  color: black;
+}
+
+.attendanceTable { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+.attendanceTable th { 
+    background-color: var(--main-color); 
+    color:var(--text-color1); 
+    text-align: center; 
+    padding: 15px; 
+    font-size: 0.9rem; 
+}
+.attendanceTable td { 
+    padding: 15px; 
+    border-bottom: 2px solid #f0f0f0; 
+    background:var(--text-color1); 
+    font-weight: bold; 
+    font-size: 0.85rem; 
+    text-align: center;
+}
+
+.editBtn {
+  background-color: #0f5f1a;
+  color:var(--text-color1);
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.75rem;
+}

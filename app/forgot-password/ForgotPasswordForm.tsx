@@ -1,6 +1,4 @@
-
 /** @jsxImportSource react */
-// install @type/react
 "use client";
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -11,60 +9,75 @@ const ForgotPasswordForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
+    setIsError(false);
     
-    // TODO: Add your logic to send the password reset link
-    console.log('Attempting to send reset link to:', { email });
-    
-    // Simulate API delay
-    setTimeout(() => {
-      setLoading(false);
-      // Simulate success/error response
-      if (email.includes('@')) {
-        setMessage('A password reset link has been sent to your email address.');
-        // Optionally clear the email field: setEmail('');
+    try {
+      // 1. Connect to your Spring Boot backend
+      const response = await fetch("http://localhost:2027/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }), // Sending email as a JSON object
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 2. Success message from your Java Controller
+        setMessage(data.message || 'A password reset link has been sent to your email address.');
+        setEmail(''); // Clear input on success
       } else {
-        setMessage('Please enter a valid email address.');
+        // 3. Handle 404 Email Not Found or other errors
+        setIsError(true);
+        setMessage(data.message || 'Email address not found in our system.');
       }
-    }, 1500);
+    } catch (err) {
+      console.error('Mail Error:', err);
+      setIsError(true);
+      setMessage('Failed to connect to the server. Please check if the backend is running.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    // Outer container to mimic the background image and overlay
-    // NOTE: For a real Next.js app, you'd place this component on a new page 
-    // and let the page layout handle the background image.
     <div className={style.main}> 
-      
-      {/* Background Image (In a real app, this should be handled by a layout or parent component) */}
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/loginBackground.jpg" // Placeholder path for the background image
+          src="/loginBackground.jpg"
           alt="Graduation Ceremony Background"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{ objectFit: 'cover' }}
           quality={100}
+          priority
         />
       </div>
 
       {/* Forgot Password Card */}
-      <div className="relative z-10 flex items-center justify-center p-20">
+      <div className="relative z-10 flex items-center justify-center p-20 min-h-screen">
         <div className={style.loginCard}>
           
           <div className="text-center mb-6">
-            {/* Logo/Emblem (Replace with your actual logo path) */}
             <Image
-              src="/Logo.png" // Placeholder path for the LLSOI logo
+              src="/Logo.png"
               alt="LLSOI Campus Logo"
               width={60}
               height={60}
-              className={style.logoImage}
+              className="mx-auto"
             />
-            <h1><span className={style.titlePrimary}>LLSOI</span><span className={style.titleSecondary}> Campus</span> </h1>
-            <h2 className={style.subHeader }>
+            <h1>
+              <span className={style.titlePrimary}>LLSOI</span>
+              <span className={style.titleSecondary}> Campus</span> 
+            </h1>
+            <h2 className={style.subHeader}>
               HR Management System
             </h2>
           </div>
@@ -77,7 +90,6 @@ const ForgotPasswordForm: React.FC = () => {
               Enter your email address below and we'll send a link to reset your password.
             </p>
           </div>
-
 
           <form onSubmit={handleSubmit} className="space-y-4 mt-8">
             <div className={style.inputGroup}>
@@ -95,19 +107,22 @@ const ForgotPasswordForm: React.FC = () => {
               />
             </div>
             
-            {message && <p className={style.message}>{message}</p>}
+            {message && (
+              <p className={isError ? "text-red-500 text-sm" : "text-green-500 text-sm"}>
+                {message}
+              </p>
+            )}
 
             <button
               type="submit"
               className={style.resetButton}
               disabled={loading}
             >
-              {loading ? 'Sending' : 'Send reset link'}
+              {loading ? 'Sending...' : 'Send reset link'}
             </button>
           </form>
 
-          <div>
-            {/* Assuming a route '/login' for the login page */}
+          <div className="mt-6 text-center">
             <Link href="/login" className={style.backLink}>
               Back to Login
             </Link>

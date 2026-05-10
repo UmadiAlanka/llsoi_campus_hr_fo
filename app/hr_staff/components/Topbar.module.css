@@ -1,0 +1,51 @@
+.topbar {
+  height: 60px;
+  background-color: #741010; /* Deep Maroon */
+  display: flex;
+  justify-content: space-between; /* This keeps logo/title on left, profile on right */
+  align-items: center;
+  padding: 0 30px;
+  color: #FEC83F; /* Gold */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* New section to group Logo and Titles */
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Space between the logo and the text */
+}
+
+/* Styles for the logo image */
+.logoImage {
+  height: 50px; /* Adjust height to fit inside the 60px bar */
+  width: auto;
+  object-fit: contain;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.subTitle {
+  color: white;
+  font-weight: normal;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+
+.userIcon {
+  color: #FEC83F;
+}
