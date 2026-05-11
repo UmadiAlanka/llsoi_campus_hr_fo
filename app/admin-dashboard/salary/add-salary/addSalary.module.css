@@ -7,7 +7,7 @@
 }
 
 .formCard {
-  background: rgba(255,255,255,0.88);
+  background: rgba(255, 255, 255, 0.92); /* Slightly higher opacity for readability */
   border-radius: 20px;
   padding: 40px;
   max-width: 900px;
@@ -31,7 +31,12 @@
   margin-bottom: 10px;
 }
 
-.formGroup { display: flex; flex-direction: column; gap: 6px; }
+.formGroup { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  position: relative; /* Added for fetching indicator placement */
+}
 
 .label { font-weight: 700; font-size: 0.95rem; color: #111; }
 
@@ -45,10 +50,42 @@
   font-family: "Kanit", sans-serif;
   font-size: 0.95rem;
   color: #333;
-  transition: border 0.2s;
+  transition: all 0.2s;
 }
 
-.input:focus, .select:focus { border-color: #720e0e; }
+.input:focus, .select:focus { 
+  border-color: #720e0e; 
+  box-shadow: 0 0 0 2px rgba(114, 14, 14, 0.1);
+}
+
+/* --- NEW: Read Only Styles for Auto-fetched data --- */
+.inputReadOnly {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f4f4f4; /* Light grey to show it's disabled */
+  color: #666;
+  font-family: "Kanit", sans-serif;
+  font-size: 0.95rem;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+/* --- NEW: Fetching Indicator --- */
+.loadingText {
+  font-size: 0.75rem;
+  color: #720e0e;
+  font-weight: bold;
+  animation: pulse 1.5s infinite;
+  margin-top: 2px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
 
 .submitBtn {
   width: 100%;
@@ -68,14 +105,16 @@
 .submitBtn:hover:not(:disabled) { background-color: #0d4d16; }
 .submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* Popup Styles */
 .popupOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(4px); /* Adds a nice modern blur effect */
 }
 
 .popupCard {
@@ -83,14 +122,14 @@
   padding: 30px 50px;
   border-radius: 15px;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  animation: popIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.successIcon { font-size: 3rem; color: #28a745; margin-bottom: 10px; }
-.popupCard p { color: #333; font-weight: bold; font-size: 1.1rem; }
+.successIcon { font-size: 3.5rem; color: #28a745; margin-bottom: 10px; }
+.popupCard p { color: #333; font-weight: 800; font-size: 1.2rem; margin: 0; }
 
 @keyframes popIn {
-  from { transform: scale(0.8); opacity: 0; }
+  from { transform: scale(0.5); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
