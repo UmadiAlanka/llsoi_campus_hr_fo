@@ -10,16 +10,11 @@ export default function EditSalaryPage() {
   const router = useRouter();
   const id = params.id;
 
-  // State to control your MessageBox component
   const [msgConfig, setMsgConfig] = useState<{
     show: boolean;
     type: "success" | "error";
     message: string;
-  }>({
-    show: false,
-    type: "success",
-    message: "",
-  });
+  }>({ show: false, type: "success", message: "" });
 
   const [formData, setFormData] = useState<any>({
     name: "",
@@ -60,19 +55,13 @@ export default function EditSalaryPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          basicSalary: formData.basicSalary,
-          netSalary: formData.netSalary,
+          basicSalary: parseFloat(formData.basicSalary),
+          netSalary: parseFloat(formData.netSalary),
         }),
       });
 
       if (response.ok) {
-        // Trigger your MessageBox for Success
-        setMsgConfig({
-          show: true,
-          type: "success",
-          message: "Salary record updated successfully!",
-        });
-        
+        setMsgConfig({ show: true, type: "success", message: "Salary record updated successfully!" });
         setTimeout(() => {
           router.push("/admin-dashboard/salary");
           router.refresh();
@@ -81,19 +70,13 @@ export default function EditSalaryPage() {
         throw new Error();
       }
     } catch (error) {
-      // Trigger your MessageBox for Error
-      setMsgConfig({
-        show: true,
-        type: "error",
-        message: "Update failed. Please check your connection.",
-      });
+      setMsgConfig({ show: true, type: "error", message: "Update failed." });
       setTimeout(() => setMsgConfig({ ...msgConfig, show: false }), 2500);
     }
   };
 
   return (
-    <div className={styles.container}>
-      {/* --- USING YOUR REUSABLE COMPONENT --- */}
+    <div className={styles.pageContainer}>
       {msgConfig.show && (
         <MessageBox 
           type={msgConfig.type} 
@@ -102,53 +85,56 @@ export default function EditSalaryPage() {
         />
       )}
 
-      <div className={styles.formCard}>
-        <h2 className={styles.title}>Edit Salary</h2>
-        <form onSubmit={handleUpdate}>
-          <div className={styles.inputGroup}>
+      <div className={styles.glassCard}>
+        <h2 className={styles.formHeader}>Edit Salary</h2>
+        
+        <form onSubmit={handleUpdate} className={styles.editForm}>
+          <div className={styles.fullRow}>
             <label>Name:</label>
-            <input type="text" value={formData.name} readOnly className={styles.readOnly} />
+            <input type="text" value={formData.name} readOnly className={styles.readOnlyInput} />
           </div>
 
-          <div className={styles.row}>
-            <div className={styles.inputGroup}>
+          <div className={styles.splitRow}>
+            <div className={styles.inputField}>
               <label>Employee ID:</label>
-              <input type="text" value={formData.employeeId} readOnly className={styles.readOnly} />
+              <input type="text" value={formData.employeeId} readOnly className={styles.readOnlyInput} />
             </div>
-            <div className={styles.inputGroup}>
+            <div className={styles.inputField}>
               <label>Select Type:</label>
-              <select value={formData.type} disabled className={styles.readOnly}>
+              <select value={formData.type} disabled className={styles.readOnlyInput}>
                 <option>{formData.type}</option>
               </select>
             </div>
           </div>
 
-          <div className={styles.inputGroup}>
+          <div className={styles.fullRow}>
             <label>Date:</label>
-            <input type="month" value={formData.date} readOnly className={styles.readOnly} />
+            <input type="month" value={formData.date} readOnly className={styles.readOnlyInput} />
           </div>
 
-          <div className={styles.inputGroup}>
+          <div className={styles.fullRow}>
             <label>Basic Salary:</label>
             <input 
               type="number" 
               value={formData.basicSalary} 
               onChange={(e) => setFormData({...formData, basicSalary: e.target.value})}
+              className={styles.editableInput}
               required 
             />
           </div>
 
-          <div className={styles.inputGroup}>
+          <div className={styles.fullRow}>
             <label>Net Salary:</label>
             <input 
               type="number" 
               value={formData.netSalary} 
               onChange={(e) => setFormData({...formData, netSalary: e.target.value})}
+              className={styles.editableInput}
               required 
             />
           </div>
 
-          <button type="submit" className={styles.updateBtn}>UPDATE</button>
+          <button type="submit" className={styles.greenUpdateBtn}>UPDATE</button>
         </form>
       </div>
     </div>

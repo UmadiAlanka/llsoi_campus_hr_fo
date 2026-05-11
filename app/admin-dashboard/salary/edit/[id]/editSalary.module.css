@@ -1,90 +1,83 @@
-.container {
+.pageContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
-  padding: 20px;
-}
-
-.formCard {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   width: 100%;
-  max-width: 500px;
+  min-height: 80vh; /* Keeps it centered within the dashboard view */
 }
 
-.title {
-  text-align: center;
-  color: #333;
-  margin-bottom: 30px;
-  font-size: 24px;
-  font-weight: 600;
+.glassCard {
+  background: rgba(255, 255, 255, 0.85); /* Semi-transparent white like Figma */
+  backdrop-filter: blur(20px);
+  width: 100%;
+  max-width: 600px;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.inputGroup {
-  margin-bottom: 20px;
+.formHeader {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.editForm {
   display: flex;
   flex-direction: column;
+  gap: 18px;
 }
 
-.inputGroup label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-  font-weight: 500;
+.fullRow, .inputField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.inputGroup input,
-.inputGroup select {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 15px;
-  transition: border-color 0.3s ease;
-}
-
-.inputGroup input:focus {
-  outline: none;
-  border-color: #0070f3;
-}
-
-.row {
+.splitRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-/* Styles for fields that shouldn't be edited */
-.readOnly {
-  background-color: #f9f9f9;
-  color: #888;
-  cursor: not-allowed;
-  border-color: #eee !important;
+.fullRow label, .inputField label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
 }
 
-.updateBtn {
-  width: 100%;
-  padding: 14px;
-  background-color: #000; /* Black button like your design */
+.editableInput, .readOnlyInput {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  color: black;
+}
+
+.readOnlyInput {
+  background-color: #f0f0f0; /* Grayed out per Figma */
+  color: #000000;
+  cursor: not-allowed;
+}
+
+.greenUpdateBtn {
+  background-color: #1a5c1a; /* Dark green from Figma image */
   color: white;
+  padding: 14px;
   border: none;
   border-radius: 6px;
+  font-weight: 700;
   font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  transition: background 0.2s;
 }
 
-.updateBtn:hover {
-  background-color: #333;
-}
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .row {
-    grid-template-columns: 1fr;
-  }
+.greenUpdateBtn:hover {
+  background-color: #144614;
 }

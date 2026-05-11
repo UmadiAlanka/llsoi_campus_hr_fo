@@ -1,12 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation";
 import styles from "./anomaly.module.css";
+import MessageBox from "@/app/admin-dashboard/components/MessageBox";
 
 export default function AnomalyDetection() {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [anomalyStats, setAnomalyStats] = useState({ totalAnomalies: 0, resolvedAnomalies: 0 });
+  
+  // MessageBox State
+  const [msgConfig, setMsgConfig] = useState<{
+    show: boolean;
+    type: "success" | "error";
+    message: string;
+  }>({ show: false, type: "success", message: "" });
 
   useEffect(() => {
     const fetchAnomalyData = async () => {
@@ -26,17 +35,56 @@ export default function AnomalyDetection() {
     fetchAnomalyData();
   }, []);
 
-  // Function to navigate to the list page
+  // 1. Logic to Run Detection and Navigate
+  const handleDetectClick = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:2027/api/anomalies/detect", { 
+        method: "POST" 
+      });
+      
+      if (response.ok) {
+        setMsgConfig({
+          show: true,
+          type: "success",
+          message: "Scan complete! Redirecting to flagged records...",
+        });
+
+        // Small delay so they can see the success message
+        setTimeout(() => {
+          router.push("/admin-dashboard/anomaly/list");
+        }, 1500);
+      } else {
+        throw new Error("Detection failed");
+      }
+    } catch (error) {
+      setMsgConfig({
+        show: true,
+        type: "error",
+        message: "Failed to run detection. Please check backend.",
+      });
+      setLoading(false);
+    }
+  };
+
   const handleViewAnomalies = () => {
-    router.push("/admin-dashboard/anomaly/list"); // Adjust this path to match your folder structure
+    router.push("/admin-dashboard/anomaly/list");
   };
 
   return (
-    <>
+    <div className={styles.container}>
+      {/* MessageBox for Feedback */}
+      {msgConfig.show && (
+        <MessageBox 
+          type={msgConfig.type} 
+          message={msgConfig.message} 
+          onClose={() => setMsgConfig({ ...msgConfig, show: false })} 
+        />
+      )}
+
       <h2 className={styles.pageTitle}>Anomaly Detection</h2>
 
       <div className={styles.cardGrid}>
-        {/* Added onClick and a pointer style to make this card act as a link */}
         <div 
           className={`${styles.card} ${styles.clickableCard}`} 
           onClick={handleViewAnomalies}
@@ -69,8 +117,16 @@ export default function AnomalyDetection() {
           <li><span className={styles.checkIcon}>✔</span> Rs.300 Sudden Change Rule</li>
           <li><span className={styles.checkIcon}>✔</span> Missing Attendance Rule</li>
         </ul>
-        <button className={styles.detectButton}>Detect Anomaly</button>
+        
+        {/* Updated Button with Loading State */}
+        <button 
+          className={styles.detectButton} 
+          onClick={handleDetectClick}
+          disabled={loading}
+        >
+          {loading ? "Scanning Records..." : "Detect Anomaly"}
+        </button>
       </div>
-    </>
+    </div>
   );
 }

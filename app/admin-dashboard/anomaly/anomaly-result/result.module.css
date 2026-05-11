@@ -1,0 +1,55 @@
+.container { padding: 30px; }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tableWrapper {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.resultTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.resultTable th {
+  background: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  border-bottom: 2px solid #eee;
+}
+
+.resultTable td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.issueText {
+  color: #d32f2f; /* Red for the anomaly reason */
+  font-weight: 600;
+}
+
+.flag {
+  background: #fff3e0;
+  color: #ef6c00;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.viewBtn {
+  background: #000;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
