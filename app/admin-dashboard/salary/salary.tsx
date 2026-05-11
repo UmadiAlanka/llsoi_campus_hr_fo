@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./salary.module.css";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // 1. Import usePathname
 
 interface SalaryRecord {
   id: number;
@@ -20,10 +21,11 @@ interface SalaryRecord {
 
 export default function AdminSalary() {
   const monthInputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname(); // 2. Initialize pathname tracking
   const [records, setRecords] = useState<SalaryRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch Salary Records
+  // 3. Updated useEffect to depend on pathname
   useEffect(() => {
     const fetchSalaries = async () => {
       try {
@@ -34,7 +36,6 @@ export default function AdminSalary() {
         if (result && result.success && Array.isArray(result.data)) {
           setRecords(result.data);
         } else {
-          console.error("Data mapping error:", result);
           setRecords([]);
         }
       } catch (error) {
@@ -46,36 +47,23 @@ export default function AdminSalary() {
     };
 
     fetchSalaries();
-  }, []);
+  }, [pathname]); // Triggers fetch whenever the user navigates back to this route
 
-  // 2. Handle PDF Download Logic
   const downloadPdf = async (id: number, empId: string) => {
     try {
       const response = await fetch(`http://localhost:2027/api/payroll/download/${id}`);
-      
-      if (!response.ok) {
-        throw new Error("Failed to generate PDF on the server.");
-      }
-
-      // Convert the response to a Blob (Binary Large Object)
+      if (!response.ok) throw new Error("Failed to generate PDF");
       const blob = await response.blob();
-      
-      // Create a temporary local URL for the blob
       const url = window.URL.createObjectURL(blob);
-      
-      // Create a hidden link and click it to trigger download
       const link = document.createElement("a");
       link.href = url;
       link.download = `PaySlip_${empId}.pdf`;
       document.body.appendChild(link);
       link.click();
-      
-      // Clean up
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Download error:", error);
-      alert("Error: Could not download the pay slip. Please ensure the backend is running.");
+      alert("Could not download the pay slip.");
     }
   };
 
@@ -144,7 +132,6 @@ export default function AdminSalary() {
                     </span>
                   </td>
                   <td>
-                    {/* TRIGGER DOWNLOAD ON CLICK */}
                     <button 
                       className={styles.pdfBtn}
                       onClick={() => downloadPdf(record.id, record.employee?.employeeId || record.id.toString())}

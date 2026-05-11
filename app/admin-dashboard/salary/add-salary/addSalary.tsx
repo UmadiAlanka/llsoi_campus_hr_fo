@@ -7,8 +7,14 @@ import { useRouter } from "next/navigation";
 export default function AddSalary() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    employeeId: "", name: "", employeeType: "", month: "",
-    basicSalary: "", allowances: "", deductions: "", netSalary: "",
+    employeeId: "", // This should be the internal Database ID (e.g., 29)
+    name: "",
+    employeeType: "",
+    month: "",
+    basicSalary: "",
+    allowances: "",
+    deductions: "",
+    netSalary: "",
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
@@ -20,16 +26,44 @@ export default function AddSalary() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
+
+    // 1. Split the "YYYY-MM" string into separate numbers for the backend
+    const [yearNum, monthNum] = formData.month.split("-").map(Number);
+
+    // 2. Format the payload to match your Java Salary Entity
+    const payload = {
+      employee: { id: parseInt(formData.employeeId) }, // Maps to your @ManyToOne Employee
+      basicSalary: parseFloat(formData.basicSalary),
+      netSalary: parseFloat(formData.netSalary),
+      month: monthNum,
+      year: yearNum,
+      status: "PENDING"
+    };
+
     try {
-      await fetch("http://localhost:2027/api/salaries", {
+      // 3. Updated URL to match your SalaryController @RequestMapping
+      const response = await fetch("http://localhost:2027/api/payroll/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
-      setStatus("success");
-      setTimeout(() => router.push("/admin-dashboard/salary"), 1500);
-    } catch {
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStatus("success");
+        setTimeout(() => {
+          router.push("/admin-dashboard/salary");
+          router.refresh(); // Clears cache so the new record appears in the list
+        }, 1500);
+      } else {
+        alert("Backend Error: " + result.message);
+        setStatus("idle");
+      }
+    } catch (error) {
+      console.error("Connection failed", error);
       setStatus("idle");
+      alert("Could not connect to the backend server.");
     }
   };
 
@@ -51,8 +85,9 @@ export default function AddSalary() {
           <h3 className={styles.sectionTitle}>Employee Information</h3>
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Employee ID:</label>
-              <input name="employeeId" value={formData.employeeId} onChange={handleChange} className={styles.input} placeholder="EMP-001" required />
+              {/* Note: This must be the ID number from your database (like 29 or 30) */}
+              <label className={styles.label}>Database ID:</label>
+              <input name="employeeId" value={formData.employeeId} onChange={handleChange} className={styles.input} placeholder="e.g. 29" required />
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>Employee Name:</label>

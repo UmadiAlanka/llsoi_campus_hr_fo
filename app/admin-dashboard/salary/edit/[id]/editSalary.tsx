@@ -2,25 +2,24 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import styles from "./editSalary.module.css"; // Create this CSS file for styling
-
-interface SalaryData {
-  id: number;
-  employee: {
-    name: string;
-    employeeId: string;
-    jobType: string;
-  };
-  basicSalary: number;
-  netSalary: number;
-  month: number;
-  year: number;
-}
+import styles from "./editSalary.module.css";
+import MessageBox from "@/app/admin-dashboard/components/MessageBox";
 
 export default function EditSalaryPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id;
+
+  // State to control your MessageBox component
+  const [msgConfig, setMsgConfig] = useState<{
+    show: boolean;
+    type: "success" | "error";
+    message: string;
+  }>({
+    show: false,
+    type: "success",
+    message: "",
+  });
 
   const [formData, setFormData] = useState<any>({
     name: "",
@@ -67,16 +66,42 @@ export default function EditSalaryPage() {
       });
 
       if (response.ok) {
-        alert("Salary updated successfully!");
-        router.push("/admin-dashboard/salary");
+        // Trigger your MessageBox for Success
+        setMsgConfig({
+          show: true,
+          type: "success",
+          message: "Salary record updated successfully!",
+        });
+        
+        setTimeout(() => {
+          router.push("/admin-dashboard/salary");
+          router.refresh();
+        }, 1500);
+      } else {
+        throw new Error();
       }
     } catch (error) {
-      alert("Update failed.");
+      // Trigger your MessageBox for Error
+      setMsgConfig({
+        show: true,
+        type: "error",
+        message: "Update failed. Please check your connection.",
+      });
+      setTimeout(() => setMsgConfig({ ...msgConfig, show: false }), 2500);
     }
   };
 
   return (
     <div className={styles.container}>
+      {/* --- USING YOUR REUSABLE COMPONENT --- */}
+      {msgConfig.show && (
+        <MessageBox 
+          type={msgConfig.type} 
+          message={msgConfig.message} 
+          onClose={() => setMsgConfig({ ...msgConfig, show: false })} 
+        />
+      )}
+
       <div className={styles.formCard}>
         <h2 className={styles.title}>Edit Salary</h2>
         <form onSubmit={handleUpdate}>
