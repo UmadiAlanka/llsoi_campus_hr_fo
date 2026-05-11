@@ -4,13 +4,12 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./salary.module.css";
 import Link from "next/link";
 
-// interface updated to include the nested employeeId
 interface SalaryRecord {
   id: number;
   employee: {
     id: number;
     name: string;
-    employeeId: string; // This is the custom ID from your Java backend
+    employeeId: string;
   };
   basicSalary: number;
   netSalary: number;
@@ -24,19 +23,18 @@ export default function AdminSalary() {
   const [records, setRecords] = useState<SalaryRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // 1. Fetch Salary Records
   useEffect(() => {
     const fetchSalaries = async () => {
       try {
         setLoading(true);
-        // Using the /api/payroll/all endpoint from your Spring Boot controller
         const response = await fetch("http://localhost:2027/api/payroll/all");
         const result = await response.json();
 
-        // Safely unwrapping the ApiResponse object
         if (result && result.success && Array.isArray(result.data)) {
           setRecords(result.data);
         } else {
-          console.error("Data mapping error or empty database:", result);
+          console.error("Data mapping error:", result);
           setRecords([]);
         }
       } catch (error) {
@@ -49,6 +47,37 @@ export default function AdminSalary() {
 
     fetchSalaries();
   }, []);
+
+  // 2. Handle PDF Download Logic
+  const downloadPdf = async (id: number, empId: string) => {
+    try {
+      const response = await fetch(`http://localhost:2027/api/payroll/download/${id}`);
+      
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF on the server.");
+      }
+
+      // Convert the response to a Blob (Binary Large Object)
+      const blob = await response.blob();
+      
+      // Create a temporary local URL for the blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create a hidden link and click it to trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `PaySlip_${empId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Error: Could not download the pay slip. Please ensure the backend is running.");
+    }
+  };
 
   const handleMonthClick = () => {
     if (monthInputRef.current) {
@@ -104,9 +133,7 @@ export default function AdminSalary() {
             ) : (
               records.map((record) => (
                 <tr key={record.id}>
-                  {/* ACCESSING THE CUSTOM EMPLOYEE ID */}
                   <td>{record.employee?.employeeId || record.id}</td>
-                  
                   <td>{record.employee?.name || "Unknown"}</td>
                   <td>Rs {record.basicSalary?.toLocaleString()}</td>
                   <td>Rs {record.netSalary?.toLocaleString()}</td>
@@ -117,7 +144,11 @@ export default function AdminSalary() {
                     </span>
                   </td>
                   <td>
-                    <button className={styles.pdfBtn}>
+                    {/* TRIGGER DOWNLOAD ON CLICK */}
+                    <button 
+                      className={styles.pdfBtn}
+                      onClick={() => downloadPdf(record.id, record.employee?.employeeId || record.id.toString())}
+                    >
                       <img src="/icons/pdf.png" alt="PDF" style={{ width: 24 }} />
                     </button>
                   </td>
