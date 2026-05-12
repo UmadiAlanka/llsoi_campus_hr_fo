@@ -6,10 +6,10 @@ import Link from "next/link";
 import styles from "./ForgotPasswordForm.module.css";
 
 export default function ForgotPasswordForm() {
-  const [email, setEmail]     = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sent, setSent]       = useState(false);
-  const [error, setError]     = useState("");
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,10 +21,13 @@ export default function ForgotPasswordForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const data = await res.json();
+      
       if (res.ok) {
+        // Save email so the Reset Password page knows which user to verify
+        localStorage.setItem("resetEmail", email);
         setSent(true);
       } else {
+        const data = await res.json();
         setError(data.message || "Email not found in our system.");
       }
     } catch {
@@ -62,10 +65,10 @@ export default function ForgotPasswordForm() {
 
         <h1 className={styles.cardTitle}>Forgot password?</h1>
         <p className={styles.cardDesc}>
-          Enter your registered email address below. We'll send you a secure link to reset your password.
+          Enter your email below. We'll send a <strong>6-digit verification code</strong> to your inbox to reset your password.
         </p>
 
-        {/* Steps */}
+        {/* Steps Progress Bar */}
         <div className={styles.stepRow}>
           <div className={`${styles.step} ${styles.stepDone}`}>
             <div className={styles.stepNum}>1</div>
@@ -74,16 +77,16 @@ export default function ForgotPasswordForm() {
           <div className={styles.stepDiv} />
           <div className={`${styles.step} ${sent ? styles.stepDone : styles.stepPending}`}>
             <div className={styles.stepNum}>2</div>
-            <span>Check inbox</span>
+            <span>Get Code</span>
           </div>
           <div className={styles.stepDiv} />
           <div className={`${styles.step} ${styles.stepPending}`}>
             <div className={styles.stepNum}>3</div>
-            <span>Reset password</span>
+            <span>Reset</span>
           </div>
         </div>
 
-        {/* Success state */}
+        {/* Success state - Displays after email is sent */}
         {sent && (
           <div className={styles.successBox}>
             <div className={styles.successIcon}>
@@ -91,15 +94,17 @@ export default function ForgotPasswordForm() {
                 <path d="M20 6L9 17l-5-5" />
               </svg>
             </div>
-            <p className={styles.successTitle}>Reset link sent!</p>
+            <p className={styles.successTitle}>OTP Code Sent!</p>
             <p className={styles.successDesc}>
-              Check your inbox at <strong>{email}</strong> and click the link to reset your password. The link expires in 15 minutes.
+              A 6-digit code was sent to <strong>{email}</strong>. It expires in 10 minutes.
             </p>
-            <Link href="/login" className={styles.returnBtn}>Return to login</Link>
+            <Link href="/reset-password" className={styles.returnBtn}>
+              ENTER CODE NOW
+            </Link>
           </div>
         )}
 
-        {/* Form */}
+        {/* Form state - Hidden once sent */}
         {!sent && (
           <form onSubmit={handleSubmit}>
             {error && <div className={styles.errorBox}>{error}</div>}
@@ -119,7 +124,6 @@ export default function ForgotPasswordForm() {
                   required
                 />
               </div>
-              <p className={styles.hint}>Use the email associated with your LLSOI staff account.</p>
             </div>
 
             <button type="submit" className={styles.sendBtn} disabled={loading}>
@@ -130,7 +134,7 @@ export default function ForgotPasswordForm() {
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
                 </svg>
               )}
-              {loading ? "Sending…" : "SEND RESET LINK"}
+              {loading ? "Sending…" : "SEND OTP CODE"}
             </button>
           </form>
         )}
