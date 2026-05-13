@@ -1,0 +1,104 @@
+.container {
+  padding: 20px;
+}
+
+.mainTitle {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #fff;
+}
+
+.sectionCard {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.table th {
+  background-color: #741010;
+  color: white;
+  text-align: left;
+  padding: 14px;
+  font-size: 14px;
+}
+
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #333;
+}
+
+.tableRow {
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background-color: #fff3b0; /* Light gold hover from attendance */
+  cursor: pointer;
+}
+
+.issueText {
+  color: #741010;
+  font-style: italic;
+}
+
+.editBtn {
+  background-color: #006400;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.editBtn:hover {
+  background-color: #004d00;
+}
+
+.statusText {
+  color: #006400;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.pendingText {
+  color: #ff0000;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.loadingCell, .noDataCell {
+  text-align: center;
+  padding: 30px;
+  font-weight: bold;
+  color: #741010;
+}
+
+.backBtn {
+  margin-top: 10px;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background-color: #5a0c0c;
+  color: #fff;
+}

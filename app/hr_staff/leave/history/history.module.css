@@ -1,0 +1,93 @@
+/* Container with consistent padding */
+.container {
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.mainTitle {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Glassmorphism Card from p-HRstaff14_2.JPG */
+.glassCard {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.tableWrapper {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+/* Table styling matching the prototype's dark header */
+.historyTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.historyTable th {
+  background-color: #741010; /* Maroon Header */
+  color: white;
+  padding: 15px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.historyTable td {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.tableRow:hover {
+  background-color: #f9f9f9;
+}
+
+.statusText {
+  font-weight: bold;
+  color: #741010;
+}
+
+/* Green Back Button matching p-HRstaff14_2.JPG */
+.buttonContainer {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.backBtn {
+  margin-top: 25px;
+  background-color: #741010;
+  color: #FEC83F;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background-color: #5a0c0c;
+  color: #fff;
+}
+
+.statusCell {
+  text-align: center;
+  padding: 40px !important;
+  color: #666;
+  font-style: italic;
+}

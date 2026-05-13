@@ -1,0 +1,187 @@
+.container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.title {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 40px;
+  align-self: flex-start;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.topCards {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  width: 100%;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.cardLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #741010;
+}
+
+.cardValue {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #FEC83F; /* Gold color from prototype */
+}
+
+.anomalyIcon {
+  color: #741010;
+}
+
+.resolvedIcon {
+  color: #741010;
+}
+
+.ruleSection {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  width: 630px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.ruleTitle {
+  color: #741010;
+  font-weight: bold;
+  font-size: 1.3rem;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.ruleList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.ruleList li {
+  font-size: 1.1rem;
+  color: #FEC83F;
+  font-weight: 500;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.checkIcon {
+  color: #741010;
+  font-weight: bold;
+  margin-right: 15px;
+  font-size: 1.3rem;
+}
+
+.detectButton {
+  background-color: #741010;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: center;
+  transition: background 0.3s;
+}
+
+.detectButton:hover {
+  background-color: #801a1a;
+}
+
+.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.clickable:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* POPUP STYLES */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupCard {
+  background: white;
+  padding: 30px 50px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: popIn 0.3s ease-out;
+}
+
+.successIcon {
+  font-size: 3rem;
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+.popupCard p {
+  color: #333;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* SPINNER FOR BUTTON */
+.spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.detectButton:disabled {
+  background-color: #72a1cd; /* Slightly faded blue */
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

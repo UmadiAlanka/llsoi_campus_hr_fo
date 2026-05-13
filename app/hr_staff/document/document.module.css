@@ -1,0 +1,110 @@
+.container {
+  padding: 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.formCard {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.reportList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reportRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: transparent;
+}
+
+.reportNameContainer {
+  flex: 1;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.reportName {
+  color: #333;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 15px;
+}
+
+.pdfBtn {
+  background-color: #ff0000; /* Red for PDF */
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 100px;
+  transition: transform 0.2s;
+}
+
+.excelBtn {
+  background-color: #006400; /* Dark Green for Excel */
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 100px;
+  transition: transform 0.2s;
+}
+
+.pdfBtn:hover, .excelBtn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.backBtn {
+  margin-top: 25px;
+  background-color: #741010;
+  color: #FEC83F;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background-color: #5a0c0c;
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .reportRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .buttonGroup {
+    justify-content: center;
+  }
+}

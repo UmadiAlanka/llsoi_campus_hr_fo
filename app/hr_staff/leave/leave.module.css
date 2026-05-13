@@ -1,0 +1,167 @@
+/* Container and Title Styles */
+.container {
+  padding: 20px;
+  position: relative;
+}
+
+.mainTitle {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #fff;
+}
+
+/* Glassmorphism Section Card */
+.sectionCard {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: #741010;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #741010;
+}
+
+/* Search and Filter Layout */
+.filters {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.searchWrapper {
+  margin-left: auto;
+}
+
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.searchInput {
+  padding: 10px 40px 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  outline: none;
+  font-size: 14px;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 12px;
+  color: #741010;
+}
+
+/* Table Design */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.table th {
+  background-color: #741010;
+  color: white;
+  text-align: left;
+  padding: 14px;
+  font-size: 14px;
+}
+
+.table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #333;
+}
+
+.tableRow:hover {
+  background-color: #fff3b0; /* Gold hover effect from Attendance Page */
+  cursor: pointer;
+}
+
+/* Specific Badges and Labels */
+.deptBadge {
+  background-color: #fce4ec;
+  color: #741010;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.statusLabel {
+  color: #741010;
+  font-weight: bold;
+}
+
+/* Action Buttons */
+.actionCells {
+  display: flex;
+  gap: 10px;
+}
+
+.approveBtn {
+  background-color: #006400; /* Institutional Green */
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.approveBtn:hover {
+  background-color: #004d00;
+}
+
+.rejectBtn {
+  background-color: #ff0000; /* Alert Red */
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.rejectBtn:hover {
+  opacity: 0.8;
+}
+
+/* Navigation Button */
+.summaryBtn {
+  margin-top: 20px;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.summaryBtn:hover {
+  background-color: #5a0c0c;
+  color: #fff;
+}
+
+/* Loading and Empty State Cells */
+.loadingCell, .noDataCell {
+  text-align: center;
+  padding: 30px !important;
+  font-weight: bold;
+  color: #741010;
+}

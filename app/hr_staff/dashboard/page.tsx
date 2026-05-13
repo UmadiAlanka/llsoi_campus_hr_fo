@@ -81,7 +81,7 @@ export default function DashboardPage() {
         <Link href="/hr_staff/attendance/payroll-summary" className={styles.actionBtn}>
           Generate Monthly payroll
         </Link>
-        <Link href="/hr_staff/anomalies/review" className={styles.actionBtn}>
+        <Link href="/hr_staff/anomaly" className={styles.actionBtn}>
           Review Anomalies
         </Link>
       </div>
