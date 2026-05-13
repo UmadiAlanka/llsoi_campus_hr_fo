@@ -1,0 +1,85 @@
+.container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pageTitle {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    align-self: flex-start;
+    margin-left: 10%;
+}
+
+.formCard {
+    background: rgba(255, 255, 255, 0.85); /* White semi-transparent */
+    padding: 40px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.attendanceForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns like Figma */
+    gap: 20px;
+}
+
+.formGroupFull {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup label, .formGroupFull label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.input, .select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    font-size: 14px;
+    color: black;
+}
+
+.updateBtn {
+    background-color: #1b4d3e; /* Dark green matching Figma */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s;
+}
+
+.updateBtn:hover {
+    background-color: #143a2f;
+}
+
+.loading {
+    color: white;
+    text-align: center;
+    margin-top: 50px;
+}
