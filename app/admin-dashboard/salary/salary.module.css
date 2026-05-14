@@ -1,0 +1,181 @@
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom: 32px;
+}
+
+ .topSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.filterBar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+.filterBox {
+  position: relative;
+  background: #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.filterSelect, .monthInput {
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  font-weight: bold;
+  appearance: none;
+  background: transparent;
+  font-family: "Kanit", sans-serif;
+}
+
+.monthInput::-webkit-calendar-picker-indicator { opacity: 0; cursor: pointer; }
+
+.monthPlaceholder {
+  position: absolute;
+  left: 15px;
+  font-weight: bold;
+  pointer-events: none;
+  color: #000;
+  font-family: "Kanit", sans-serif;
+}
+
+.filterIcon { position: absolute; right: 12px; width: 18px; pointer-events: none; }
+
+.addSalaryBtn {
+  background-color: #720e0e;
+  color: #FFD814;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  width: fit-content;
+  font-family: "Kanit", sans-serif;
+  transition: background 0.2s;
+}
+
+.addSalaryBtn:hover { background-color: #5a0b0b; }
+
+.tableCard {
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.salaryTable { width: 100%; border-collapse: collapse; }
+
+.salaryTable th {
+  background-color: #720e0e;
+  color: #fff;
+  text-align: center;
+  padding: 14px;
+  font-size: 0.88rem;
+}
+
+.salaryTable td {
+  padding: 12px 14px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #333;
+}
+
+.pdfBtn { background: none; border: none; cursor: pointer; }
+
+.actions { display: flex; gap: 8px; justify-content: center; }
+
+.editBtn {
+  background-color: #0f5f1a;
+  color: #fff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.deleteBtn {
+  background-color: #d32f2f;
+  color: #fff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: 300px;
+}
+
+.searchIcon {
+  color: #888;
+  margin-right: 8px;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+.searchInput::placeholder {
+  color: #aaa;
+}
+
+.addBtnWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.addSalaryLink {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.addSalaryBtn {
+  background-color: #720e0e;
+  color: white;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.addSalaryBtn:hover {
+  background-color: #5a0b0b;
+}
+
+.statusApproved {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.statusPending {
+  color: #ed6c02;
+  font-weight: bold;
+}

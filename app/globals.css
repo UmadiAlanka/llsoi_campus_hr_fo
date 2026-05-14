@@ -8,6 +8,11 @@ body {
   color: #111827;
 }
 
+body {
+  background-color: #F9FAFB;
+  color: #111827;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

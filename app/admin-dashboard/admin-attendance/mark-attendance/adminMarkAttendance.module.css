@@ -1,0 +1,104 @@
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  margin-bottom: 28px;
+}
+
+.formCard {
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.attendanceForm {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.fullWidth { width: 100%; }
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #111;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+  font-family: "Kanit", sans-serif;
+  font-size: 0.95rem;
+  color: #333;
+  transition: border 0.2s;
+}
+
+.input:focus,
+.select:focus { border-color: #720e0e; }
+
+.selectWrapper,
+.dateWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: #fff;
+}
+
+.select { appearance: none; padding-right: 36px; }
+
+.selectIcon,
+.calendarIcon {
+  position: absolute;
+  right: 12px;
+  width: 18px;
+  pointer-events: none;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: "Kanit", sans-serif;
+  cursor: pointer;
+}
+
+.dateInput::-webkit-calendar-picker-indicator { opacity: 0; cursor: pointer; }
+
+.submitBtn {
+  background-color: #0f5f1a;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 6px;
+  font-family: "Kanit", sans-serif;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover { background-color: #0d4d16; }

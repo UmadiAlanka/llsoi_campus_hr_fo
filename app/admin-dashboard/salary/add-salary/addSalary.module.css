@@ -1,0 +1,135 @@
+.pageTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom: 28px;
+}
+
+.formCard {
+  background: rgba(255, 255, 255, 0.92); /* Slightly higher opacity for readability */
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #720e0e;
+  margin: 24px 0 16px;
+  border-bottom: 3px solid #720e0e;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+  margin-bottom: 10px;
+}
+
+.formGroup { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+  position: relative; /* Added for fetching indicator placement */
+}
+
+.label { font-weight: 700; font-size: 0.95rem; color: #111; }
+
+.input, .select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+  font-family: "Kanit", sans-serif;
+  font-size: 0.95rem;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.input:focus, .select:focus { 
+  border-color: #720e0e; 
+  box-shadow: 0 0 0 2px rgba(114, 14, 14, 0.1);
+}
+
+/* --- NEW: Read Only Styles for Auto-fetched data --- */
+.inputReadOnly {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f4f4f4; /* Light grey to show it's disabled */
+  color: #666;
+  font-family: "Kanit", sans-serif;
+  font-size: 0.95rem;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+/* --- NEW: Fetching Indicator --- */
+.loadingText {
+  font-size: 0.75rem;
+  color: #720e0e;
+  font-weight: bold;
+  animation: pulse 1.5s infinite;
+  margin-top: 2px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+.submitBtn {
+  width: 100%;
+  background-color: #0f5f1a;
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 24px;
+  font-family: "Kanit", sans-serif;
+  transition: background 0.3s;
+}
+
+.submitBtn:hover:not(:disabled) { background-color: #0d4d16; }
+.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Popup Styles */
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* Adds a nice modern blur effect */
+}
+
+.popupCard {
+  background: #fff;
+  padding: 30px 50px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.successIcon { font-size: 3.5rem; color: #28a745; margin-bottom: 10px; }
+.popupCard p { color: #333; font-weight: 800; font-size: 1.2rem; margin: 0; }
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
