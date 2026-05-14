@@ -1,15 +1,9 @@
-<<<<<<< HEAD
-import React from 'react';
-=======
 "use client";
 import React, { useEffect, useState } from 'react';
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 import Link from 'next/link';
 import styles from './ViewAttendance.module.css';
 
 const ViewAttendance = () => {
-<<<<<<< HEAD
-=======
   const [attendanceData, setAttendanceData] = useState([]);
   const [allData, setAllData] = useState([]);
   const [user, setUser] = useState(null);
@@ -118,7 +112,6 @@ const ViewAttendance = () => {
     setAttendanceData(transformedData);
   }, [allData, selectedMonth, selectedYear, selectedStatus]);
 
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -126,20 +119,8 @@ const ViewAttendance = () => {
 
   const statuses = ["Status", "Present", "Late", "On Leave", "Absent"];
 
-<<<<<<< HEAD
-  const attendanceData = [
-    { date: '12/06/2025', in: '09:00AM', out: '05:30PM', hours: '08:30hrs', lateness: 'On-Time' },
-    { date: '12/07/2025', in: '09:00AM', out: '05:30PM', hours: '08:30hrs', lateness: 'On-Time' },
-    { date: '12/08/2025', in: '09:15AM Late', out: '05:30PM', hours: '08:15hrs', lateness: '15 mins late' },
-    { date: '12/09/2025', in: 'Leave', out: 'Leave', hours: 'N/A', lateness: 'N/A' },
-  ];
-
-  return (
-     <div className={styles.appContainer}>
-=======
   return (
     <div className={styles.appContainer}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
       {/* HEADER */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
@@ -152,15 +133,9 @@ const ViewAttendance = () => {
         <div className={styles.userProfile}>
           <div className={styles.userText}>
             <p>
-<<<<<<< HEAD
-              Welcome, <strong>Employee Name!</strong>
-            </p>
-            <span>Employee ID</span>
-=======
               Welcome, <strong>{user ? user.name : 'Employee'}!</strong>
             </p>
             <span>Employee ID: {user ? user.username : ''}</span>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
           </div>
           <img
             src="/icons/user-profile.png"
@@ -174,21 +149,6 @@ const ViewAttendance = () => {
         {/* Sidebar Navigation */}
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
-<<<<<<< HEAD
-            <Link href="/dashboard" className={styles.navLink}>
-              <img src="/icons/dashboard.png" className={styles.navIcon} alt="" /> Dashboard
-            </Link>
-            <Link href="/V-Attendance" className={`${styles.navLink} ${styles.active}`}>
-              <img src="/icons/attendance.png" className={styles.navIcon} alt="" /> View Attendance
-            </Link>
-            <Link href="/leave" className={styles.navLink}>
-              <img src="/icons/leave.png" className={styles.navIcon} alt="" /> Request Leave
-            </Link>
-            <Link href="/salary" className={styles.navLink}>
-              <img src="/icons/salary.png" className={styles.navIcon} alt="" /> View Salary
-            </Link>
-            <Link href="/logout" className={styles.navLink}>
-=======
             <Link href="/employees" className={styles.navLink}>
               <img src="/icons/dashboard.png" className={styles.navIcon} alt="" /> Dashboard
             </Link>
@@ -202,7 +162,6 @@ const ViewAttendance = () => {
               <img src="/icons/salary.png" className={styles.navIcon} alt="" /> View Salary
             </Link>
             <Link href="/login" className={styles.navLink}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               <img src="/icons/logout.png" className={styles.navIcon} alt="" /> Log Out
             </Link>
           </nav>
@@ -211,25 +170,10 @@ const ViewAttendance = () => {
         {/* Main Attendance Content */}
         <main className={styles.mainContent}>
           <h2 className={styles.pageTitle}>Attendance</h2>
-<<<<<<< HEAD
-          
-=======
-
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
           {/* Filters: Month/Year and Status */}
           <div className={styles.filterRow}>
             <div className={styles.filterItem}>
               <label className={styles.filterLabel}>Month/Year</label>
-<<<<<<< HEAD
-              <select className={styles.selectInput} defaultValue="December">
-                {months.map((m) => (
-                  <option key={m} value={m}>{m} 2025</option>
-                ))}
-              </select>
-            </div>
-            <div className={styles.filterItem}>
-              <select className={styles.selectInput}>
-=======
               <div style={{ display: 'flex', gap: '10px' }}>
                 <select 
                   className={styles.selectInput} 
@@ -257,7 +201,6 @@ const ViewAttendance = () => {
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
                 {statuses.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
@@ -274,15 +217,9 @@ const ViewAttendance = () => {
               <h3>Monthly Attendance Summary:</h3>
             </div>
             <div className={styles.statsGrid}>
-<<<<<<< HEAD
-              <div className={styles.statBox}>18 Days Present</div>
-              <div className={styles.statBox}>2 Days Late</div>
-              <div className={styles.statBox}>0 days On Leave</div>
-=======
               <div className={styles.statBox}>{summary.present} Present (On-Time)</div>
               <div className={styles.statBox}>{summary.late} Late (After 9 AM)</div>
               <div className={styles.statBox}>{summary.leave} Absent/Leave</div>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
             </div>
           </div>
 
@@ -299,17 +236,6 @@ const ViewAttendance = () => {
                 </tr>
               </thead>
               <tbody>
-<<<<<<< HEAD
-                {attendanceData.map((row, i) => (
-                  <tr key={i}>
-                    <td>{row.date}</td>
-                    <td className={row.in.includes('Late') ? styles.lateText : ''}>{row.in}</td>
-                    <td>{row.out}</td>
-                    <td>{row.hours}</td>
-                    <td>{row.lateness}</td>
-                  </tr>
-                ))}
-=======
                 {attendanceData.length > 0 ? (
                   attendanceData.map((row, i) => (
                     <tr key={i}>
@@ -323,7 +249,6 @@ const ViewAttendance = () => {
                 ) : (
                   <tr><td colSpan="5">No attendance records found.</td></tr>
                 )}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               </tbody>
             </table>
           </div>
