@@ -4,12 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./list.module.css";
 
-// Interface to define the structure of your data and remove red lines
+// Interface to match your Spring Boot Backend
 interface Anomaly {
   id: number;
-  employee: {
-    name: string;
-  };
+  employee?: { name: string };
   currentAmount: number;
   anomalyType: string;
   description: string;
@@ -18,7 +16,6 @@ interface Anomaly {
 
 export default function AnomalyList() {
   const router = useRouter();
-  // Initialize as an empty array to prevent .map() from failing on first render
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,21 +23,12 @@ export default function AnomalyList() {
     const fetchAnomalies = async () => {
       try {
         const response = await fetch("http://localhost:2027/api/anomalies/all");
-        const result = await response.json();
-        
-        // Safety check: Spring Boot often returns a list directly, 
-        // but if you have a wrapper, result.data will be used.
-        if (Array.isArray(result)) {
-          setAnomalies(result);
-        } else if (result && Array.isArray(result.data)) {
-          setAnomalies(result.data);
-        } else {
-          console.error("Data received is not an array:", result);
-          setAnomalies([]); 
-        }
+        const data = await response.json();
+        // Handle both direct arrays and wrapped responses
+        const dataArray = Array.isArray(data) ? data : data.data || [];
+        setAnomalies(dataArray);
       } catch (error) {
-        console.error("Error fetching anomalies:", error);
-        setAnomalies([]);
+        console.error("Fetch error:", error);
       } finally {
         setLoading(false);
       }
@@ -49,63 +37,59 @@ export default function AnomalyList() {
   }, []);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.tableCard}>
-        <div className={styles.header}>
-          <h2>Anomaly List</h2>
-        </div>
-        
+    <div className={styles.contentWrapper}>
+      <h2 className={styles.pageTitle}>Anomaly Detection</h2>
+      
+      <div className={styles.tableContainer}>
         <table className={styles.anomalyTable}>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Salary (Rs.)</th>
-              <th>Type</th>
-              <th>Issue</th>
-              <th>Action</th>
-              <th>Status</th>
+              <th style={{ width: "8%" }}>ID</th>
+              <th style={{ width: "18%" }}>NAME</th>
+              <th style={{ width: "14%" }}>SALARY</th>
+              <th style={{ width: "15%" }}>TYPE</th>
+              <th style={{ width: "23%" }}>ISSUE</th>
+              <th style={{ width: "12%" }}>ACTION</th>
+              <th style={{ width: "10%" }}>STATUS</th>
             </tr>
           </thead>
           <tbody>
             {!loading && anomalies.length > 0 ? (
-              anomalies.map((anomaly) => (
-                <tr key={anomaly.id}>
-                  <td>{String(anomaly.id).padStart(3, '0')}</td>
-                  <td>{anomaly.employee?.name || "Unknown"}</td>
-                  <td>{anomaly.currentAmount?.toLocaleString()}</td>
-                  <td>{anomaly.anomalyType}</td>
-                  <td className={styles.issueText}>{anomaly.description}</td>
+              anomalies.map((item) => (
+                <tr key={item.id}>
+                  <td>{String(item.id).padStart(3, '0')}</td>
+                  <td>{item.employee?.name || "N/A"}</td>
+                  <td>{item.currentAmount?.toLocaleString()}</td>
+                  <td>{item.anomalyType}</td>
+                  <td className={styles.issueCell}>{item.description}</td>
                   <td>
                     <button 
                       className={styles.viewBtn}
-                      onClick={() => router.push(`/admin-dashboard/anomaly/view/${anomaly.id}`)}
+                      onClick={() => router.push(`/admin-dashboard/anomaly/view/${item.id}`)}
                     >
                       View
                     </button>
                   </td>
                   <td>
-                    <span className={styles[anomaly.status?.toLowerCase() as keyof typeof styles] || ""}>
-                      {anomaly.status}
-                    </span>
+                    <span className={styles.statusText}>{item.status}</span>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', padding: '20px' }}>
-                  {loading ? "Loading anomalies..." : "No anomalies found."}
+                <td colSpan={7} className={styles.emptyState}>
+                  {loading ? "Loading..." : "No anomalies detected."}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+      </div>
 
-        <div className={styles.footer}>
-          <button className={styles.backBtn} onClick={() => router.back()}>
-            Back
-          </button>
-        </div>
+      <div className={styles.footer}>
+        <button className={styles.backBtn} onClick={() => router.back()}>
+          BACK
+        </button>
       </div>
     </div>
   );

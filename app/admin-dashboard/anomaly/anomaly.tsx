@@ -8,34 +8,53 @@ import MessageBox from "@/app/admin-dashboard/components/MessageBox";
 export default function AnomalyDetection() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [anomalyStats, setAnomalyStats] = useState({ totalAnomalies: 0, resolvedAnomalies: 0 });
   
-  // MessageBox State
+  // Stats state initialized to 0
+  const [anomalyStats, setAnomalyStats] = useState({ 
+    totalAnomalies: 0, 
+    resolvedAnomalies: 0 
+  });
+  
   const [msgConfig, setMsgConfig] = useState<{
     show: boolean;
     type: "success" | "error";
     message: string;
   }>({ show: false, type: "success", message: "" });
 
+  // 1. Fetch Actual Counts from Database
   useEffect(() => {
     const fetchAnomalyData = async () => {
       try {
         const response = await fetch("http://localhost:2027/api/anomalies/stats");
+        
+        if (!response.ok) {
+          console.error(`Backend returned status: ${response.status}`);
+          return;
+        }
+
         const result = await response.json();
-        if (result?.data) {
+        
+        // Drilling into the 'data' object of your ApiResponse
+        if (result && result.data) {
           setAnomalyStats({
-            totalAnomalies: result.data.totalAnomalies || 0,
-            resolvedAnomalies: result.data.resolvedAnomalies || 0,
+            totalAnomalies: result.data.totalAnomalies ?? 0,
+            resolvedAnomalies: result.data.resolvedAnomalies ?? 0,
+          });
+        } else {
+          // Fallback if structure is flat
+          setAnomalyStats({
+            totalAnomalies: result.totalAnomalies ?? 0,
+            resolvedAnomalies: result.resolvedAnomalies ?? 0,
           });
         }
       } catch (error) {
-        console.error("Error fetching anomaly data:", error);
+        console.error("Network error fetching stats:", error);
       }
     };
     fetchAnomalyData();
   }, []);
 
-  // 1. Logic to Run Detection and Navigate
+  // 2. Logic to Run Detection
   const handleDetectClick = async () => {
     setLoading(true);
     try {
@@ -50,7 +69,7 @@ export default function AnomalyDetection() {
           message: "Scan complete! Redirecting to flagged records...",
         });
 
-        // Small delay so they can see the success message
+        // Delay to allow message to be seen
         setTimeout(() => {
           router.push("/admin-dashboard/anomaly/list");
         }, 1500);
@@ -61,19 +80,14 @@ export default function AnomalyDetection() {
       setMsgConfig({
         show: true,
         type: "error",
-        message: "Failed to run detection. Please check backend.",
+        message: "Failed to run detection. Check backend logs.",
       });
       setLoading(false);
     }
   };
 
-  const handleViewAnomalies = () => {
-    router.push("/admin-dashboard/anomaly/list");
-  };
-
   return (
     <div className={styles.container}>
-      {/* MessageBox for Feedback */}
       {msgConfig.show && (
         <MessageBox 
           type={msgConfig.type} 
@@ -85,10 +99,10 @@ export default function AnomalyDetection() {
       <h2 className={styles.pageTitle}>Anomaly Detection</h2>
 
       <div className={styles.cardGrid}>
+        {/* Total Anomalies Card */}
         <div 
           className={`${styles.card} ${styles.clickableCard}`} 
-          onClick={handleViewAnomalies}
-          title="Click to view all anomalies"
+          onClick={() => router.push("/admin-dashboard/anomaly/list")}
         >
           <div className={styles.cardHeader}>
             <div className={styles.cardIconContainer}>
@@ -99,6 +113,7 @@ export default function AnomalyDetection() {
           <p className={styles.cardValue}>{anomalyStats.totalAnomalies}</p>
         </div>
 
+        {/* Resolved Card */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <div className={styles.cardIconContainer}>
@@ -118,7 +133,6 @@ export default function AnomalyDetection() {
           <li><span className={styles.checkIcon}>✔</span> Missing Attendance Rule</li>
         </ul>
         
-        {/* Updated Button with Loading State */}
         <button 
           className={styles.detectButton} 
           onClick={handleDetectClick}
