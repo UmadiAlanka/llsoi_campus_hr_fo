@@ -103,6 +103,9 @@
   transition: background 0.2s;
 }
 
+<<<<<<< HEAD
+.detectButton:hover { background-color: #5a0b0b; }
+=======
 .detectButton:hover { background-color: #5a0b0b; }
 
 .clickableCard {
@@ -115,3 +118,4 @@
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
   border: 1px solid #800000; /* Matching your maroon theme */
 }
+>>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9

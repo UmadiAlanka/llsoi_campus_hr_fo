@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
+import styles from "./anomaly.module.css";
+
+export default function AnomalyDetection() {
+  const [anomalyStats, setAnomalyStats] = useState({ totalAnomalies: 0, resolvedAnomalies: 0 });
+=======
 import { useRouter } from "next/navigation";
 import styles from "./anomaly.module.css";
 import MessageBox from "@/app/admin-dashboard/components/MessageBox";
@@ -16,6 +22,7 @@ export default function AnomalyDetection() {
     type: "success" | "error";
     message: string;
   }>({ show: false, type: "success", message: "" });
+>>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 
   useEffect(() => {
     const fetchAnomalyData = async () => {
@@ -35,6 +42,14 @@ export default function AnomalyDetection() {
     fetchAnomalyData();
   }, []);
 
+<<<<<<< HEAD
+  return (
+    <>
+      <h2 className={styles.pageTitle}>Anomaly Detection</h2>
+
+      <div className={styles.cardGrid}>
+        <div className={styles.card}>
+=======
   // 1. Logic to Run Detection and Navigate
   const handleDetectClick = async () => {
     setLoading(true);
@@ -90,6 +105,7 @@ export default function AnomalyDetection() {
           onClick={handleViewAnomalies}
           title="Click to view all anomalies"
         >
+>>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
           <div className={styles.cardHeader}>
             <div className={styles.cardIconContainer}>
               <img src="/icons/total-anomaly.png" alt="Total" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -117,6 +133,11 @@ export default function AnomalyDetection() {
           <li><span className={styles.checkIcon}>✔</span> Rs.300 Sudden Change Rule</li>
           <li><span className={styles.checkIcon}>✔</span> Missing Attendance Rule</li>
         </ul>
+<<<<<<< HEAD
+        <button className={styles.detectButton}>Detect Anomaly</button>
+      </div>
+    </>
+=======
         
         {/* Updated Button with Loading State */}
         <button 
@@ -128,5 +149,6 @@ export default function AnomalyDetection() {
         </button>
       </div>
     </div>
+>>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   );
 }
