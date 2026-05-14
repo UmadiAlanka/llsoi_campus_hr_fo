@@ -4,15 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-<<<<<<< HEAD
-import style from "./LoginForm.module.css";
-
-const LoginForm: React.FC = () => {
-  const router = useRouter();
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-=======
 import styles from "./LoginForm.module.css";
 
 export default function LoginForm() {
@@ -21,7 +12,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [remember, setRemember] = useState(false);
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -29,57 +19,6 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError("");
-<<<<<<< HEAD
-
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
-
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        // 1. Save logged user info to localStorage
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            userId: data.userId,
-            username: data.username,
-            name: data.name,
-            role: data.role,
-          })
-        );
-
-        // 2. Normalize role for comparison (prevents "Admin" vs "admin" errors)
-        const userRole = data.role ? data.role.toLowerCase() : "";
-
-        // 3. Redirect based on normalized role
-        if (userRole === "admin") {
-          router.push("/admin-dashboard");
-          // Fallback if router fails: window.location.href = "/admin-dashboard";
-        } else if (userRole === "hr") {
-          router.push("/hr_staff/dashboard");
-        } else if (userRole === "employee") {
-          router.push("/employees");
-        } else {
-          router.push("/");
-        }
-      } else {
-        setError(data.message || "Invalid username or password");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Failed to connect to server. Check if Backend is running on port 2027.");
-=======
     try {
       const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
       const res = await fetch(`${API}/auth/login`, {
@@ -103,55 +42,12 @@ export default function LoginForm() {
       }
     } catch {
       setError("Cannot connect to server. Make sure the backend is running on port 2027.");
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
     } finally {
       setLoading(false);
     }
   };
 
   return (
-<<<<<<< HEAD
-    <div className={style.main}>
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/loginBackground.jpg"
-          alt="Background"
-          fill
-          style={{ objectFit: "cover" }}
-          quality={100}
-          priority
-        />
-      </div>
-
-      {/* Login Form Card */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className={style.loginCard}>
-          <div className="text-center mb-6">
-            <Image
-              src="/Logo.png"
-              alt="Logo"
-              width={60}
-              height={60}
-              className="mx-auto mb-2"
-            />
-            <h1>
-              <span className={style.titlePrimary}>LLSOI</span>
-              <span className={style.titleSecondary}> Campus</span>
-            </h1>
-            <h2 className={style.subHeader}>HR Management System</h2>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className={style.label}>Username:</label>
-              <input
-                type="text"
-                className={style.Input}
-                placeholder="Enter Your Username"
-                value={username}
-                name="USERNAME_FIELD"
-=======
     <div className={styles.page}>
       {/* Background image */}
       <div className={styles.bgImage}>
@@ -193,48 +89,10 @@ export default function LoginForm() {
                 type="text"
                 placeholder="Enter your username"
                 value={username}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
-<<<<<<< HEAD
-
-            <div>
-              <label className={style.label}>Password:</label>
-              <input
-                type="password"
-                className={style.Input}
-                placeholder="Enter Your Password"
-                value={password}
-                name="PASSWORD_FIELD"
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm">
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className={style.loginButton}
-              name="submit"
-              disabled={loading}
-            >
-              {loading ? "Logging..." : "Login"}
-            </button>
-          </form>
-
-          <div className="mt-4 text-center">
-            <Link href="/forgot-password" className={style.forgotLink}>
-              Forgot your password?
-            </Link>
-          </div>
-=======
           </div>
 
           {/* Password */}
@@ -291,15 +149,8 @@ export default function LoginForm() {
           <span className={`${styles.chip} ${styles.chipAdmin}`}>Admin</span>
           <span className={`${styles.chip} ${styles.chipHr}`}>HR Staff</span>
           <span className={`${styles.chip} ${styles.chipEmp}`}>Employee</span>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
         </div>
       </div>
     </div>
   );
-<<<<<<< HEAD
-};
-
-export default LoginForm;
-=======
 }
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9

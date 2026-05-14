@@ -6,9 +6,6 @@
   margin-bottom: 32px;
 }
 
-<<<<<<< HEAD
-.topSection { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
-=======
  .topSection {
   display: flex;
   justify-content: space-between;
@@ -16,7 +13,6 @@
   margin-bottom: 25px;
   width: 100%;
 }
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 
 .filterBar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
@@ -121,8 +117,6 @@
   font-weight: bold;
   cursor: pointer;
   font-size: 0.8rem;
-<<<<<<< HEAD
-=======
 }
 
 .searchContainer {
@@ -184,5 +178,4 @@
 .statusPending {
   color: #ed6c02;
   font-weight: bold;
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 }
