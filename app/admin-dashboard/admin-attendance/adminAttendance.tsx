@@ -22,6 +22,7 @@ const AdminAttendance: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
   const dateInputRef = useRef<HTMLInputElement>(null);
+  
 
   // Fetch real data from the backend
   useEffect(() => {
@@ -112,21 +113,26 @@ const AdminAttendance: React.FC = () => {
             {loading ? (
               <tr><td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>Loading Attendance Records...</td></tr>
             ) : records.length > 0 ? (
-              records.map((record) => (
-                <tr key={record.id}>
-                  {/* Pulls data from the nested employee object in your Java model */}
-                  <td>{record.employee?.id?.toString().padStart(3, '0') || 'N/A'}</td>
-                  <td>{record.employee?.name || 'Unknown'}</td>
-                  <td>{record.date}</td>
-                  <td>{record.clockInTime || 'Not Marked'}</td>
-                  <td>{record.employee?.department || 'Staff'}</td>
-                  <td>
-                    <Link href={`/admin-dashboard/admin-attendance/edit-attendance/${record.id}`}>
-                      <button className={styles.editBtn}>EDIT / View</button>
-                    </Link>
-                  </td>
-                </tr>
-              ))
+              records.map((record) => {
+                console.log(record);
+                console.log("FULL RECORD:", record);
+                console.log("EMPLOYEE:", record.employee);
+                return (
+                  <tr key={record.id}>
+                    {/* Pulls data from the nested employee object in your Java model */}
+                    <td>{record.employee?.id?.toString().padStart(3, '0') || 'N/A'}</td>
+                    <td>{record.employee?.name || 'Unknown'}</td>
+                    <td>{record.date}</td>
+                    <td>{record.clockInTime || 'Not Marked'}</td>
+                    <td>{record.employee?.department || 'Staff'}</td>
+                    <td>
+                      <Link href={`/admin-dashboard/admin-attendance/edit-attendance/${record.id}`}>
+                       <button className={styles.editBtn}>EDIT / View</button>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr><td colSpan={6} style={{ textAlign: 'center', padding: '20px' }}>No records found in database.</td></tr>
             )}
