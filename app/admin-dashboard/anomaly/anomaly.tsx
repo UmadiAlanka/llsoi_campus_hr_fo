@@ -33,15 +33,7 @@ export default function AnomalyDetection() {
         }
 
         const result = await response.json();
-        
-        // Drilling into the 'data' object of your ApiResponse
-        if (result && result.data) {
-          setAnomalyStats({
-            totalAnomalies: result.data.totalAnomalies ?? 0,
-            resolvedAnomalies: result.data.resolvedAnomalies ?? 0,
-          });
-        } else {
-          // Fallback if structure is flat
+        if (result?.data) {
           setAnomalyStats({
             totalAnomalies: result.totalAnomalies ?? 0,
             resolvedAnomalies: result.resolvedAnomalies ?? 0,
@@ -54,7 +46,7 @@ export default function AnomalyDetection() {
     fetchAnomalyData();
   }, []);
 
-  // 2. Logic to Run Detection
+  // 1. Logic to Run Detection and Navigate
   const handleDetectClick = async () => {
     setLoading(true);
     try {
