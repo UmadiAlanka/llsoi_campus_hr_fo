@@ -40,6 +40,7 @@ export default function AdminLeave() {
     show: boolean;
     type: "success" | "error" | "confirm";
     msg: string;
+    confirmLabel?: string;
     onConfirm?: () => void;
   }>({ show: false, type: "success", msg: "" });
 
@@ -69,6 +70,7 @@ export default function AdminLeave() {
       show: true,
       type: "confirm",
       msg: `Are you sure you want to ${action} this leave request?`,
+      confirmLabel: action === "approve" ? "Yes, Approve" : "Yes, Reject",
       onConfirm: () => executeAction(id, action),
     });
   };
@@ -102,6 +104,7 @@ export default function AdminLeave() {
         <MessageBox
           type={modal.type}
           message={modal.msg}
+          confirmLabel={modal.confirmLabel}
           onClose={() => setModal({ ...modal, show: false })}
           onConfirm={modal.onConfirm}
         />
