@@ -14,27 +14,47 @@ interface MessageConfig {
 export default function AnomalyDetection() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [anomalyStats, setAnomalyStats] = useState({ totalAnomalies: 0, resolvedAnomalies: 0 });
+  const [anomalyStats, setAnomalyStats] = useState({
+    totalAnomalies: 0,
+    resolvedAnomalies: 0,
+  });
 
-  const [msgConfig, setMsgConfig] = useState<MessageConfig>({ 
-    show: false, 
-    type: "success", 
-    message: "" 
+  const [msgConfig, setMsgConfig] = useState<MessageConfig>({
+    show: false,
+    type: "success",
+    message: "",
   });
 
   const fetchAnomalyData = async () => {
     try {
-      const response = await fetch("http://localhost:2027/api/anomalies/stats");
-      if (!response.ok) return;
-      const data = await response.json();
+      const response = await fetch(
+        "http://localhost:2027/api/anomalies/stats",
+        { cache: "no-store" }
+      );
 
-      // Spring Boot returns a Map or Object, mapping it here
-      setAnomalyStats({
-        totalAnomalies: data.total || 0,
-        resolvedAnomalies: data.resolved || 0,
-      });
+      if (!response.ok) {
+        console.error("Stats endpoint returned:", response.status);
+        return;
+      }
+
+      const result = await response.json();
+
+      // Handle ApiResponse wrapper: { success, data: { total, resolved } }
+      if (result.success && result.data) {
+        setAnomalyStats({
+          totalAnomalies: result.data.total ?? result.data.totalAnomalies ?? 0,
+          resolvedAnomalies:
+            result.data.resolved ?? result.data.resolvedAnomalies ?? 0,
+        });
+      } else if (typeof result.total === "number") {
+        // Fallback: bare object without ApiResponse wrapper
+        setAnomalyStats({
+          totalAnomalies: result.total ?? 0,
+          resolvedAnomalies: result.resolved ?? 0,
+        });
+      }
     } catch (error) {
-      console.error("Fetch error:", error);
+      console.error("Fetch error for anomaly stats:", error);
     }
   };
 
@@ -45,24 +65,34 @@ export default function AnomalyDetection() {
   const handleDetectClick = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:2027/api/anomalies/detect", { method: "POST" });
+      const response = await fetch(
+        "http://localhost:2027/api/anomalies/detect",
+        { method: "POST" }
+      );
+
       if (response.ok) {
-        setMsgConfig({ 
-          show: true, 
-          type: "success", 
-          message: "Scan complete! Updating counts..." 
+        const result = await response.json();
+        setMsgConfig({
+          show: true,
+          type: "success",
+          message:
+            result.message ||
+            "Scan complete! Anomalies have been updated.",
         });
+        // Refresh stats after detection
         await fetchAnomalyData();
-        // Redirecting to the list so user can see the new anomalies
         setTimeout(() => router.push("/admin-dashboard/anomaly/list"), 1500);
       } else {
-        throw new Error();
+        const result = await response.json().catch(() => ({}));
+        throw new Error(result.message || "Detection failed.");
       }
-    } catch (error) {
-      setMsgConfig({ 
-        show: true, 
-        type: "error", 
-        message: "Detection failed. Check server connection." 
+    } catch (error: any) {
+      setMsgConfig({
+        show: true,
+        type: "error",
+        message:
+          error.message ||
+          "Detection failed. Check server connection on port 2027.",
       });
       setLoading(false);
     }
@@ -71,23 +101,27 @@ export default function AnomalyDetection() {
   return (
     <div className={styles.container}>
       {msgConfig.show && (
-        <MessageBox 
-          type={msgConfig.type} 
-          message={msgConfig.message} 
-          onClose={() => setMsgConfig({ ...msgConfig, show: false })} 
+        <MessageBox
+          type={msgConfig.type}
+          message={msgConfig.message}
+          onClose={() => setMsgConfig({ ...msgConfig, show: false })}
         />
       )}
 
       <h2 className={styles.pageTitle}>Anomaly Detection Dashboard</h2>
 
       <div className={styles.cardGrid}>
-        <div 
-          className={`${styles.card} ${styles.clickableCard}`} 
+        <div
+          className={`${styles.card} ${styles.clickableCard}`}
           onClick={() => router.push("/admin-dashboard/anomaly/list")}
         >
           <div className={styles.cardHeader}>
             <div className={styles.cardIconContainer}>
-              <img src="/icons/total-anomaly.png" alt="Total" style={{ width: '100%' }} />
+              <img
+                src="/icons/total-anomaly.png"
+                alt="Total"
+                style={{ width: "100%" }}
+              />
             </div>
             <h3 className={styles.cardTitle}>Total Anomalies</h3>
           </div>
@@ -97,7 +131,11 @@ export default function AnomalyDetection() {
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <div className={styles.cardIconContainer}>
-              <img src="/icons/resolved-anomaly.png" alt="Resolved" style={{ width: '100%' }} />
+              <img
+                src="/icons/resolved-anomaly.png"
+                alt="Resolved"
+                style={{ width: "100%" }}
+              />
             </div>
             <h3 className={styles.cardTitle}>Resolved</h3>
           </div>
@@ -107,8 +145,28 @@ export default function AnomalyDetection() {
 
       <div className={styles.rulesContainer}>
         <h3 className={styles.rulesHeader}>Rules Engine</h3>
-        <p>Trigger a manual scan of the current month's payroll against historical data.</p>
-        <button className={styles.detectButton} onClick={handleDetectClick} disabled={loading}>
+        <ul className={styles.rulesList}>
+          <li>
+            <span className={styles.checkIcon}>✓</span>
+            Salary increase or decrease of 10% or more
+          </li>
+          <li>
+            <span className={styles.checkIcon}>✓</span>
+            No previous salary history found
+          </li>
+          <li>
+            <span className={styles.checkIcon}>✓</span>
+            Compares current month against last recorded month
+          </li>
+        </ul>
+        <p style={{ color: "#666", fontSize: "0.9rem", marginTop: "8px" }}>
+          Trigger a manual scan of the current payroll against historical data.
+        </p>
+        <button
+          className={styles.detectButton}
+          onClick={handleDetectClick}
+          disabled={loading}
+        >
           {loading ? "Scanning Database..." : "Run Detection"}
         </button>
       </div>
