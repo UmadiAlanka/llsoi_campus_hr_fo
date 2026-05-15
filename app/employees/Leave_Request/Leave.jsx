@@ -34,7 +34,9 @@ const LeaveRequest = () => {
       const response = await fetch(`${API_URL}/leave/employee/${userId}`);
       const result = await response.json();
       const leaves = (result && result.data) || (Array.isArray(result) ? result : []);
-      const usedLeaves = leaves.filter(l => l.status && l.status.toUpperCase() === 'APPROVED').length;
+      const usedLeaves = leaves.filter(
+        l => l.status && l.status.toUpperCase() === 'APPROVED'
+      ).length;
       setLeaveBalance(15 - usedLeaves);
     } catch (error) {
       console.error("Error fetching leave balance:", error);
@@ -51,8 +53,35 @@ const LeaveRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!user) {
       toast.error('User data is not loaded yet. Please refresh and try again.');
+      return;
+    }
+
+    if (!formData.startDate || formData.startDate.trim() === '') {
+      toast.error('Please select a start date.');
+      return;
+    }
+
+    if (!formData.endDate || formData.endDate.trim() === '') {
+      toast.error('Please select an end date.');
+      return;
+    }
+
+    if (!formData.type || formData.type.trim() === '') {
+      toast.error('Please select a leave type.');
+      return;
+    }
+
+    if (!formData.reason || formData.reason.trim() === '') {
+      toast.error('Please enter a reason for leave.');
+      return;
+    }
+
+    // Validate end date is not before start date
+    if (new Date(formData.endDate) < new Date(formData.startDate)) {
+      toast.error('End date cannot be before start date.');
       return;
     }
 
@@ -62,32 +91,28 @@ const LeaveRequest = () => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
 
     try {
-      let response;
-      const endpoint = `/leave/request/${encodeURIComponent(user.userId)}`;
-      if (formData.file) {
-        const data = new FormData();
-        data.append('employeeId', user.userId);
-        data.append('startDate', formData.startDate);
-        data.append('endDate', formData.endDate);
-        data.append('reason', `${formData.type}: ${formData.reason}`);
-        data.append('document', formData.file);
+      // Always use FormData so @ModelAttribute on backend can bind fields correctly
+      const data = new FormData();
+      data.append('startDate', formData.startDate);   // YYYY-MM-DD from input[type=date]
+      data.append('endDate', formData.endDate);         // YYYY-MM-DD from input[type=date]
+      data.append('reason', formData.reason.trim());
+      data.append('leaveType', formData.type);
+      data.append('leave_type', formData.type);
+      data.append('type', formData.type);
+      data.append('status', 'PENDING');
 
-        response = await fetch(`${API_URL}${endpoint}`, {
+      if (formData.file) {
+        data.append('document', formData.file);
+      }
+
+      const response = await fetch(
+        `${API_URL}/leave/request/${encodeURIComponent(user.userId)}`,
+        {
           method: 'POST',
           body: data
-        });
-      } else {
-        response = await fetch(`${API_URL}${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            employeeId: user.userId,
-            startDate: formData.startDate,
-            endDate: formData.endDate,
-            reason: `${formData.type}: ${formData.reason}`
-          })
-        });
-      }
+          // Do NOT set Content-Type header — browser sets it automatically with boundary
+        }
+      );
 
       let result = {};
       try {
@@ -99,14 +124,23 @@ const LeaveRequest = () => {
       if (response.ok && (result.success || !result.hasOwnProperty('success'))) {
         setMessage('Leave request submitted successfully!');
         toast.success('Leave request submitted successfully!');
-        setFormData({ startDate: '', endDate: '', type: '', reason: '', file: null }); // Reset form
+        // Reset form
+        setFormData({
+          startDate: '',
+          endDate: '',
+          type: '',
+          reason: '',
+          file: null
+        });
         fetchLeaveBalance(user.userId);
       } else {
-        toast.error(result.message || 'Failed to submit request.');
+        const errMsg = result.message || 'Failed to submit request.';
+        toast.error(errMsg);
+        setMessage(errMsg);
       }
     } catch (error) {
       console.error("Error submitting leave:", error);
-      toast.error('Error submitting request.');
+      toast.error('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -142,11 +176,29 @@ const LeaveRequest = () => {
         {/* Sidebar */}
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
-            <Link href="/employees" className={styles.navLink}><img src="/icons/dashboard.png" className={styles.navIcon} /> Dashboard</Link>
-            <Link href="/employees/V-Attendance" className={styles.navLink}><img src="/icons/attendance.png" className={styles.navIcon} /> View Attendance</Link>
-            <Link href="/employees/Leave_Request" className={`${styles.navLink} ${styles.active}`}><img src="/icons/leave.png" className={styles.navIcon} /> Request Leave</Link>
-            <Link href="/employees/Salary" className={styles.navLink}><img src="/icons/salary.png" className={styles.navIcon} /> View Salary</Link>
-            <Link href="/login" className={styles.navLink}><img src="/icons/logout.png" className={styles.navIcon} /> Log Out</Link>
+            <Link href="/employees" className={styles.navLink}>
+              <img src="/icons/dashboard.png" className={styles.navIcon} alt="" />
+              Dashboard
+            </Link>
+            <Link href="/employees/V-Attendance" className={styles.navLink}>
+              <img src="/icons/attendance.png" className={styles.navIcon} alt="" />
+              View Attendance
+            </Link>
+            <Link
+              href="/employees/Leave_Request"
+              className={`${styles.navLink} ${styles.active}`}
+            >
+              <img src="/icons/leave.png" className={styles.navIcon} alt="" />
+              Request Leave
+            </Link>
+            <Link href="/employees/Salary" className={styles.navLink}>
+              <img src="/icons/salary.png" className={styles.navIcon} alt="" />
+              View Salary
+            </Link>
+            <Link href="/login" className={styles.navLink}>
+              <img src="/icons/logout.png" className={styles.navIcon} alt="" />
+              Log Out
+            </Link>
           </nav>
         </aside>
 
@@ -156,25 +208,54 @@ const LeaveRequest = () => {
 
           <div className={styles.requestCard}>
             <div className={styles.balanceHeader}>
-              <img src="/icons/MRcalender.png" alt="Calendar Icon" className={styles.balanceIcon} />
+              <img
+                src="/icons/MRcalender.png"
+                alt="Calendar Icon"
+                className={styles.balanceIcon}
+              />
               <div>
                 <p className={styles.balanceTitle}>Leave Balance:</p>
-                <p className={styles.balanceDays}><strong>{leaveBalance}</strong> /15 Days Left</p>
+                <p className={styles.balanceDays}>
+                  <strong>{leaveBalance}</strong> /15 Days Left
+                </p>
               </div>
             </div>
 
-            {message && <div style={{ color: 'green', marginBottom: '10px' }}>{message}</div>}
+            {message && (
+              <div
+                style={{
+                  color: message.toLowerCase().includes('success') ? 'green' : 'red',
+                  marginBottom: '10px',
+                  fontWeight: 'bold',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  background: message.toLowerCase().includes('success')
+                    ? '#f0fff4'
+                    : '#fff0f0'
+                }}
+              >
+                {message}
+              </div>
+            )}
 
             <form className={styles.leaveForm} onSubmit={handleSubmit}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label>Name:</label>
-                  <input type="text" value={user ? user.name : ''} readOnly />
+                  <input
+                    type="text"
+                    value={user ? user.name : ''}
+                    readOnly
+                  />
                 </div>
 
                 <div className={styles.formGroup}>
                   <label>ID:</label>
-                  <input type="text" value={user ? user.username : ''} readOnly />
+                  <input
+                    type="text"
+                    value={user ? user.username : ''}
+                    readOnly
+                  />
                 </div>
 
                 <div className={styles.formGroup}>
@@ -218,7 +299,12 @@ const LeaveRequest = () => {
 
               <div className={styles.formGroup}>
                 <label>Type Of Leave:</label>
-                <select name="type" value={formData.type} onChange={handleChange} required>
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  required
+                >
                   <option value="">Select Type Of Leave</option>
                   <option value="Sick Leave">Sick Leave</option>
                   <option value="Annual Leave">Annual Leave</option>
@@ -234,13 +320,22 @@ const LeaveRequest = () => {
                   value={formData.reason}
                   onChange={handleChange}
                   required
+                  placeholder="Enter your reason here..."
                 ></textarea>
               </div>
 
               <div className={styles.uploadSection}>
                 <label htmlFor="file-upload" className={styles.uploadLabel}>
-                  <img src="/icons/upload.png" alt="Upload" className={styles.uploadIcon} />
-                  <span className={styles.uploadText}>{formData.file ? formData.file.name : "Optional : Upload Supporting Documents"}</span>
+                  <img
+                    src="/icons/upload.png"
+                    alt="Upload"
+                    className={styles.uploadIcon}
+                  />
+                  <span className={styles.uploadText}>
+                    {formData.file
+                      ? formData.file.name
+                      : "Optional : Upload Supporting Documents"}
+                  </span>
                 </label>
                 <input
                   id="file-upload"
@@ -251,10 +346,20 @@ const LeaveRequest = () => {
               </div>
 
               <div className={styles.buttonRow}>
-                <button type="submit" className={styles.submitBtn} disabled={loading}>
+                <button
+                  type="submit"
+                  className={styles.submitBtn}
+                  disabled={loading}
+                >
                   {loading ? 'Submitting...' : 'SUBMIT REQUEST'}
                 </button>
-                <button type="button" className={styles.cancelBtn} onClick={() => router.push('/employees')}>Cancel</button>
+                <button
+                  type="button"
+                  className={styles.cancelBtn}
+                  onClick={() => router.push('/employees')}
+                >
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
