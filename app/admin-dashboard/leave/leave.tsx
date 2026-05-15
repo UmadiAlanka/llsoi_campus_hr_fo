@@ -1,88 +1,127 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import styles from "./leave.module.css";
+import MessageBox from "../components/MessageBox";
 
-interface LeaveRequest {
-  id: string;
-  employeeId: string;
+interface Employee {
+  id: number;
   name: string;
-  type: string;
-  startDate: string;
-  endDate: string;
-  reason: string;
-  status: "Pending" | "Approved" | "Rejected";
+  employeeId: string;
 }
 
-const initialData: LeaveRequest[] = [
-  {
-    id: "1",
-    employeeId: "001",
-    name: "S.Perera",
-    type: "Academic",
-    startDate: "2025-10-15",
-    endDate: "2025-10-20",
-    reason: "Fever",
-    status: "Pending",
-  },
-];
+interface LeaveRequest {
+  id: number;
+  employee: Employee;
+  startDate: string;
+  endDate: string;
+  leave_type: string;
+  reason: string;
+  status: string;
+}
+
+const BASE = "http://localhost:2027/api";
+
+const formatDate = (dateVal: any): string => {
+  if (!dateVal) return "N/A";
+  if (Array.isArray(dateVal)) {
+    const [y, m, d] = dateVal;
+    return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  }
+  return String(dateVal);
+};
 
 export default function AdminLeave() {
+  const [requests, setRequests] = useState<LeaveRequest[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [requests, setRequests] = useState(initialData);
+  const [modal, setModal] = useState<{
+    show: boolean;
+    type: "success" | "error" | "confirm";
+    msg: string;
+    onConfirm?: () => void;
+  }>({ show: false, type: "success", msg: "" });
 
-  const updateStatus = (
-    id: string,
-    status: "Approved" | "Rejected"
-  ) => {
+  const fetchLeaves = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE}/leaves/all`, { cache: "no-store" });
+      const result = await res.json();
+      if (result.success && Array.isArray(result.data)) {
+        setRequests(result.data);
+      } else {
+        setModal({ show: true, type: "error", msg: "Failed to load leave requests." });
+      }
+    } catch {
+      setModal({ show: true, type: "error", msg: "Could not connect to server on port 2027." });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    setRequests((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, status } : r
-      )
-    );
+  useEffect(() => {
+    fetchLeaves();
+  }, [fetchLeaves]);
+
+  const confirmAction = (id: number, action: "approve" | "reject") => {
+    setModal({
+      show: true,
+      type: "confirm",
+      msg: `Are you sure you want to ${action} this leave request?`,
+      onConfirm: () => executeAction(id, action),
+    });
+  };
+
+  const executeAction = async (id: number, action: "approve" | "reject") => {
+    try {
+      const res = await fetch(`${BASE}/leaves/${id}/${action}`, { method: "PUT" });
+      const result = await res.json();
+
+      if (result.success) {
+        const newStatus = action === "approve" ? "APPROVED" : "REJECTED";
+        setRequests((prev) =>
+          prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
+        );
+        setModal({
+          show: true,
+          type: "success",
+          msg: `Leave ${action === "approve" ? "approved" : "rejected"} successfully!`,
+        });
+      } else {
+        setModal({ show: true, type: "error", msg: result.message || "Operation failed." });
+      }
+    } catch {
+      setModal({ show: true, type: "error", msg: "Server connection error." });
+    }
   };
 
   return (
-
     <div className={styles.leaveContainer}>
-
-      <div className={styles.overlay}></div>
+      {modal.show && (
+        <MessageBox
+          type={modal.type}
+          message={modal.msg}
+          onClose={() => setModal({ ...modal, show: false })}
+          onConfirm={modal.onConfirm}
+        />
+      )}
 
       <div className={styles.contentWrapper}>
-
-        <h1 className={styles.pageTitle}>
-          Leave Management
-        </h1>
+        <h1 className={styles.pageTitle}>Leave Management</h1>
 
         {/* Leave History Card */}
-        <Link
-          href="/admin-dashboard/leave/history"
-          className={styles.historyCard}
-        >
-
-          <div className={styles.historyIcon}>
-            📄
-          </div>
-
-          <h3>
-            View Leave History
-          </h3>
-
+        <Link href="/admin-dashboard/leave/history" className={styles.historyCard}>
+          <div className={styles.historyIcon}>📄</div>
+          <h3>View Leave History</h3>
         </Link>
 
         {/* Table Section */}
         <div className={styles.tableSection}>
-
-          <h2 className={styles.sectionTitle}>
-            Leave Requests
-          </h2>
+          <h2 className={styles.sectionTitle}>Leave Requests</h2>
 
           <div className={styles.tableCard}>
-
             <table className={styles.leaveTable}>
-
               <thead>
                 <tr>
                   <th>ID</th>
@@ -93,81 +132,68 @@ export default function AdminLeave() {
                   <th>Action</th>
                 </tr>
               </thead>
-
               <tbody>
-
-                {requests.map((req) => (
-
-                  <tr key={req.id}>
-
-                    <td>{req.employeeId}</td>
-
-                    <td>{req.name}</td>
-
-                    <td>
-                      {req.startDate} to {req.endDate}
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "20px" }}>
+                      Loading…
                     </td>
-
-                    <td>{req.type}</td>
-
-                    <td>{req.reason}</td>
-
-                    <td>
-
-                      {req.status === "Pending" ? (
-
-                        <div className={styles.actionBtns}>
-
-                          <button
-                            className={styles.approveBtn}
-                            onClick={() =>
-                              updateStatus(req.id, "Approved")
-                            }
-                          >
-                            Approve
-                          </button>
-
-                          <button
-                            className={styles.rejectBtn}
-                            onClick={() =>
-                              updateStatus(req.id, "Rejected")
-                            }
-                          >
-                            Reject
-                          </button>
-
-                        </div>
-
-                      ) : (
-
-                        <span
-                          className={
-                            req.status === "Approved"
-                              ? styles.approvedText
-                              : styles.rejectedText
-                          }
-                        >
-                          {req.status}
-                        </span>
-
-                      )}
-
-                    </td>
-
                   </tr>
-
-                ))}
-
+                ) : requests.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "20px" }}>
+                      No leave requests found.
+                    </td>
+                  </tr>
+                ) : (
+                  requests.map((req) => {
+                    const status = req.status?.toUpperCase();
+                    return (
+                      <tr key={req.id}>
+                        <td>{req.employee?.employeeId || req.employee?.id || "—"}</td>
+                        <td>{req.employee?.name || "—"}</td>
+                        <td>
+                          {formatDate(req.startDate)} to {formatDate(req.endDate)}
+                        </td>
+                        <td>{req.leave_type || "—"}</td>
+                        <td>{req.reason || "—"}</td>
+                        <td>
+                          {status === "PENDING" ? (
+                            <div className={styles.actionBtns}>
+                              <button
+                                className={styles.approveBtn}
+                                onClick={() => confirmAction(req.id, "approve")}
+                              >
+                                Approve
+                              </button>
+                              <button
+                                className={styles.rejectBtn}
+                                onClick={() => confirmAction(req.id, "reject")}
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          ) : (
+                            <span
+                              className={
+                                status === "APPROVED"
+                                  ? styles.approvedText
+                                  : styles.rejectedText
+                              }
+                            >
+                              {status === "APPROVED" ? "Approved" : "Rejected"}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
-
             </table>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }
