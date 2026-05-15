@@ -224,8 +224,6 @@ html, body, #root {
   align-items: center;
   justify-content: center;
   gap: 10px;
-<<<<<<< HEAD
-=======
 }
 
 /* HOLIDAY MODAL STYLES */
@@ -396,5 +394,4 @@ html, body, #root {
 
 .calendarDay:hover {
   background: #f0f0f0;
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 }

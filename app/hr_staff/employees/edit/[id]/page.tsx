@@ -2,45 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-<<<<<<< HEAD
-import { ArrowLeft } from 'lucide-react';
-import styles from './edit.module.css';
-
-// Mock data (This would eventually come from your Java Backend)
-const initialEmployees = [
-  { id: '001', name: 'S.Perera', department: 'it', position: 'officer', contact: '0786543211', nic: '312456789087', dob: '2000-08-09', gender: 'Male', email: 'Perera@gmail.com', dateJoined: '2020-05-01', employeeType: 'Academic' },
-  { id: '002', name: 'M.Silva', department: 'finance', position: 'Officer', contact: '0756543211', nic: '452456789088', dob: '1998-04-12', gender: 'Female', email: 'Silva@gmail.com', dateJoined: '2021-02-15', employeeType: 'Non-academic' },
-  { id: '003', name: 'K.Dias', department: 'management', position: 'Officer', contact: '0756873211', nic: '982456789089', dob: '1999-11-12', gender: 'Male', email: 'Dias@gmail.com', dateJoined: '2019-10-10', employeeType: 'Non-academic' },
-];
-
-const EditEmployeePage = () => {
-  const router = useRouter();
-  const params = useParams();
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
-  
-  const [formData, setFormData] = useState({
-    name: '', nic: '', dob: '', gender: '', contact: '',
-    email: '', employeeId: '', department: '', position: '',
-    dateJoined: '', employeeType: ''
-  });
-
-  useEffect(() => {
-    const employee = initialEmployees.find(emp => emp.id === params.id);
-    if (employee) {
-      setFormData({
-        name: employee.name,
-        nic: employee.nic,
-        dob: employee.dob,
-        gender: employee.gender,
-        contact: employee.contact,
-        email: employee.email,
-        employeeId: employee.id,
-        department: employee.department,
-        position: employee.position,
-        dateJoined: employee.dateJoined,
-        employeeType: employee.employeeType
-      });
-=======
 import styles from './edit.module.css';
 
 const EditEmployeePage = () => {
@@ -100,15 +61,11 @@ const EditEmployeePage = () => {
 
     if (params.id) {
       fetchEmployee();
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
     }
   }, [params.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-<<<<<<< HEAD
-    setFormData(prev => ({ ...prev, [name]: value }));
-=======
 
     // Contact Number Validation: Only digits and max 10 characters
     if (name === "contact") {
@@ -121,27 +78,10 @@ const EditEmployeePage = () => {
     if (errors.contact || errors.email) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-<<<<<<< HEAD
-    setStatus('loading');
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setStatus('success');
-    setTimeout(() => {
-        setStatus('idle');
-        router.push('/hr_staff/employees'); // Redirect back to list after update
-    }, 2000);
-  };
-
-  if (!formData.employeeId) return <div className={styles.loading}>Loading Data...</div>;
-
-  return (
-    <div className={styles.container}>
-=======
     
     // Manual Validation for contact and email
     let validationErrors: { contact?: string; email?: string } = {};
@@ -210,7 +150,6 @@ const EditEmployeePage = () => {
   return (
     <div className={styles.container}>
       {/* Success Notification Popup Overlay */}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
       {status === 'success' && (
         <div className={styles.popupOverlay}>
           <div className={styles.popupCard}>
@@ -221,26 +160,14 @@ const EditEmployeePage = () => {
       )}
 
       <h1 className={styles.title}>Employee Data</h1>
-<<<<<<< HEAD
-      
       <div className={styles.subHeader}>
-        {/*<button onClick={() => router.back()} className={styles.backBtn}>
-          <ArrowLeft size={24} color="white" />
-        </button>*/}
-=======
-      <div className={styles.subHeader}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
         <h2 className={styles.subtitle}>Edit Employee</h2>
       </div>
 
       <form className={styles.formCard} onSubmit={handleSubmit}>
         <div className={styles.formGrid}>
           
-<<<<<<< HEAD
-          {/* Personal Information */}
-=======
           {/* Section 1: Personal Information */}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Personal Information</h3>
             
@@ -274,27 +201,17 @@ const EditEmployeePage = () => {
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Contact Number:</label>
               <input type="text" name="contact" value={formData.contact} className={styles.whiteInput} onChange={handleChange} required />
-<<<<<<< HEAD
-=======
               {errors.contact && <span style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '4px' }}>{errors.contact}</span>}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
             </div>
 
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Email:</label>
               <input type="email" name="email" value={formData.email} className={styles.whiteInput} onChange={handleChange} required />
-<<<<<<< HEAD
-            </div>
-          </div>
-
-          {/* Job Information */}
-=======
               {errors.email && <span style={{ color: '#ff4d4d', fontSize: '12px', marginTop: '4px' }}>{errors.email}</span>}
             </div>
           </div>
 
           {/* Section 2: Job Information */}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Job Information</h3>
 
@@ -306,16 +223,10 @@ const EditEmployeePage = () => {
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Department:</label>
               <select name="department" value={formData.department} className={styles.whiteInput} onChange={handleChange} required>
-<<<<<<< HEAD
-                <option value="it">IT</option>
-                <option value="management">Management</option>
-                <option value="finance">Finance</option>
-=======
                 <option value="">Select Department</option>
                 <option value="IT">IT</option>
                 <option value="Management">Management</option>
                 <option value="Finance">Finance</option>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               </select>
             </div>
 
@@ -332,10 +243,7 @@ const EditEmployeePage = () => {
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Employee Type:</label>
               <select name="employeeType" value={formData.employeeType} className={styles.whiteInput} onChange={handleChange} required>
-<<<<<<< HEAD
-=======
                 <option value="">Select Type</option>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
                 <option value="Academic">Academic</option>
                 <option value="Non-academic">Non-academic</option>
               </select>

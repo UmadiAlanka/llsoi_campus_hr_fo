@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-import Link from 'next/link';
-import styles from './Dashboard.module.css';
-
-const Dashboard = () => {
-=======
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -205,7 +198,6 @@ const Dashboard = () => {
     }
   };
 
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   return (
     <div className={styles.appContainer}>
       {/* FULL WIDTH RED HEADER */}
@@ -217,13 +209,8 @@ const Dashboard = () => {
 
         <div className={styles.userProfile}>
           <div className={styles.userText}>
-<<<<<<< HEAD
-            <p>welcome, <strong>Employee Name!</strong></p>
-            <span>Employee ID</span>
-=======
             <p>Welcome, <strong>{user ? user.name : 'Employee'}!</strong></p>
             <span>Employee ID: {user ? user.username : ''}</span>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
           </div>
           <div className={styles.profileAvatar}>
             {/* Removed the circular container for a normal look */}
@@ -237,50 +224,26 @@ const Dashboard = () => {
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
             {/* Link to Dashboard */}
-<<<<<<< HEAD
-            <Link href="/Dashboard" className={`${styles.navLink} ${styles.active}`}>
-=======
             <Link href="/employees" className={`${styles.navLink} ${styles.active}`}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               <img src="/icons/dashboard.png" alt="" className={styles.navIcon} /> Dashboard
             </Link>
 
             {/* Link to Attendance */}
-<<<<<<< HEAD
-            <Link href="/employees/V-Attendence/" className={styles.navLink}>
-=======
             <Link href="/employees/V-Attendance" className={styles.navLink}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               <img src="/icons/attendance.png" alt="" className={styles.navIcon} /> View Attendance
             </Link>
 
             {/* Link to Leave Request */}
-<<<<<<< HEAD
-            <Link href="/leave" className={styles.navLink}>
-=======
             <Link href="/employees/Leave_Request" className={styles.navLink}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               <img src="/icons/leave.png" alt="" className={styles.navIcon} /> Request Leave
             </Link>
 
             {/* Link to Salary */}
-<<<<<<< HEAD
-            <Link href="/salary" className={styles.navLink}>
-=======
             <Link href="/employees/Salary" className={styles.navLink}>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               <img src="/icons/salary.png" alt="" className={styles.navIcon} /> View Salary
             </Link>
 
             {/* Link to Logout/Login */}
-<<<<<<< HEAD
-            <Link href="/login" className={styles.navLink}>
-              <img src="/icons/logout.png" alt="" className={styles.navIcon} /> Log Out
-            </Link>
-          </nav>
-        </aside>
-        
-=======
             {/* Link to Logout/Login */}
             <div onClick={() => {
               localStorage.removeItem('user');
@@ -291,18 +254,12 @@ const Dashboard = () => {
           </nav>
         </aside>
 
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
         {/* MAIN CONTENT */}
         <main className={styles.mainContent}>
           <section className={styles.pageBody}>
             <h2 className={styles.sectionHeading}>Dashboard</h2>
 
             <div className={styles.attendanceHero}>
-<<<<<<< HEAD
-              <h3 className={styles.attendanceDate}>Attendance for December 6, 2025</h3>
-              <button className={styles.markAttendanceBtn}>
-                <img src="/icons/check-circle3.png" alt="" className={styles.btnIcon} /> Mark Attendance
-=======
               <h3 className={styles.attendanceDate}>Attendance for {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</h3>
               <div style={{ marginBottom: '15px', fontSize: '1.1rem', color: '#555' }}>
                 {todayTimes.checkIn && <span><strong>In:</strong> {todayTimes.checkIn}</span>}
@@ -323,7 +280,6 @@ const Dashboard = () => {
                   attendanceState === 'NOT_MARKED' ? "Mark Attendance" :
                     attendanceState === 'CHECKED_IN' ? "Check Out" :
                       "Attendance Completed"}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               </button>
             </div>
 
@@ -331,16 +287,6 @@ const Dashboard = () => {
               <div className={styles.whiteCard}>
                 <img src="/icons/leave-balance.png" alt="" className={styles.cardIcon} />
                 <p className={styles.cardLabel}>Leave Balance</p>
-<<<<<<< HEAD
-                <div className={styles.statValue}>12</div>
-                <p className={styles.statSubtext}>/15 Days left</p>
-              </div>
-
-              <div className={styles.whiteCard}>
-                <img src="/icons/upcoming.png" alt="" className={styles.cardIcon} />
-                <p className={styles.cardLabel}>Upcoming Leave</p>
-                <div className={styles.dateValue}>Dec 25th Christmas</div>
-=======
                 <div className={styles.statValue}>{stats.leaveBalance}</div>
                 <p className={styles.statSubtext}>/15 Days left</p>
               </div>
@@ -349,37 +295,20 @@ const Dashboard = () => {
                 <img src="/icons/upcoming.png" alt="" className={styles.cardIcon} />
                 <p className={styles.cardLabel}>Upcoming Holiday</p>
                 <div className={styles.dateValue}>{stats.upcomingHoliday}</div>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
               </div>
 
               <div className={styles.whiteCard}>
                 <img src="/icons/monthly-attendance.png" alt="" className={styles.cardIcon} />
                 <p className={styles.cardLabel}>Monthly Attendance</p>
                 <div className={styles.attendanceDetail}>
-<<<<<<< HEAD
-                  <p>15 Days Present,</p>
-                  <p>2 Days Late</p>
-=======
                   <p>{stats.presentDays} Present (On-Time),</p>
                   <p>{stats.lateDays} Late (After 9 AM)</p>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
                 </div>
               </div>
             </div>
 
             <h2 className={styles.sectionHeading}>Quick Action</h2>
             <div className={styles.actionsGrid}>
-<<<<<<< HEAD
-              <button className={styles.actionButton}>
-                <img src="/icons/request-btn.png" alt="" className={styles.smallBtnIcon} /> Request Leave
-              </button>
-              <button className={styles.actionButton}>
-                <img src="/icons/payslip-btn.png" alt="" className={styles.smallBtnIcon} /> View Payslip
-              </button>
-              <button className={styles.actionButton}>
-                <img src="/icons/history-btn.png" alt="" className={styles.smallBtnIcon} /> View Leave History
-              </button>
-=======
               <Link href="/employees/Leave_Request">
                 <button className={styles.actionButton}>
                   <img src="/icons/request-btn.png" alt="" className={styles.smallBtnIcon} /> Request Leave
@@ -395,13 +324,10 @@ const Dashboard = () => {
                   <img src="/icons/history-btn.png" alt="" className={styles.smallBtnIcon} /> View Leave History
                 </button>
               </Link>
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
             </div>
           </section>
         </main>
       </div>
-<<<<<<< HEAD
-=======
 
       {/* HOLIDAY CALENDAR MODAL */}
       {showHolidays && (
@@ -464,7 +390,6 @@ const Dashboard = () => {
           </div>
         </div>
       )}
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
     </div>
   );
 };
