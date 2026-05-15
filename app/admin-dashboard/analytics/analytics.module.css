@@ -1,102 +1,518 @@
 .analyticsContainer {
   position: relative;
-  min-height: 100vh;
   width: 100%;
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
+  min-height: 100%;
 }
-
 
 .contentWrapper {
   position: relative;
   z-index: 2;
+  padding-bottom: 40px;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .title {
   color: #ffffff;
-  font-size: 2.4rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  margin-bottom: 30px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-.reportCard {
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.yearLabel {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.yearSelect {
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: "Kanit", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #720e0e;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ─── Tab Bar ────────────────────────────────────────────────────────────── */
+
+.tabBar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-family: "Kanit", sans-serif;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tabActive {
+  background: #720e0e;
+  border-color: #720e0e;
+  color: #FFD814;
+  box-shadow: 0 4px 14px rgba(114, 14, 14, 0.4);
+}
+
+/* ─── Tab Content ─────────────────────────────────────────────────────────── */
+
+.tabContent {
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── KPI Cards ──────────────────────────────────────────────────────────── */
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px;
+}
+
+.statValue {
+  font-size: 1.7rem;
+  font-weight: 900;
+  margin: 0 0 4px;
+  line-height: 1;
+}
+
+.statSub {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  margin: 0;
+}
+
+/* ─── Charts ─────────────────────────────────────────────────────────────── */
+
+.chartsRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.chartCard {
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 260px;
+}
+
+.chartCardWide {
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  flex: 2;
+  min-width: 320px;
+}
+
+/* Bar Chart */
+.chartWrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chartLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #374151;
+  margin: 0 0 16px;
+}
+
+.barGroup {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 140px;
+  flex: 1;
+}
+
+.barItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.barOuter {
   width: 100%;
-  max-width: 850px;
+  height: 100%;
+  background: #f3f4f6;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.barInner {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.6s ease;
+  min-height: 2px;
+}
+
+.barVal {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #6b7280;
+  margin-top: 3px;
+}
+
+.barTick {
+  font-size: 0.58rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* Donut Chart */
+.donutWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.donutFlex {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.donutLegend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  font-size: 0.78rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.legendVal {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #720e0e;
+  margin-left: auto;
+  min-width: 24px;
+  text-align: right;
+}
+
+/* ─── Overview Reports Section ───────────────────────────────────────────── */
+
+.sectionTitle {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 28px 0 14px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.reportGrid {
   background: rgba(255, 255, 255, 0.63);
-  border-radius: 24px;
-  padding: 35px;
+  border-radius: 20px;
+  padding: 24px 28px;
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-width: 700px;
 }
 
 .reportRow {
   display: grid;
-  grid-template-columns: 1fr 110px 110px;
-  gap: 20px;
+  grid-template-columns: 1fr 100px 100px;
+  gap: 14px;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
+}
+
+.reportRow:last-child {
+  margin-bottom: 0;
 }
 
 .reportName {
-  background: rgba(255,255,255,0.95);
-  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 14px 18px;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #222;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.pdfButton,
-.excelButton {
-  border: none;
-  padding: 14px 10px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #fff;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
 
 .pdfButton {
   background: linear-gradient(180deg, #ff2a2a 0%, #c40000 100%);
+  color: #fff;
+  border: none;
+  padding: 12px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  font-family: "Kanit", sans-serif;
+  transition: all 0.22s ease;
 }
 
 .pdfButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(255,0,0,0.3);
+  box-shadow: 0 6px 14px rgba(255, 0, 0, 0.3);
 }
 
 .excelButton {
   background: linear-gradient(180deg, #16a34a 0%, #0d7a34 100%);
+  color: #fff;
+  border: none;
+  padding: 12px 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: "Kanit", sans-serif;
+  transition: all 0.22s ease;
 }
 
 .excelButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,255,120,0.3);
+  box-shadow: 0 6px 14px rgba(0, 180, 80, 0.3);
 }
 
+/* ─── Tables ─────────────────────────────────────────────────────────────── */
+
+.tableSection {
+  background: rgba(255, 255, 255, 0.93);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tableTopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tableSectionTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #720e0e;
+  margin: 0;
+}
+
+.downloadBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.downloadBtns .pdfButton,
+.downloadBtns .excelButton {
+  padding: 7px 16px;
+  font-size: 0.8rem;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.dataTable th {
+  background: #720e0e;
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.dataTable td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.83rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.dataTable tr:hover td {
+  background: #fef9f9;
+}
+
+.noData {
+  text-align: center;
+  padding: 30px;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+/* ─── Badges ─────────────────────────────────────────────────────────────── */
+
+.badgeGreen {
+  background: #dcfce7;
+  color: #166534;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badgeYellow {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badgeRed {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.severityBadge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ─── Loading ─────────────────────────────────────────────────────────────── */
+
+.loadingWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  gap: 16px;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #FFD814;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ─── Tab-specific helpers ────────────────────────────────────────────────── */
+
+.tabTopRow {
+  margin-bottom: 20px;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
 @media (max-width: 768px) {
-
-  .analyticsContainer {
-    padding: 20px;
+  .kpiGrid {
+    grid-template-columns: 1fr 1fr;
   }
-
-  .title {
-    font-size: 1.8rem;
+  .chartsRow {
+    flex-direction: column;
   }
-
   .reportRow {
     grid-template-columns: 1fr;
   }
-
-  .pdfButton,
-  .excelButton {
-    width: 100%;
+  .title {
+    font-size: 1.6rem;
   }
-
 }
