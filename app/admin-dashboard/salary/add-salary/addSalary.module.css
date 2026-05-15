@@ -7,11 +7,7 @@
 }
 
 .formCard {
-<<<<<<< HEAD
-  background: rgba(255,255,255,0.88);
-=======
   background: rgba(255, 255, 255, 0.92); /* Slightly higher opacity for readability */
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   border-radius: 20px;
   padding: 40px;
   max-width: 900px;
@@ -35,16 +31,12 @@
   margin-bottom: 10px;
 }
 
-<<<<<<< HEAD
-.formGroup { display: flex; flex-direction: column; gap: 6px; }
-=======
 .formGroup { 
   display: flex; 
   flex-direction: column; 
   gap: 6px; 
   position: relative; /* Added for fetching indicator placement */
 }
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 
 .label { font-weight: 700; font-size: 0.95rem; color: #111; }
 
@@ -58,12 +50,6 @@
   font-family: "Kanit", sans-serif;
   font-size: 0.95rem;
   color: #333;
-<<<<<<< HEAD
-  transition: border 0.2s;
-}
-
-.input:focus, .select:focus { border-color: #720e0e; }
-=======
   transition: all 0.2s;
 }
 
@@ -100,7 +86,6 @@
   50% { opacity: 1; }
   100% { opacity: 0.5; }
 }
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 
 .submitBtn {
   width: 100%;
@@ -120,26 +105,16 @@
 .submitBtn:hover:not(:disabled) { background-color: #0d4d16; }
 .submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-<<<<<<< HEAD
-.popupOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-=======
 /* Popup Styles */
 .popupOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-<<<<<<< HEAD
-=======
   backdrop-filter: blur(4px); /* Adds a nice modern blur effect */
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 }
 
 .popupCard {
@@ -147,17 +122,6 @@
   padding: 30px 50px;
   border-radius: 15px;
   text-align: center;
-<<<<<<< HEAD
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  animation: popIn 0.3s ease-out;
-}
-
-.successIcon { font-size: 3rem; color: #28a745; margin-bottom: 10px; }
-.popupCard p { color: #333; font-weight: bold; font-size: 1.1rem; }
-
-@keyframes popIn {
-  from { transform: scale(0.8); opacity: 0; }
-=======
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   animation: popIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -167,6 +131,5 @@
 
 @keyframes popIn {
   from { transform: scale(0.5); opacity: 0; }
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
   to { transform: scale(1); opacity: 1; }
 }
