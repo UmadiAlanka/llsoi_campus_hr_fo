@@ -63,7 +63,7 @@
 }
 
 .updateBtn {
-    background-color: #1b4d3e; /* Dark green matching Figma */
+    background-color: #720e0e; 
     color: white;
     padding: 12px;
     border: none;
@@ -75,7 +75,7 @@
 }
 
 .updateBtn:hover {
-    background-color: #143a2f;
+    background-color: #5a0b0b;
 }
 
 .loading {

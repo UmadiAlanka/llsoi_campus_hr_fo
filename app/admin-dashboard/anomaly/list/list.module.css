@@ -36,10 +36,11 @@
   border-bottom: 1px solid #eee;
   font-size: 14px;
   background-color: white;
+  color: #000;
 }
 
 .issueText {
-  color: #666;
+  color: #000;
   font-style: italic;
 }
 
@@ -67,12 +68,12 @@
   border-radius: 12px;
   font-size: 12px;
   font-weight: bold;
-  background-color: #d4edda; /* Resolved Green */
+  background-color: #d4edda; 
   color: #155724;
 }
 
 .backBtn {
-  background-color: #800000; /* Maroon to match theme */
+  background-color: #800000; 
   color:#FFD814;
   border: none;
   padding: 10px 30px;

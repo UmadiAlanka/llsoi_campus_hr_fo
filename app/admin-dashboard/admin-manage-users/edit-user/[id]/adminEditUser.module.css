@@ -53,7 +53,7 @@
 .updateBtn {
   width: 100%;
   padding: 15px;
-  background: #0f5f1a;
+  background: #720e0e;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -66,4 +66,4 @@
   transition: background 0.3s;
 }
 
-.updateBtn:hover { background: #0d4d16; }
+.updateBtn:hover { background: #720e0e; }
