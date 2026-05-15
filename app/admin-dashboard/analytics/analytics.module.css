@@ -318,14 +318,13 @@
 /* ─── Buttons ─────────────────────────────────────────────────────────────── */
 
 .pdfButton {
-  background: linear-gradient(180deg, #ff2a2a 0%, #c40000 100%);
-  color: #fff;
+  background: #720e0e;
+  color: #FFD814;
   border: none;
   padding: 12px 10px;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 800;
-  color: #fff;
   cursor: pointer;
   font-family: "Kanit", sans-serif;
   transition: all 0.22s ease;
