@@ -7,12 +7,6 @@ import { useRouter } from "next/navigation";
 export default function AddSalary() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-<<<<<<< HEAD
-    employeeId: "", name: "", employeeType: "", month: "",
-    basicSalary: "", allowances: "", deductions: "", netSalary: "",
-  });
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
-=======
     employeeId: "", 
     name: "",
     employeeType: "",
@@ -54,7 +48,6 @@ export default function AddSalary() {
       setIsFetching(false);
     }
   };
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -64,18 +57,6 @@ export default function AddSalary() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
-<<<<<<< HEAD
-    try {
-      await fetch("http://localhost:2027/api/salaries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      setStatus("success");
-      setTimeout(() => router.push("/admin-dashboard/salary"), 1500);
-    } catch {
-      setStatus("idle");
-=======
 
     const [yearNum, monthNum] = formData.month.split("-").map(Number);
 
@@ -114,7 +95,6 @@ export default function AddSalary() {
       console.error("Connection failed", error);
       setStatus("idle");
       alert("Could not connect to the backend server.");
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
     }
   };
 
@@ -136,23 +116,6 @@ export default function AddSalary() {
           <h3 className={styles.sectionTitle}>Employee Information</h3>
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
-<<<<<<< HEAD
-              <label className={styles.label}>Employee ID:</label>
-              <input name="employeeId" value={formData.employeeId} onChange={handleChange} className={styles.input} placeholder="EMP-001" required />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Employee Name:</label>
-              <input name="name" value={formData.name} onChange={handleChange} className={styles.input} placeholder="Full Name" required />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Employee Type:</label>
-              <select name="employeeType" value={formData.employeeType} onChange={handleChange} className={styles.select} required>
-                <option value="">-- Select --</option>
-                <option value="Academic">Academic</option>
-                <option value="Non-academic">Non-academic</option>
-              </select>
-            </div>
-=======
               <label className={styles.label}>Database ID:</label>
               <input 
                 name="employeeId" 
@@ -190,7 +153,6 @@ export default function AddSalary() {
               />
             </div>
 
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
             <div className={styles.formGroup}>
               <label className={styles.label}>Month:</label>
               <input name="month" type="month" value={formData.month} onChange={handleChange} className={styles.input} required />
@@ -217,15 +179,11 @@ export default function AddSalary() {
             </div>
           </div>
 
-<<<<<<< HEAD
-          <button type="submit" className={styles.submitBtn} disabled={status === "loading"}>
-=======
           <button 
             type="submit" 
             className={styles.submitBtn} 
             disabled={status === "loading" || isFetching}
           >
->>>>>>> aaa9fb7a542de002a63dd9c859c632f10b0d94f9
             {status === "loading" ? "Saving..." : "ADD SALARY RECORD"}
           </button>
         </form>
