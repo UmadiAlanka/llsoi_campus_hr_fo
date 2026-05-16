@@ -170,7 +170,6 @@ const ViewAttendance = () => {
         {/* Main Attendance Content */}
         <main className={styles.mainContent}>
           <h2 className={styles.pageTitle}>Attendance</h2>
-
           {/* Filters: Month/Year and Status */}
           <div className={styles.filterRow}>
             <div className={styles.filterItem}>

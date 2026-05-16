@@ -64,7 +64,7 @@
 }
 
 .greenUpdateBtn {
-  background-color: #1a5c1a; /* Dark green from Figma image */
+  background-color: #720e0e;
   color: white;
   padding: 14px;
   border: none;
@@ -79,5 +79,5 @@
 }
 
 .greenUpdateBtn:hover {
-  background-color: #144614;
+  background-color: #5a0b0b;
 }

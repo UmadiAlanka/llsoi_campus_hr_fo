@@ -1,97 +1,85 @@
-.pageContainer {
-  padding: 40px 20px;
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-}
 
-.tableWrapper {
-  width: 100%;
-  max-width: 1100px;
-  background: rgba(255, 255, 255, 0.85); /* Glass effect */
-  backdrop-filter: blur(10px);
-  border: 2px solid #800000; /* LLSOI Maroon */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-}
-
-.headerSection {
-  background-color: #800000;
-  padding: 15px;
-  text-align: center;
-}
 
 .tableTitle {
-  color: white;
-  margin: 0;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  margin-bottom: 32px;
 }
 
-.anomalyTable {
+.tableContainer {
+  background-color: rgba(255, 255, 255, 0.88);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.customTable {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 20px;
+  border-radius: 15px;
 }
 
-.anomalyTable th {
-  background: #f8f8f8;
-  color: #333;
-  padding: 15px;
-  border-bottom: 2px solid #800000;
-  text-transform: uppercase;
-  font-size: 0.85rem;
+.customTable th {
+  text-align: left;
+  background-color: #720e0e;
+  padding: 12px;
+  color: white;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
 }
 
-.anomalyTable td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-  font-size: 0.9rem;
+.customTable td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  background-color: white;
+  color: #000;
 }
 
-.empName { font-weight: 600; }
-.amount { color: #800000; font-weight: 700; }
-
-.descriptionCell {
-  font-size: 0.75rem;
-  color: #666;
-  max-width: 250px;
-  text-align: left !important;
+.issueText {
+  color: #000;
+  font-style: italic;
 }
 
-.viewButton {
-  background-color: #004d00; /* Dark Green from Figma */
+.viewBtn {
+  background-color: #28a745; /* Green as per UI */
   color: white;
   border: none;
-  padding: 6px 18px;
+  padding: 6px 15px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: 500;
 }
-
-.viewButton:hover { background-color: #007300; }
 
 .statusBadge {
   padding: 4px 10px;
-  border-radius: 4px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: bold;
-  font-size: 0.75rem;
+  background-color: #ffeeba; /* Pending Yellow */
+  color: #856404;
 }
 
-.pending { background: #ffe6e6; color: #cc0000; }
-.resolved { background: #e6ffed; color: #00802b; }
-
-.footerActions {
-  padding: 20px;
+.resolvedBadge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #d4edda; 
+  color: #155724;
 }
 
-.backButton {
-  background-color: #004d00;
-  color: white;
-  padding: 10px 35px;
+.backBtn {
+  background-color: #800000; 
+  color:#FFD814;
   border: none;
+  padding: 10px 30px;
   border-radius: 5px;
-  font-weight: bold;
   cursor: pointer;
+  font-weight: bold;
+  gap: 10px;
+  margin-top: 30px;
 }

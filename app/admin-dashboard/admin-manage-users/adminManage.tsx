@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./adminManage.module.css";
 import Link from "next/link";
-import MessageBox from "../components/MessageBox"; 
+import MessageBox from "../components/MessageBox";
 
 interface UserData {
+  id: number;
   employeeId: string;
   name: string;
   username: string;
@@ -20,13 +21,13 @@ export default function AdminManage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  
-  // Track which ID we want to delete
-  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  
+
+  // Track which ID we want to delete (use numeric id for API call)
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+
   const [modal, setModal] = useState<{
     show: boolean;
-    type: "success" | "error" | "confirm"; // Added confirm type
+    type: "success" | "error" | "confirm";
     msg: string;
   }>({
     show: false,
@@ -37,7 +38,7 @@ export default function AdminManage() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:2027/api/employees");
+      const res = await fetch("http://localhost:2027/api/employees/all-dto");
       if (!res.ok) throw new Error(`Status: ${res.status}`);
       const result = await res.json();
       if (result.success && Array.isArray(result.data)) setUsers(result.data);
@@ -51,39 +52,54 @@ export default function AdminManage() {
   useEffect(() => { fetchUsers(); }, []);
 
   // 1. Trigger the confirmation MessageBox
-  const handleDeleteClick = (employeeId: string) => {
-    setPendingDeleteId(employeeId);
+  const handleDeleteClick = (user: UserData) => {
+    // Use the numeric `id` field for the actual API call
+    setPendingDeleteId(user.id);
     setModal({
       show: true,
       type: "confirm",
-      msg: `Are you sure you want to delete employee ${employeeId}?`
+      msg: `Are you sure you want to delete employee "${user.name}" (ID: ${user.employeeId})?`,
     });
   };
 
-  // 2. The actual API call (Runs when "Yes, Delete" is clicked)
+  // 2. The actual API call — uses numeric database id
   const executeDelete = async () => {
     if (!pendingDeleteId) return;
 
     try {
-      const res = await fetch(`http://localhost:2027/api/employees/${pendingDeleteId}`, { 
-        method: "DELETE" 
+      const res = await fetch(`http://localhost:2027/api/employees/${pendingDeleteId}`, {
+        method: "DELETE",
       });
 
       if (res.ok) {
-        setUsers((prev) => prev.filter((u) => u.employeeId !== pendingDeleteId));
-        setModal({ 
-          show: true, 
-          type: "success", 
-          msg: "Employee deleted successfully!" 
+        // Remove from local state using the numeric id
+        setUsers((prev) => prev.filter((u) => u.id !== pendingDeleteId));
+        setModal({
+          show: true,
+          type: "success",
+          msg: "Employee deleted successfully!",
         });
       } else {
-        throw new Error("Failed to delete user.");
+        // Try to parse error message from backend
+        let errMsg = "Failed to delete employee.";
+        try {
+          const errData = await res.json();
+          errMsg = errData.message || errMsg;
+        } catch {
+          // If response isn't JSON (e.g. 500 HTML), use status text
+          errMsg = `Server error: ${res.status} ${res.statusText}`;
+        }
+        setModal({
+          show: true,
+          type: "error",
+          msg: errMsg,
+        });
       }
     } catch (err: any) {
-      setModal({ 
-        show: true, 
-        type: "error", 
-        msg: err.message || "Error deleting employee." 
+      setModal({
+        show: true,
+        type: "error",
+        msg: "Could not connect to server. Make sure the backend is running on port 2027.",
       });
     } finally {
       setPendingDeleteId(null);
@@ -93,9 +109,9 @@ export default function AdminManage() {
   const filteredUsers = users.filter((user) => {
     const q = searchTerm.toLowerCase();
     return (
-      user.name.toLowerCase().includes(q) || 
-      user.employeeId.toString().includes(q) || 
-      user.username.toLowerCase().includes(q)
+      user.name?.toLowerCase().includes(q) ||
+      user.employeeId?.toString().includes(q) ||
+      user.username?.toLowerCase().includes(q)
     );
   });
 
@@ -131,13 +147,20 @@ export default function AdminManage() {
             <table className={styles.userTable}>
               <thead>
                 <tr>
-                  <th>ID</th><th>Name</th><th>Username</th><th>Email</th>
-                  <th>Role</th><th>Job</th><th>Type</th><th>Contact</th><th>Actions</th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Job</th>
+                  <th>Type</th>
+                  <th>Contact</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredUsers.map((u) => (
-                  <tr key={u.employeeId}>
+                  <tr key={u.id}>
                     <td>{u.employeeId}</td>
                     <td>{u.name}</td>
                     <td>{u.username}</td>
@@ -148,9 +171,18 @@ export default function AdminManage() {
                     <td>{u.contactNumber}</td>
                     <td>
                       <div className={styles.actionButtons}>
-                        <Link href={`/admin-dashboard/admin-manage-users/edit-user/${u.employeeId}`} className={styles.editButton}>EDIT</Link>
-                        {/* Updated onClick to use our new trigger */}
-                        <button onClick={() => handleDeleteClick(u.employeeId)} className={styles.deleteButton}>DELETE</button>
+                        <Link
+                          href={`/admin-dashboard/admin-manage-users/edit-user/${u.employeeId}`}
+                          className={styles.editButton}
+                        >
+                          EDIT
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteClick(u)}
+                          className={styles.deleteButton}
+                        >
+                          DELETE
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -161,13 +193,12 @@ export default function AdminManage() {
         )}
       </div>
 
-      {/* The Beautiful Modal */}
       {modal.show && (
-        <MessageBox 
-          type={modal.type} 
-          message={modal.msg} 
-          onClose={() => setModal({ ...modal, show: false })} 
-          onConfirm={executeDelete} // Only fires if type is 'confirm'
+        <MessageBox
+          type={modal.type}
+          message={modal.msg}
+          onClose={() => setModal({ ...modal, show: false })}
+          onConfirm={modal.type === "confirm" ? executeDelete : undefined}
         />
       )}
     </>

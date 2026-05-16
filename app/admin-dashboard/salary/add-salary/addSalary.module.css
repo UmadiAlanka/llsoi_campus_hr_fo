@@ -89,7 +89,7 @@
 
 .submitBtn {
   width: 100%;
-  background-color: #0f5f1a;
+  background-color: #720e0e;
   color: #fff;
   border: none;
   padding: 15px;
@@ -102,7 +102,7 @@
   transition: background 0.3s;
 }
 
-.submitBtn:hover:not(:disabled) { background-color: #0d4d16; }
+.submitBtn:hover:not(:disabled) { background-color: #5a0b0b; }
 .submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* Popup Styles */
