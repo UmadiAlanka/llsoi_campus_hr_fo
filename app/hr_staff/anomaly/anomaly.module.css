@@ -185,3 +185,54 @@
   align-items: center;
   justify-content: center;
 }
+
+.filterContainer {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 25px;
+}
+
+/* 📅 ක්ලික් කළ හැකි ප්‍රධාන කොටුව */
+.calendarPickerWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: relative; /* Input එක උඩින් තැබීමට */
+  transition: all 0.2s ease;
+}
+
+.calendarPickerWrapper:hover {
+  border-color: #800000; /* Hover කළ විට බෝඩර් එක මරූන් වෙයි */
+  background-color: #fcfcfc;
+}
+
+/* Maroon Calendar Icon */
+.calendarIcon {
+  color: #800000;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* දැනට තෝරාගෙන ඇති මාසය පෙන්වන Text එක */
+.selectedMonthText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  user-select: none; /* Text එක select වීම වැළැක්වීමට */
+}
+
+/* ඇත්තම Month Input එක නොපෙනී තිබීමට සඟවන CSS */
+.hiddenMonthInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* සම්පූර්ණයෙන්ම නොපෙනී යයි */
+  cursor: pointer;
+}
