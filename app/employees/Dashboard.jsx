@@ -20,65 +20,110 @@ const Dashboard = () => {
   const [viewMonth, setViewMonth] = useState(new Date().getMonth());
   const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
+  // Payslip Modal State
+  const [showPayslipModal, setShowPayslipModal] = useState(false);
+  const [latestSalary, setLatestSalary] = useState(null);
+  const [fetchingSalary, setFetchingSalary] = useState(false);
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      fetchData(parsedUser.userId);
+      fetchData(parsedUser.username);
     }
   }, []);
 
-  const fetchData = async (userId) => {
+  const parseDate = (dateVal) => {
+    if (Array.isArray(dateVal)) return new Date(dateVal[0], dateVal[1] - 1, dateVal[2]);
+    return new Date(dateVal);
+  };
+
+  const formatTime = (timeVal) => {
+    if (!timeVal) return null;
+    if (Array.isArray(timeVal)) {
+      return `${String(timeVal[0]).padStart(2, '0')}:${String(timeVal[1]).padStart(2, '0')}:${String(timeVal[2] || 0).padStart(2, '0')}`;
+    }
+    return timeVal;
+  };
+
+  const fetchData = async (identifier) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
     try {
-      // Fetch Attendance Stats
-      const attRes = await fetch(`${API_URL}/attendance/employee/${userId}`, { cache: 'no-store' });
+      // The backend is now smart enough to handle both numeric IDs and usernames
+      const attRes = await fetch(`${API_URL}/attendance/employee/${identifier}`, { cache: 'no-store' });
       const responseData = await attRes.json();
-      let attendance = [];
+      const attendance = ((responseData && responseData.data && Array.isArray(responseData.data)) 
+        ? responseData.data 
+        : (Array.isArray(responseData) ? responseData : []))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      if (responseData.data && Array.isArray(responseData.data)) {
-        attendance = responseData.data;
-      } else if (Array.isArray(responseData)) {
-        attendance = responseData;
+      // Discovery: If any record has a numeric ID, remember it for the check-out button
+      if (attendance.length > 0 && isNaN(Number(user?.userId)) && !user?.numericId) {
+         const hasNid = attendance.find(a => a.employeeId && !isNaN(Number(a.employeeId)));
+         if (hasNid) {
+           console.log("Discovered numeric ID from merge:", hasNid.employeeId);
+           setUser(prev => ({ ...prev, numericId: hasNid.employeeId }));
+         }
       }
 
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
-
-      const parseDate = (dateVal) => {
-        if (Array.isArray(dateVal)) return new Date(dateVal[0], dateVal[1] - 1, dateVal[2]);
-        return new Date(dateVal);
-      };
 
       const monthlyAttendance = attendance.filter(a => {
         const recordDate = parseDate(a.date);
         return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
       });
 
-      const present = monthlyAttendance.filter(a => a.status && a.status.toLowerCase() === 'present').length;
-      
-      // Calculate late days: Check-in after 09:00 AM
-      const late = monthlyAttendance.filter(a => {
-        if (!a.clockInTime) return false;
-        const timeStr = Array.isArray(a.clockInTime) 
-          ? `${String(a.clockInTime[0]).padStart(2, '0')}:${String(a.clockInTime[1]).padStart(2, '0')}`
-          : a.clockInTime;
-        return timeStr > "09:00:00";
-      }).length;
+      let presentCount = 0;
+      let lateCount = 0;
+
+      monthlyAttendance.forEach(a => {
+        const inTime = formatTime(a.clockInTime);
+        const outTime = formatTime(a.clockOutTime);
+        
+        let hrs = a.workingHours;
+        if (hrs === null && inTime && outTime) {
+          try {
+            const [h1, m1] = inTime.split(':').map(Number);
+            const [h2, m2] = outTime.split(':').map(Number);
+            const diff = (h2 + m2/60) - (h1 + m1/60);
+            hrs = diff > 0 ? diff : 0;
+          } catch (e) { hrs = 0; }
+        }
+
+        // Apply rules
+        const isLate = inTime && inTime > "09:00:00";
+        const isAbsent = hrs !== null && hrs > 0 && hrs < 4;
+
+        if (!isAbsent) {
+          if (isLate) lateCount++;
+          else presentCount++;
+        }
+      });
 
       // Check if marked today
       const todayStr = new Date().toISOString().split('T')[0];
-      const todayRecord = attendance.find(a => {
+      // Pick the most recent record for today (prioritizing open ones)
+      const todayRecords = attendance.filter(a => {
         const recordDate = parseDate(a.date).toISOString().split('T')[0];
         return recordDate === todayStr;
       });
+
+      const todayRecord = todayRecords.find(a => !(a.clockOutTime || a.checkOutTime)) || todayRecords[0];
 
       if (todayRecord) {
         setTodayTimes({
           checkIn: todayRecord.clockInTime,
           checkOut: todayRecord.clockOutTime
         });
+
+        // Smart ID Discovery: Check all possible numeric ID fields
+        const numericId = todayRecord.employeeId || todayRecord.emp_id || todayRecord.employee_id;
+        if (numericId && isNaN(Number(user?.userId))) {
+           console.log("Discovered numeric ID:", numericId);
+           setUser(prev => ({ ...prev, numericId: numericId }));
+        }
 
         if (todayRecord.clockOutTime) {
           setAttendanceState('COMPLETED');
@@ -90,13 +135,36 @@ const Dashboard = () => {
         setTodayTimes({ checkIn: null, checkOut: null });
       }
 
-      // Fetch Leave Stats
-      const leaveRes = await fetch(`${API_URL}/leave/employee/${userId}`, { cache: 'no-store' });
-      const leaveData = await leaveRes.json();
-      const leaves = (leaveData && leaveData.data) || (Array.isArray(leaveData) ? leaveData : []);
-      const usedLeaves = leaves.filter(l => l.status && l.status.toUpperCase() === 'APPROVED').length;
+      // Fetch Leave Stats using the primary identifier
+      let leaveBalance = 48;
+      try {
+        const balRes = await fetch(`${API_URL}/leave/employee/${identifier}/balance`, { cache: 'no-store' });
+        const balData = await balRes.json();
+        if (balRes.ok && balData.success) {
+          leaveBalance = balData.data;
+        } else {
+          // Fallback manual calculation if balance endpoint fails
+          const leaveRes = await fetch(`${API_URL}/leave/employee/${identifier}`, { cache: 'no-store' });
+          const leaveData = await leaveRes.json();
+          const leaves = (leaveData && leaveData.data) || (Array.isArray(leaveData) ? leaveData : []);
+          const yr = new Date().getFullYear();
+          const usedLeaves = leaves
+            .filter(l => l.status && l.status.toUpperCase() === 'APPROVED')
+            .filter(l => parseDate(l.startDate).getFullYear() === yr)
+            .reduce((sum, l) => {
+              const start = parseDate(l.startDate);
+              const end = parseDate(l.endDate);
+              if (isNaN(start.getTime()) || isNaN(end.getTime())) return sum;
+              const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+              return sum + (diffDays > 0 ? diffDays : 0);
+            }, 0);
+          leaveBalance = 48 - usedLeaves;
+        }
+      } catch (e) {
+        console.warn("Manual leave balance calculation failed:", e);
+      }
 
-      // --- SRI LANKA 2026 HOLIDAYS DATABASE ---
+      // ... SRI LANKA 2026 HOLIDAYS DATABASE ...
       const slHolidays2026 = [
         { date: "2026-01-03", name: "Duruthu Full Moon Poya Day" },
         { date: "2026-01-14", name: "Tamil Thai Pongal Day" },
@@ -140,9 +208,9 @@ const Dashboard = () => {
       }
 
       setStats({
-        leaveBalance: 15 - usedLeaves,
-        presentDays: present,
-        lateDays: late,
+        leaveBalance: leaveBalance,
+        presentDays: presentCount,
+        lateDays: lateCount,
         upcomingHoliday: holidayStr
       });
 
@@ -159,14 +227,18 @@ const Dashboard = () => {
 
     try {
       let endpoint = '';
-      let method = 'POST';
-      if (attendanceState === 'NOT_MARKED') {
-        endpoint = `/attendance/clock-in?employeeId=${user.userId}&markedBy=${user.name}`;
+      // Use PUT for clock-out as it is standard for updating a record
+      const isClockOut = attendanceState !== 'NOT_MARKED';
+      const method = isClockOut ? 'PUT' : 'POST';
+      
+      const targetId = user.userId;
+      if (!isClockOut) {
+        endpoint = `/attendance/clock-in?employeeId=${targetId}&markedBy=${user.name}`;
       } else {
-        // Trying path variable for clock-out, which may be different from in
-        endpoint = `/attendance/clock-out/${user.userId}`;
+        endpoint = `/attendance/clock-out/${targetId}`;
       }
 
+      console.log(`Sending ${method} request to: ${endpoint}`);
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: method,
         headers: { 'Content-Type': 'application/json' }
@@ -176,7 +248,6 @@ const Dashboard = () => {
 
       if (response.ok && result.success) {
         const data = result.data;
-        // The backend should tell us if it was a check-in or check-out
         if (data.clockOutTime) {
           setAttendanceState('COMPLETED');
           setTodayTimes(prev => ({ ...prev, checkOut: data.clockOutTime }));
@@ -198,10 +269,38 @@ const Dashboard = () => {
     }
   };
 
+  const handleViewLatestPayslip = async () => {
+    if (!user) return;
+    setFetchingSalary(true);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+    try {
+      const res = await fetch(`${API_URL}/salary/employee/${user.userId}/latest`);
+      const result = await res.json();
+      if (result.success) {
+        setLatestSalary(result.data);
+        setShowPayslipModal(true);
+      } else {
+        alert(result.message || "No salary record found.");
+      }
+    } catch (error) {
+      console.error("Error fetching latest salary:", error);
+      alert("Failed to fetch salary details.");
+    } finally {
+      setFetchingSalary(false);
+    }
+  };
+
+  const getMonthName = (m) => {
+    return new Date(2000, m - 1).toLocaleString('en-US', { month: 'long' });
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className={styles.appContainer}>
-      {/* FULL WIDTH RED HEADER */}
-      <header className={styles.topHeader}>
+      <header className={`${styles.topHeader} no-print`}>
         <div className={styles.headerLeft}>
           <img src="/logo.png" alt="LLSOI Logo" className={styles.mainLogo} />
           <h1 className={styles.systemTitle}>LLSOI Campus HR Management System</h1>
@@ -213,38 +312,27 @@ const Dashboard = () => {
             <span>Employee ID: {user ? user.username : ''}</span>
           </div>
           <div className={styles.profileAvatar}>
-            {/* Removed the circular container for a normal look */}
             <img src="/icons/user-profile.png" alt="User" className={styles.avatarImg} />
           </div>
         </div>
       </header>
 
       <div className={styles.dashboardBody}>
-        {/* SIDEBAR (Logo removed from here) */}
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} no-print`}>
           <nav className={styles.navMenu}>
-            {/* Link to Dashboard */}
             <Link href="/employees" className={`${styles.navLink} ${styles.active}`}>
               <img src="/icons/dashboard.png" alt="" className={styles.navIcon} /> Dashboard
             </Link>
-
-            {/* Link to Attendance */}
             <Link href="/employees/V-Attendance" className={styles.navLink}>
               <img src="/icons/attendance.png" alt="" className={styles.navIcon} /> View Attendance
             </Link>
-
-            {/* Link to Leave Request */}
             <Link href="/employees/Leave_Request" className={styles.navLink}>
               <img src="/icons/leave.png" alt="" className={styles.navIcon} /> Request Leave
             </Link>
-
-            {/* Link to Salary */}
             <Link href="/employees/Salary" className={styles.navLink}>
               <img src="/icons/salary.png" alt="" className={styles.navIcon} /> View Salary
             </Link>
 
-            {/* Link to Logout/Login */}
-            {/* Link to Logout/Login */}
             <div onClick={() => {
               localStorage.removeItem('user');
               window.location.href = '/login';
@@ -254,9 +342,11 @@ const Dashboard = () => {
           </nav>
         </aside>
 
-        {/* MAIN CONTENT */}
+
+
+
         <main className={styles.mainContent}>
-          <section className={styles.pageBody}>
+          <section className={`${styles.pageBody} no-print`}>
             <h2 className={styles.sectionHeading}>Dashboard</h2>
 
             <div className={styles.attendanceHero}>
@@ -272,7 +362,7 @@ const Dashboard = () => {
                 style={{
                   opacity: attendanceState === 'COMPLETED' ? 0.7 : 1,
                   cursor: attendanceState === 'COMPLETED' ? 'default' : 'pointer',
-                  backgroundColor: attendanceState === 'CHECKED_IN' ? '#e67300' : '#7a1212' // Orange for Check Out
+                  backgroundColor: attendanceState === 'CHECKED_IN' ? '#e67300' : '#7a1212'
                 }}
               >
                 <img src="/icons/check-circle3.png" alt="" className={styles.btnIcon} />
@@ -288,7 +378,7 @@ const Dashboard = () => {
                 <img src="/icons/leave-balance.png" alt="" className={styles.cardIcon} />
                 <p className={styles.cardLabel}>Leave Balance</p>
                 <div className={styles.statValue}>{stats.leaveBalance}</div>
-                <p className={styles.statSubtext}>/15 Days left</p>
+                <p className={styles.statSubtext}>/48 Days left</p>
               </div>
 
               <div className={styles.whiteCard} onClick={() => setShowHolidays(true)} style={{ cursor: 'pointer' }}>
@@ -314,11 +404,10 @@ const Dashboard = () => {
                   <img src="/icons/request-btn.png" alt="" className={styles.smallBtnIcon} /> Request Leave
                 </button>
               </Link>
-              <Link href="/employees/Payslip">
-                <button className={styles.actionButton}>
-                  <img src="/icons/payslip-btn.png" alt="" className={styles.smallBtnIcon} /> View Payslip
-                </button>
-              </Link>
+              <button className={styles.actionButton} onClick={handleViewLatestPayslip} disabled={fetchingSalary}>
+                <img src="/icons/payslip-btn.png" alt="" className={styles.smallBtnIcon} /> 
+                {fetchingSalary ? "Loading..." : "View Latest Payslip"}
+              </button>
               <Link href="/employees/Leave_History">
                 <button className={styles.actionButton}>
                   <img src="/icons/history-btn.png" alt="" className={styles.smallBtnIcon} /> View Leave History
@@ -326,6 +415,73 @@ const Dashboard = () => {
               </Link>
             </div>
           </section>
+
+          {/* PAYSLIP MODAL */}
+          {showPayslipModal && latestSalary && (
+            <div className={`${styles.modalOverlay}`} onClick={() => setShowPayslipModal(false)}>
+              <div className={styles.payslipModalContent} onClick={(e) => e.stopPropagation()}>
+                <div id="printable-payslip" className={styles.payslipPrintable}>
+                  <div className={styles.payslipHeader}>
+                    <div className={styles.companyInfo}>
+                      <img src="/logo.png" alt="Logo" className={styles.payslipLogo} />
+                      <div>
+                        <h2 className={styles.companyName}>LLSOI CAMPUS (PVT) LTD.</h2>
+                        <p className={styles.payslipTitleHeader}>Employee Pay Sheet - {getMonthName(latestSalary.month).toUpperCase()} {latestSalary.year}</p>
+                      </div>
+                    </div>
+                    <div className={styles.slipStatus}>
+                      <span className={styles.statusTag}>{latestSalary.status}</span>
+                    </div>
+                  </div>
+
+                  <hr className={styles.divider} />
+
+                  <div className={styles.employeeDetails}>
+                    <div className={styles.detailGroup}>
+                      <p><strong>Employee Name:</strong> {user?.name}</p>
+                      <p><strong>Employee ID:</strong> {user?.username}</p>
+                    </div>
+                    <div className={styles.detailGroup}>
+                      <p><strong>Pay Period:</strong> {getMonthName(latestSalary.month)} {latestSalary.year}</p>
+                      <p><strong>Generated Date:</strong> {latestSalary.generatedDate ? new Date(latestSalary.generatedDate).toLocaleDateString() : 'N/A'}</p>
+                    </div>
+                  </div>
+
+                  <div className={styles.salaryGrid}>
+                    <div className={styles.earningsSection}>
+                      <h4>EARNINGS</h4>
+                      <div className={styles.salaryRowItem}><span>Basic Salary</span> <span>{Number(latestSalary.basicSalary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryRowItem}><span>Allowances</span> <span>{Number(latestSalary.allowances || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryRowItem}><span>Overtime Pay</span> <span>{Number(latestSalary.overtimePay || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryTotalItem}><span>GROSS SALARY</span> <span>LKR {Number(latestSalary.grossSalary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                    </div>
+
+                    <div className={styles.deductionsSection}>
+                      <h4>DEDUCTIONS</h4>
+                      <div className={styles.salaryRowItem}><span>EPF (8%)</span> <span>{Number(latestSalary.epfDeduction || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryRowItem}><span>ETF (3%)</span> <span>{Number(latestSalary.etfDeduction || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryRowItem}><span>Other Deductions</span> <span>{Number(latestSalary.otherDeductions || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryTotalItem}><span>TOTAL DEDUCTIONS</span> <span>LKR {Number((latestSalary.epfDeduction || 0) + (latestSalary.etfDeduction || 0) + (latestSalary.otherDeductions || 0)).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                    </div>
+                  </div>
+
+                  <div className={styles.netSalarySection}>
+                    <div className={styles.netSalaryLabel}>NET SALARY (TAKE HOME)</div>
+                    <div className={styles.netSalaryValue}>LKR {Number(latestSalary.netSalary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                  </div>
+
+                  <div className={styles.payslipFooter}>
+                    <p>This is a computer-generated document and does not require a signature.</p>
+                  </div>
+                </div>
+
+                <div className={`${styles.modalActions} no-print`}>
+                  <button className={styles.printBtn} onClick={handlePrint}>Print / Save as PDF</button>
+                  <button className={styles.closeModalBtn} onClick={() => setShowPayslipModal(false)}>Close</button>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
 
@@ -364,17 +520,12 @@ const Dashboard = () => {
                   const firstDay = new Date(viewYear, viewMonth, 1).getDay();
                   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
                   const cells = [];
-                  
-                  // Empty cells for previous month
                   for (let i = 0; i < firstDay; i++) {
                     cells.push(<div key={`empty-${i}`} className={styles.emptyDay}></div>);
                   }
-                  
-                  // Actual days
                   for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const holiday = allHolidays.find(h => h.date === dateStr);
-                    
                     cells.push(
                       <div key={d} className={`${styles.calendarDay} ${holiday ? styles.isHoliday : ''}`} title={holiday ? holiday.localName || holiday.name : ''}>
                         <span className={styles.dayNum}>{d}</span>

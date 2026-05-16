@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -7,7 +9,7 @@ html, body, #root {
 .appContainer {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
+  min-height: 100vh;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -15,12 +17,12 @@ html, body, #root {
 
 .topHeader {
   background-color: #7a1212;
-  color: #ffcc00; 
+  color: #ffcc00;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 5px 20px;
-  height: 80px; 
+  height: 80px;
   width: 100%;
   box-sizing: border-box;
   z-index: 100;
@@ -41,14 +43,14 @@ html, body, #root {
 .systemTitle {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #ffcc00; 
+  color: #ffcc00;
 }
 
 .userProfile {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #ffcc00; 
+  color: #ffcc00;
 }
 
 .userText p {
@@ -65,7 +67,7 @@ html, body, #root {
 .avatarImg {
   width: 30px;
   height: 30px;
-  object-fit: contain; 
+  object-fit: contain;
 }
 
 .dashboardBody {
@@ -107,7 +109,7 @@ html, body, #root {
 }
 
 .active {
-  background-color:  rgba(207, 207, 207, 0.25);
+  background-color: rgba(207, 207, 207, 0.25);
   border-left: 5px solid #7a1212;
   color: #0b0b0b;
 }
@@ -149,7 +151,7 @@ html, body, #root {
 
 .filterRow {
   display: flex;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   align-items: center;
   gap: 30px;
   margin-bottom: 30px;
@@ -158,11 +160,11 @@ html, body, #root {
 .filterItem {
   display: flex;
   align-items: center;
-  gap: 10px; 
+  gap: 10px;
 }
 
 .filterLabel {
-  color: #fff; 
+  color: #fff;
   font-weight: 800;
   font-size: 17px;
 }
@@ -177,7 +179,7 @@ html, body, #root {
   font-weight: 700;
   min-width: 180px;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   appearance: auto;
 }
 
@@ -185,7 +187,7 @@ html, body, #root {
   background: white;
   padding: 20px 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border: 1px solid #7a1212;
 }
 
@@ -265,7 +267,7 @@ html, body, #root {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -280,7 +282,7 @@ html, body, #root {
   max-width: 800px;
   border-radius: 8px;
   padding: 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .payslipPrintable {
@@ -351,7 +353,8 @@ html, body, #root {
   margin-bottom: 40px;
 }
 
-.earningsSection h4, .deductionsSection h4 {
+.earningsSection h4,
+.deductionsSection h4 {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px;
   color: #7a1212;
@@ -431,11 +434,15 @@ html, body, #root {
 
 /* PRINT MEDIA QUERY */
 @media print {
-  .no-print, .no-print * {
+
+  .no-print,
+  .no-print * {
     display: none !important;
   }
-  
-  .appContainer, .dashboardBody, .mainContent {
+
+  .appContainer,
+  .dashboardBody,
+  .mainContent {
     display: block !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -457,4 +464,3 @@ html, body, #root {
     margin: 0 !important;
   }
 }
-
