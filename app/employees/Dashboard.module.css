@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -7,7 +9,8 @@ html, body, #root {
 .appContainer {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures the page is at least full screen */
+  min-height: 100vh;
+  /* Ensures the page is at least full screen */
   width: 100%;
   margin: 0;
   padding: 0;
@@ -16,12 +19,12 @@ html, body, #root {
 /* HEADER STYLES */
 .topHeader {
   background-color: #7a1212;
-  color: #ffcc00; 
+  color: #ffcc00;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 5px 20px;
-  height: 80px; 
+  height: 80px;
   width: 100%;
   box-sizing: border-box;
   z-index: 100;
@@ -42,14 +45,14 @@ html, body, #root {
 .systemTitle {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #ffcc00; 
+  color: #ffcc00;
 }
 
 .userProfile {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #ffcc00; 
+  color: #ffcc00;
 }
 
 .userText p {
@@ -66,32 +69,35 @@ html, body, #root {
 .avatarImg {
   width: 30px;
   height: 30px;
-  object-fit: contain; 
+  object-fit: contain;
 }
 
 .dashboardBody {
   display: flex;
   flex: 1;
-  background-image: url('/background.jpg'); 
+  background-image: url('/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  
+
   /* CHANGE THIS: */
-  overflow: visible; /* Ensure content isn't cut off */
-  align-items: stretch; /* This ensures sidebar and mainContent are equal height */
+  overflow: visible;
+  /* Ensure content isn't cut off */
+  align-items: stretch;
+  /* This ensures sidebar and mainContent are equal height */
 }
 
 .sidebar {
   width: 280px;
-  background: rgba(207, 207, 207, 0.25); 
+  background: rgba(207, 207, 207, 0.25);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  
+
   /* CHANGE THIS: */
-  min-height: calc(100vh - 80px); 
-  height: auto; /* Allow it to grow with content */
-  
+  min-height: calc(100vh - 80px);
+  height: auto;
+  /* Allow it to grow with content */
+
   padding-top: 20px;
 }
 
@@ -119,7 +125,7 @@ html, body, #root {
 }
 
 .active {
-  background-color:  rgba(207, 207, 207, 0.25);
+  background-color: rgba(207, 207, 207, 0.25);
   border-left: 5px solid #7a1212;
   color: #0b0b0b;
 }
@@ -131,12 +137,12 @@ html, body, #root {
 /* MAIN CONTENT AREA */
 .mainContent {
   flex: 1;
-  background-color: rgba(76, 67, 67, 0.444); 
+  background-color: rgba(76, 67, 67, 0.444);
   padding: 40px;
   color: white;
-  height: auto; 
-  overflow: visible; 
- 
+  height: auto;
+  overflow: visible;
+
 }
 
 .sectionHeading {
@@ -152,11 +158,11 @@ html, body, #root {
   border-radius: 8px;
   padding: 60px;
   text-align: center;
-  margin-bottom: 50px; 
+  margin-bottom: 50px;
   font-size: 25px;
   color: #7a1212;
   font-weight: 800;
-  border: 3px solid #7a1212; 
+  border: 3px solid #7a1212;
 }
 
 .markAttendanceBtn {
@@ -183,13 +189,13 @@ html, body, #root {
 
 .whiteCard {
   background: #ffffff;
-  border: 1px solid #7a1212; 
+  border: 1px solid #7a1212;
   border-radius: 15px;
   padding: 35px 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;    
-  justify-content: center; 
+  align-items: center;
+  justify-content: center;
   text-align: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
@@ -197,7 +203,7 @@ html, body, #root {
 
 }
 
-.cardLabel{
+.cardLabel {
   font-weight: bold;
 }
 
@@ -220,7 +226,7 @@ html, body, #root {
 
 .actionButton {
   background: white;
-  border: 2px solid #7a1212; 
+  border: 2px solid #7a1212;
   padding: 20px;
   border-radius: 12px;
   color: #7a1212;
@@ -234,7 +240,7 @@ html, body, #root {
   width: 100%;
   height: 100%;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .actionButton:hover {
@@ -252,7 +258,8 @@ html, body, #root {
   width: 24px;
   height: 24px;
   object-fit: contain;
-
+  =======gap: 10px;
+  >>>>>>>origin/main
 }
 
 /* HOLIDAY MODAL STYLES */
@@ -277,13 +284,20 @@ html, body, #root {
   max-height: 80vh;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   animation: modalFadeIn 0.3s ease-out;
 }
 
 @keyframes modalFadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modalHeader {
@@ -433,7 +447,7 @@ html, body, #root {
   max-height: 90vh;
   border-radius: 12px;
   overflow-y: auto;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   position: relative;
   padding: 0;
 }
@@ -607,13 +621,14 @@ html, body, #root {
 }
 
 @media print {
+
   /* Hide EVERYTHING by default */
   :global(*) {
     visibility: hidden !important;
   }
 
   /* Show only the printable payslip area and its parents */
-  :global(#printable-payslip), 
+  :global(#printable-payslip),
   :global(#printable-payslip) * {
     visibility: visible !important;
   }
@@ -634,14 +649,15 @@ html, body, #root {
   }
 
   /* Hide specific elements that might still show up */
-  :global(.no-print), 
+  :global(.no-print),
   :global(.no-print) * {
     display: none !important;
     visibility: hidden !important;
   }
 
   /* Reset body/html for printing */
-  body, html {
+  body,
+  html {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -650,9 +666,9 @@ html, body, #root {
   }
 
   /* Special handling for background colors in print */
-  .netSalarySection { 
-    background: #7a1212 !important; 
-    -webkit-print-color-adjust: exact !important; 
+  .netSalarySection {
+    background: #7a1212 !important;
+    -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color: white !important;
   }
