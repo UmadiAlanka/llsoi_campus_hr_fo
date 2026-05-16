@@ -19,7 +19,8 @@ export default function AdminEditUser() {
     if (!employeeId) { setLoading(false); return; }
     (async () => {
       try {
-        const res = await fetch(`http://localhost:2027/api/employees/${employeeId}`);
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+        const res = await fetch(`${API_URL}/employees/${employeeId}`);
         const result = await res.json();
         if (result.success && result.data) {
           const e = result.data;
@@ -46,7 +47,8 @@ export default function AdminEditUser() {
     const payload: any = { name: formData.name, address: formData.address, contactNumber: formData.contactNumber, role: formData.role, job: formData.job, jobType: formData.jobType, username: formData.username, email: formData.email };
     if (formData.password) payload.password = formData.password;
     try {
-      const res = await fetch(`http://localhost:2027/api/employees/${employeeId}`, {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+      const res = await fetch(`${API_URL}/employees/${employeeId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -89,8 +91,8 @@ export default function AdminEditUser() {
             <div className={styles.formGroup}>
               <label className={styles.label}>Role</label>
               <select name="role" value={formData.role} onChange={handleChange} className={styles.select}>
-                <option value="Employee">Employee</option>
-                <option value="Admin">Admin</option>
+                <option value="EMPLOYEE">Employee</option>
+                <option value="ADMIN">Admin</option>
                 <option value="HR">HR</option>
               </select>
             </div>

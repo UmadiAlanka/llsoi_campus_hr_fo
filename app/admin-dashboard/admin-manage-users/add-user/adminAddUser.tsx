@@ -48,10 +48,20 @@ export default function AddUser() {
     }
 
     try {
-      const res = await fetch("http://localhost:2027/api/employees", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+      // Ensure we send exactly what the backend expects for a new user/employee
+      const payload = {
+        ...formData,
+        confirmPassword: undefined,
+        // Ensure username is explicitly set if backend uses it for auth
+        username: formData.username.trim(),
+        password: formData.password.trim()
+      };
+      
+      const res = await fetch(`${API_URL}/employees`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, confirmPassword: undefined }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {

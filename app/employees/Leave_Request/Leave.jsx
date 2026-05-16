@@ -24,7 +24,7 @@ const LeaveRequest = () => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      fetchLeaveBalance(parsedUser.userId);
+      fetchLeaveBalance(parsedUser.userId, parsedUser.username);
     }
   }, []);
 
@@ -33,20 +33,23 @@ const LeaveRequest = () => {
     return new Date(dateVal);
   };
 
-  const fetchLeaveBalance = async (userId) => {
+  const fetchLeaveBalance = async (userId, username) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+    const identifier = userId || username;
     try {
-      const balanceRes = await fetch(`${API_URL}/leave/employee/${userId}/balance`);
+      // 1. Try to fetch pre-calculated balance
+      const balanceRes = await fetch(`${API_URL}/leave/employee/${identifier}/balance`, { cache: 'no-store' });
       const balanceResult = await balanceRes.json();
-
       if (balanceRes.ok && balanceResult.success) {
         setLeaveBalance(balanceResult.data);
         return;
       }
 
-      const response = await fetch(`${API_URL}/leave/employee/${userId}`);
+      // 2. Fallback to manual calculation if balance endpoint fails
+      const response = await fetch(`${API_URL}/leave/employee/${identifier}`, { cache: 'no-store' });
       const result = await response.json();
-      const leaves = (result && result.data) || (Array.isArray(result) ? result : []);
+      const leaves = (result && result.success && Array.isArray(result.data)) ? result.data : (Array.isArray(result) ? result : []);
+
       const currentYear = new Date().getFullYear();
       const usedLeaves = leaves
         .filter(l => l.status && l.status.toUpperCase() === 'APPROVED')
@@ -166,7 +169,7 @@ const LeaveRequest = () => {
           reason: '',
           file: null
         });
-        fetchLeaveBalance(user.userId);
+        fetchLeaveBalance(user.userId, user.username);
       } else {
         const errMsg = result.message || 'Failed to submit request.';
         toast.error(errMsg);

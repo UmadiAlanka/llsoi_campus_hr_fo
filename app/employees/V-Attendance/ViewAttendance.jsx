@@ -22,29 +22,59 @@ export default function ViewAttendance() {
     const userData = JSON.parse(localStorage.getItem('user'));
     if (userData) {
       setUser(userData);
-      fetchAttendance(userData.username, selectedMonth, selectedYear);
+      fetchAttendance(userData.userId, userData.username, selectedMonth, selectedYear);
     }
   }, [selectedMonth, selectedYear]);
 
-  const fetchAttendance = async (username, month, year) => {
+  const fetchAttendance = async (userId, username, month, year) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+    // We only need one identifier now as the backend is smart
+    const identifier = user?.numericId || userId || username;
     try {
-      const response = await fetch(`http://localhost:2027/api/attendance/employee/${username}?month=${month + 1}&year=${year}`);
-      const data = await response.json();
+      const response = await fetch(`${API_URL}/attendance/employee/${identifier}?month=${month + 1}&year=${year}`, { cache: 'no-store' });
+      const result = await response.json();
+      const data = (Array.isArray(result) ? result : (result.data || []))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      
       setAttendance(data);
     } catch (error) {
       console.error("Error fetching attendance:", error);
     }
   };
 
-  const calculateTotalHours = (checkIn, checkOut) => {
-    if (!checkIn || !checkOut) return "0.00";
-    const inTime = new Date(`2000-01-01T${checkIn}`);
-    const outTime = new Date(`2000-01-01T${checkOut}`);
-    const diff = (outTime - inTime) / (1000 * 60 * 60);
-    return diff.toFixed(2);
+  const formatDate = (dateVal) => {
+    if (!dateVal) return '-';
+    if (Array.isArray(dateVal)) {
+      return `${dateVal[0]}-${String(dateVal[1]).padStart(2, '0')}-${String(dateVal[2]).padStart(2, '0')}`;
+    }
+    return dateVal;
   };
 
-  const getAttendanceStatus = (checkIn, totalHours) => {
+  const formatTime = (timeVal) => {
+    if (!timeVal) return null;
+    if (Array.isArray(timeVal)) {
+      return `${String(timeVal[0]).padStart(2, '0')}:${String(timeVal[1]).padStart(2, '0')}:${String(timeVal[2] || 0).padStart(2, '0')}`;
+    }
+    return timeVal;
+  };
+
+  const calculateTotalHours = (item) => {
+    const inRaw = item.clockInTime || item.checkInTime || item.checkIn || item.clockIn;
+    const outRaw = item.clockOutTime || item.checkOutTime || item.checkOut || item.clockOut;
+    const checkIn = formatTime(inRaw);
+    const checkOut = formatTime(outRaw);
+    if (!checkIn || !checkOut) return "0.00";
+    try {
+      const inTime = new Date(`2000-01-01T${checkIn}`);
+      const outTime = new Date(`2000-01-01T${checkOut}`);
+      const diff = (outTime - inTime) / (1000 * 60 * 60);
+      return diff > 0 ? diff.toFixed(2) : "0.00";
+    } catch (e) { return "0.00"; }
+  };
+
+  const getAttendanceStatus = (item, totalHours) => {
+    const inRaw = item.clockInTime || item.checkInTime || item.checkIn || item.clockIn;
+    const checkIn = formatTime(inRaw);
     if (!checkIn) return "ABSENT";
     
     // Strict Rule: Work under 4 hours is ABSENT
@@ -56,10 +86,12 @@ export default function ViewAttendance() {
     return checkInTime > nineAM ? "LATE" : "PRESENT";
   };
 
-  const filteredAttendance = attendance.filter(item => {
+  const attendanceList = Array.isArray(attendance) ? attendance : [];
+
+  const filteredAttendance = attendanceList.filter(item => {
     if (selectedStatus === 'ALL') return true;
-    const hours = calculateTotalHours(item.checkInTime, item.checkOutTime);
-    const status = getAttendanceStatus(item.checkInTime, hours);
+    const hours = calculateTotalHours(item);
+    const status = getAttendanceStatus(item, hours);
     return status === selectedStatus;
   });
 
@@ -68,9 +100,9 @@ export default function ViewAttendance() {
     let late = 0;
     let leave = 0;
 
-    attendance.forEach(item => {
-      const hours = calculateTotalHours(item.checkInTime, item.checkOutTime);
-      const status = getAttendanceStatus(item.checkInTime, hours);
+    attendanceList.forEach(item => {
+      const hours = calculateTotalHours(item);
+      const status = getAttendanceStatus(item, hours);
       if (status === "PRESENT") present++;
       if (status === "LATE") late++;
       if (status === "ABSENT" || status === "LEAVE") leave++;
@@ -121,8 +153,14 @@ export default function ViewAttendance() {
 
     <main className={styles.mainContent}>
       <h2 className={styles.pageTitle}>Attendance</h2>
-<div className={styles.filterRow}>
-  <div className={styles.filterItem}>
+  <div className={styles.filterRow}>
+    <button className={styles.refreshBtn} onClick={() => fetchAttendance(user.userId, user.username, selectedMonth, selectedYear)}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      </svg>
+      Refresh Data
+    </button>
+    <div className={styles.filterItem}>
     <label className={styles.filterLabel}>Month/Year</label>
     <div style={{ display: 'flex', gap: '10px' }}>
       <select className={styles.selectInput} value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
@@ -166,15 +204,18 @@ export default function ViewAttendance() {
       <tbody>
         {filteredAttendance.length > 0 ? (
           filteredAttendance.map((item, index) => {
-            const hours = calculateTotalHours(item.checkInTime, item.checkOutTime);
+            const inTimeStr = formatTime(item.clockInTime || item.checkInTime || item.checkIn || item.clockIn);
+            const outTimeStr = formatTime(item.clockOutTime || item.checkOutTime || item.checkOut || item.clockOut);
+            const hours = calculateTotalHours(item);
+            const status = getAttendanceStatus(item, hours);
             return (
               <tr key={index}>
-                <td>{item.date}</td>
-                <td>{item.checkInTime || '-'}</td>
-                <td>{item.checkOutTime || '-'}</td>
+                <td>{formatDate(item.date)}</td>
+                <td>{inTimeStr || '-'}</td>
+                <td>{outTimeStr || '-'}</td>
                 <td>{hours}</td>
-                <td className={getAttendanceStatus(item.checkInTime, hours) === 'PRESENT' ? styles.statusPresent : styles.statusLate}>
-                  {getAttendanceStatus(item.checkInTime, hours)}
+                <td className={status === 'PRESENT' ? styles.statusPresent : styles.statusLate}>
+                  {status}
                 </td>
               </tr>
             );

@@ -30,39 +30,45 @@ const Dashboard = () => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      fetchData(parsedUser.userId);
+      fetchData(parsedUser.username);
     }
   }, []);
 
-  const fetchData = async (userId) => {
+  const parseDate = (dateVal) => {
+    if (Array.isArray(dateVal)) return new Date(dateVal[0], dateVal[1] - 1, dateVal[2]);
+    return new Date(dateVal);
+  };
+
+  const formatTime = (timeVal) => {
+    if (!timeVal) return null;
+    if (Array.isArray(timeVal)) {
+      return `${String(timeVal[0]).padStart(2, '0')}:${String(timeVal[1]).padStart(2, '0')}:${String(timeVal[2] || 0).padStart(2, '0')}`;
+    }
+    return timeVal;
+  };
+
+  const fetchData = async (identifier) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
     try {
-      // Fetch Attendance Stats
-      const attRes = await fetch(`${API_URL}/attendance/employee/${userId}`, { cache: 'no-store' });
+      // The backend is now smart enough to handle both numeric IDs and usernames
+      const attRes = await fetch(`${API_URL}/attendance/employee/${identifier}`, { cache: 'no-store' });
       const responseData = await attRes.json();
-      let attendance = [];
+      const attendance = ((responseData && responseData.data && Array.isArray(responseData.data)) 
+        ? responseData.data 
+        : (Array.isArray(responseData) ? responseData : []))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      if (responseData.data && Array.isArray(responseData.data)) {
-        attendance = responseData.data;
-      } else if (Array.isArray(responseData)) {
-        attendance = responseData;
+      // Discovery: If any record has a numeric ID, remember it for the check-out button
+      if (attendance.length > 0 && isNaN(Number(user?.userId)) && !user?.numericId) {
+         const hasNid = attendance.find(a => a.employeeId && !isNaN(Number(a.employeeId)));
+         if (hasNid) {
+           console.log("Discovered numeric ID from merge:", hasNid.employeeId);
+           setUser(prev => ({ ...prev, numericId: hasNid.employeeId }));
+         }
       }
 
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
-
-      const parseDate = (dateVal) => {
-        if (Array.isArray(dateVal)) return new Date(dateVal[0], dateVal[1] - 1, dateVal[2]);
-        return new Date(dateVal);
-      };
-
-      const formatTime = (timeVal) => {
-        if (!timeVal) return null;
-        if (Array.isArray(timeVal)) {
-          return `${String(timeVal[0]).padStart(2, '0')}:${String(timeVal[1]).padStart(2, '0')}:${String(timeVal[2] || 0).padStart(2, '0')}`;
-        }
-        return timeVal;
-      };
 
       const monthlyAttendance = attendance.filter(a => {
         const recordDate = parseDate(a.date);
@@ -98,16 +104,26 @@ const Dashboard = () => {
 
       // Check if marked today
       const todayStr = new Date().toISOString().split('T')[0];
-      const todayRecord = attendance.find(a => {
+      // Pick the most recent record for today (prioritizing open ones)
+      const todayRecords = attendance.filter(a => {
         const recordDate = parseDate(a.date).toISOString().split('T')[0];
         return recordDate === todayStr;
       });
+
+      const todayRecord = todayRecords.find(a => !(a.clockOutTime || a.checkOutTime)) || todayRecords[0];
 
       if (todayRecord) {
         setTodayTimes({
           checkIn: todayRecord.clockInTime,
           checkOut: todayRecord.clockOutTime
         });
+
+        // Smart ID Discovery: Check all possible numeric ID fields
+        const numericId = todayRecord.employeeId || todayRecord.emp_id || todayRecord.employee_id;
+        if (numericId && isNaN(Number(user?.userId))) {
+           console.log("Discovered numeric ID:", numericId);
+           setUser(prev => ({ ...prev, numericId: numericId }));
+        }
 
         if (todayRecord.clockOutTime) {
           setAttendanceState('COMPLETED');
@@ -119,22 +135,22 @@ const Dashboard = () => {
         setTodayTimes({ checkIn: null, checkOut: null });
       }
 
-      // Fetch Leave Stats
+      // Fetch Leave Stats using the primary identifier
       let leaveBalance = 48;
       try {
-        const balRes = await fetch(`${API_URL}/leave/employee/${userId}/balance`, { cache: 'no-store' });
+        const balRes = await fetch(`${API_URL}/leave/employee/${identifier}/balance`, { cache: 'no-store' });
         const balData = await balRes.json();
         if (balRes.ok && balData.success) {
           leaveBalance = balData.data;
         } else {
-          // Fallback manual calculation
-          const leaveRes = await fetch(`${API_URL}/leave/employee/${userId}`, { cache: 'no-store' });
+          // Fallback manual calculation if balance endpoint fails
+          const leaveRes = await fetch(`${API_URL}/leave/employee/${identifier}`, { cache: 'no-store' });
           const leaveData = await leaveRes.json();
           const leaves = (leaveData && leaveData.data) || (Array.isArray(leaveData) ? leaveData : []);
-          const currentYear = new Date().getFullYear();
+          const yr = new Date().getFullYear();
           const usedLeaves = leaves
             .filter(l => l.status && l.status.toUpperCase() === 'APPROVED')
-            .filter(l => parseDate(l.startDate).getFullYear() === currentYear)
+            .filter(l => parseDate(l.startDate).getFullYear() === yr)
             .reduce((sum, l) => {
               const start = parseDate(l.startDate);
               const end = parseDate(l.endDate);
@@ -145,7 +161,7 @@ const Dashboard = () => {
           leaveBalance = 48 - usedLeaves;
         }
       } catch (e) {
-        console.error("Error fetching leave balance:", e);
+        console.warn("Manual leave balance calculation failed:", e);
       }
 
       // ... SRI LANKA 2026 HOLIDAYS DATABASE ...
@@ -211,13 +227,18 @@ const Dashboard = () => {
 
     try {
       let endpoint = '';
-      let method = 'POST';
-      if (attendanceState === 'NOT_MARKED') {
-        endpoint = `/attendance/clock-in?employeeId=${user.userId}&markedBy=${user.name}`;
+      // Use PUT for clock-out as it is standard for updating a record
+      const isClockOut = attendanceState !== 'NOT_MARKED';
+      const method = isClockOut ? 'PUT' : 'POST';
+      
+      const targetId = user.userId;
+      if (!isClockOut) {
+        endpoint = `/attendance/clock-in?employeeId=${targetId}&markedBy=${user.name}`;
       } else {
-        endpoint = `/attendance/clock-out/${user.userId}`;
+        endpoint = `/attendance/clock-out/${targetId}`;
       }
 
+      console.log(`Sending ${method} request to: ${endpoint}`);
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: method,
         headers: { 'Content-Type': 'application/json' }

@@ -17,23 +17,30 @@ const Salary = () => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      fetchSalary(parsedUser.userId);
+      fetchSalary(parsedUser.userId, parsedUser.username);
     }
   }, []);
 
-  const fetchSalary = async (userId) => {
+  const fetchSalary = async (userId, username) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
+    const identifiers = [userId, username];
     try {
-      // FIXED: was /api/salary/employee, correct endpoint is /api/payroll/employee
-      const response = await fetch(`${API_URL}/payroll/employee/${userId}`);
-      const result = await response.json();
-
-      // Handle both ApiResponse wrapper { success, data: [...] } and plain array
       let salaries = [];
-      if (result && result.success && Array.isArray(result.data)) {
-        salaries = result.data;
-      } else if (Array.isArray(result)) {
-        salaries = result;
+      
+      for (const id of identifiers) {
+        const endpoints = [`/payroll/employee/${id}`, `/salary/employee/${id}`];
+        for (const endpoint of endpoints) {
+          try {
+            const response = await fetch(`${API_URL}${endpoint}`);
+            const result = await response.json();
+            const data = (result && result.success && Array.isArray(result.data)) ? result.data : (Array.isArray(result) ? result : []);
+            if (data.length > 0) {
+              salaries = data;
+              break; 
+            }
+          } catch (e) { console.warn(`Failed fetch for ${endpoint}`); }
+        }
+        if (salaries.length > 0) break;
       }
 
       setSalaryData(salaries);
@@ -42,14 +49,21 @@ const Salary = () => {
       const paidSalaries = salaries
         .filter(s => s.status && (s.status.toUpperCase() === 'PAID' || s.status.toUpperCase() === 'APPROVED'))
         .sort((a, b) => {
-          const dateA = a.generatedDate ? new Date(a.generatedDate) : new Date(a.year, a.month - 1);
-          const dateB = b.generatedDate ? new Date(b.generatedDate) : new Date(b.year, b.month - 1);
+          const yearA = a.salary_year || a.year;
+          const monthA = a.salary_month || a.month;
+          const yearB = b.salary_year || b.year;
+          const monthB = b.salary_month || b.month;
+          
+          const dateA = a.generatedDate ? new Date(a.generatedDate) : (yearA && monthA ? new Date(yearA, monthA - 1) : new Date(0));
+          const dateB = b.generatedDate ? new Date(b.generatedDate) : (yearB && monthB ? new Date(yearB, monthB - 1) : new Date(0));
           return dateB - dateA;
         });
 
       if (paidSalaries.length > 0) {
         const last = paidSalaries[0];
-        const date = last.generatedDate ? new Date(last.generatedDate) : new Date(last.year, last.month - 1, 28);
+        const yr = last.salary_year || last.year;
+        const mo = last.salary_month || last.month;
+        const date = last.generatedDate ? new Date(last.generatedDate) : (yr && mo ? new Date(yr, mo - 1, 28) : new Date());
         setLastPaidDate(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase());
       }
     } catch (error) {
@@ -62,8 +76,12 @@ const Salary = () => {
   };
 
   const currentDisplayData = salaryData.filter(record => {
-    const matchYear = record.year.toString() === selectedYear;
-    const matchMonth = selectedMonth === "All" || getMonthName(record.month) === selectedMonth;
+    const yr = record.salary_year || record.year;
+    const mo = record.salary_month || record.month;
+    if (!yr || !mo) return false;
+    
+    const matchYear = yr.toString() === selectedYear;
+    const matchMonth = selectedMonth === "All" || getMonthName(mo) === selectedMonth;
     return matchYear && matchMonth;
   });
 
@@ -164,19 +182,6 @@ const Salary = () => {
       </div>
     </div>
 
-    {salaryData.length === 0 && (
-      <div style={{
-        background: 'rgba(255,255,255,0.15)',
-        borderRadius: '12px',
-        padding: '20px 24px',
-        marginBottom: '20px',
-        color: '#fff',
-        fontSize: '0.9rem',
-        border: '1px solid rgba(255,255,255,0.25)'
-      }}>
-        No salary records found. Salary records will appear here once your admin adds them.
-      </div>
-    )}
 
     <div className={styles.glassTableContainer}>
       <table className={styles.payslipTable}>
@@ -191,15 +196,19 @@ const Salary = () => {
         </thead>
         <tbody>
           {currentDisplayData.length > 0 ? (
-            currentDisplayData.map((slip, index) => (
-              <tr key={index}>
-                <td>{getMonthName(slip.month)}</td>
-                <td>{slip.generatedDate ? new Date(slip.generatedDate).toLocaleDateString() : `${getMonthName(slip.month)} 28, ${slip.year}`}</td>
-                <td>LKR {Number(slip.netSalary || slip.amount || 0).toLocaleString()}</td>
-                <td><span className={styles.statusBadge}>{slip.status}</span></td>
-                <td><button onClick={() => handleViewPayslip(slip)} className={styles.downloadBtn}>View Payslip</button></td>
-              </tr>
-            ))
+            currentDisplayData.map((slip, index) => {
+              const yr = slip.salary_year || slip.year;
+              const mo = slip.salary_month || slip.month;
+              return (
+                <tr key={index}>
+                  <td>{getMonthName(mo)}</td>
+                  <td>{slip.generatedDate ? new Date(slip.generatedDate).toLocaleDateString() : `${getMonthName(mo)} 28, ${yr}`}</td>
+                  <td>LKR {Number(slip.net_salary || slip.netSalary || slip.amount || 0).toLocaleString()}</td>
+                  <td><span className={styles.statusBadge}>{slip.status}</span></td>
+                  <td><button onClick={() => handleViewPayslip(slip)} className={styles.downloadBtn}>View Payslip</button></td>
+                </tr>
+              );
+            })
           ) : (
             <tr><td colSpan="5" className={styles.noData}>No salary records found for {selectedMonth === "All" ? "" : selectedMonth} {selectedYear}.</td></tr>
           )}
@@ -217,7 +226,7 @@ const Salary = () => {
                 <img src="/logo.png" alt="Logo" className={styles.payslipLogo} />
                 <div>
                   <h2 className={styles.companyName}>LLSOI CAMPUS (PVT) LTD.</h2>
-                  <p className={styles.payslipTitle}>Employee Pay Sheet - {getMonthName(selectedSlip.month).toUpperCase()} {selectedSlip.year}</p>
+                  <p className={styles.payslipTitle}>Employee Pay Sheet - {getMonthName(selectedSlip.salary_month || selectedSlip.month).toUpperCase()} {selectedSlip.salary_year || selectedSlip.year}</p>
                 </div>
               </div>
               <div className={styles.slipStatus}>
@@ -233,7 +242,7 @@ const Salary = () => {
                 <p><strong>Employee ID:</strong> {user?.username}</p>
               </div>
               <div className={styles.detailGroup}>
-                <p><strong>Pay Period:</strong> {getMonthName(selectedSlip.month)} {selectedSlip.year}</p>
+                <p><strong>Pay Period:</strong> {getMonthName(selectedSlip.salary_month || selectedSlip.month)} {selectedSlip.salary_year || selectedSlip.year}</p>
                 <p><strong>Generated Date:</strong> {selectedSlip.generatedDate ? new Date(selectedSlip.generatedDate).toLocaleDateString() : 'N/A'}</p>
               </div>
             </div>
@@ -241,24 +250,24 @@ const Salary = () => {
             <div className={styles.salaryGrid}>
               <div className={styles.earningsSection}>
                 <h4>EARNINGS</h4>
-                <div className={styles.salaryRowItem}><span>Basic Salary</span> <span>{Number(selectedSlip.basicSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryRowItem}><span>Basic Salary</span> <span>{Number(selectedSlip.basic_salary || selectedSlip.basicSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                 <div className={styles.salaryRowItem}><span>Allowances</span> <span>{Number(selectedSlip.allowances || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                <div className={styles.salaryRowItem}><span>Overtime Pay</span> <span>{Number(selectedSlip.overtimePay || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                <div className={styles.salaryTotalItem}><span>GROSS SALARY</span> <span>LKR {Number(selectedSlip.grossSalary || selectedSlip.basicSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryRowItem}><span>Overtime Pay</span> <span>{Number(selectedSlip.overtime_pay || selectedSlip.overtimePay || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryTotalItem}><span>GROSS SALARY</span> <span>LKR {Number(selectedSlip.gross_salary || selectedSlip.grossSalary || selectedSlip.basicSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
               </div>
 
               <div className={styles.deductionsSection}>
                 <h4>DEDUCTIONS</h4>
-                <div className={styles.salaryRowItem}><span>EPF (8%)</span> <span>{Number(selectedSlip.epfDeduction || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                <div className={styles.salaryRowItem}><span>ETF (3%)</span> <span>{Number(selectedSlip.etfDeduction || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                <div className={styles.salaryRowItem}><span>Other Deductions</span> <span>{Number(selectedSlip.otherDeductions || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                <div className={styles.salaryTotalItem}><span>TOTAL DEDUCTIONS</span> <span>LKR {Number((selectedSlip.epfDeduction || 0) + (selectedSlip.etfDeduction || 0) + (selectedSlip.otherDeductions || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryRowItem}><span>EPF (8%)</span> <span>{Number(selectedSlip.epf_deduction || selectedSlip.epfDeduction || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryRowItem}><span>ETF (3%)</span> <span>{Number(selectedSlip.etf_deduction || selectedSlip.etfDeduction || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryRowItem}><span>Other Deductions</span> <span>{Number(selectedSlip.other_deductions || selectedSlip.otherDeductions || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                <div className={styles.salaryTotalItem}><span>TOTAL DEDUCTIONS</span> <span>LKR {Number((selectedSlip.epf_deduction || selectedSlip.epfDeduction || 0) + (selectedSlip.etf_deduction || selectedSlip.etfDeduction || 0) + (selectedSlip.other_deductions || selectedSlip.otherDeductions || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
               </div>
             </div>
 
             <div className={styles.netSalarySection}>
               <div className={styles.netSalaryLabel}>NET SALARY (TAKE HOME)</div>
-              <div className={styles.netSalaryValue}>LKR {Number(selectedSlip.netSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+              <div className={styles.netSalaryValue}>LKR {Number(selectedSlip.net_salary || selectedSlip.netSalary || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
             </div>
 
             <div className={styles.payslipFooter}>

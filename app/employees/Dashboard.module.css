@@ -10,7 +10,6 @@ body,
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* Ensures the page is at least full screen */
   width: 100%;
   margin: 0;
   padding: 0;
@@ -79,12 +78,8 @@ body,
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
-  /* CHANGE THIS: */
   overflow: visible;
-  /* Ensure content isn't cut off */
   align-items: stretch;
-  /* This ensures sidebar and mainContent are equal height */
 }
 
 .sidebar {
@@ -92,12 +87,8 @@ body,
   background: rgba(207, 207, 207, 0.25);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-
-  /* CHANGE THIS: */
   min-height: calc(100vh - 80px);
   height: auto;
-  /* Allow it to grow with content */
-
   padding-top: 20px;
 }
 
@@ -142,7 +133,6 @@ body,
   color: white;
   height: auto;
   overflow: visible;
-
 }
 
 .sectionHeading {
@@ -200,7 +190,6 @@ body,
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
   color: #7a1212;
-
 }
 
 .cardLabel {
@@ -258,8 +247,6 @@ body,
   width: 24px;
   height: 24px;
   object-fit: contain;
-  =======gap: 10px;
-  >>>>>>>origin/main
 }
 
 /* HOLIDAY MODAL STYLES */
@@ -293,7 +280,6 @@ body,
     opacity: 0;
     transform: translateY(-20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -621,19 +607,13 @@ body,
 }
 
 @media print {
-
-  /* Hide EVERYTHING by default */
   :global(*) {
     visibility: hidden !important;
   }
-
-  /* Show only the printable payslip area and its parents */
   :global(#printable-payslip),
   :global(#printable-payslip) * {
     visibility: visible !important;
   }
-
-  /* Position the printable area at the very top left */
   :global(#printable-payslip) {
     position: fixed !important;
     top: 0 !important;
@@ -647,15 +627,11 @@ body,
     visibility: visible !important;
     z-index: 9999 !important;
   }
-
-  /* Hide specific elements that might still show up */
   :global(.no-print),
   :global(.no-print) * {
     display: none !important;
     visibility: hidden !important;
   }
-
-  /* Reset body/html for printing */
   body,
   html {
     background: white !important;
@@ -664,18 +640,14 @@ body,
     height: auto !important;
     overflow: visible !important;
   }
-
-  /* Special handling for background colors in print */
   .netSalarySection {
     background: #7a1212 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color: white !important;
   }
-
   .divider {
     border-top: 2px solid #7a1212 !important;
     -webkit-print-color-adjust: exact !important;
   }
-
 }

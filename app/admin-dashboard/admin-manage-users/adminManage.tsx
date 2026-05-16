@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./adminManage.module.css";
 import Link from "next/link";
-import MessageBox from "../components/MessageBox"; 
+import MessageBox from "../components/MessageBox";
 
 interface UserData {
   employeeId: string;
@@ -20,10 +20,10 @@ export default function AdminManage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  
+
   // Track which ID we want to delete
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  
+
   const [modal, setModal] = useState<{
     show: boolean;
     type: "success" | "error" | "confirm"; // Added confirm type
@@ -65,25 +65,25 @@ export default function AdminManage() {
     if (!pendingDeleteId) return;
 
     try {
-      const res = await fetch(`http://localhost:2027/api/employees/${pendingDeleteId}`, { 
-        method: "DELETE" 
+      const res = await fetch(`http://localhost:2027/api/employees/${pendingDeleteId}`, {
+        method: "DELETE"
       });
 
       if (res.ok) {
         setUsers((prev) => prev.filter((u) => u.employeeId !== pendingDeleteId));
-        setModal({ 
-          show: true, 
-          type: "success", 
-          msg: "Employee deleted successfully!" 
+        setModal({
+          show: true,
+          type: "success",
+          msg: "Employee deleted successfully!"
         });
       } else {
         throw new Error("Failed to delete user.");
       }
     } catch (err: any) {
-      setModal({ 
-        show: true, 
-        type: "error", 
-        msg: err.message || "Error deleting employee." 
+      setModal({
+        show: true,
+        type: "error",
+        msg: err.message || "Error deleting employee."
       });
     } finally {
       setPendingDeleteId(null);
@@ -93,8 +93,8 @@ export default function AdminManage() {
   const filteredUsers = users.filter((user) => {
     const q = searchTerm.toLowerCase();
     return (
-      user.name.toLowerCase().includes(q) || 
-      user.employeeId.toString().includes(q) || 
+      user.name.toLowerCase().includes(q) ||
+      user.employeeId.toString().includes(q) ||
       user.username.toLowerCase().includes(q)
     );
   });
@@ -163,10 +163,10 @@ export default function AdminManage() {
 
       {/* The Beautiful Modal */}
       {modal.show && (
-        <MessageBox 
-          type={modal.type} 
-          message={modal.msg} 
-          onClose={() => setModal({ ...modal, show: false })} 
+        <MessageBox
+          type={modal.type}
+          message={modal.msg}
+          onClose={() => setModal({ ...modal, show: false })}
           onConfirm={executeDelete} // Only fires if type is 'confirm'
         />
       )}
