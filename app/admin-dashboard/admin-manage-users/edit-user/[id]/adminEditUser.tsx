@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./adminEditUser.module.css";
 import { useParams, useRouter } from "next/navigation";
+import MessageBox from "../../../components/MessageBox";
 
 export default function AdminEditUser() {
   const params   = useParams();
@@ -12,7 +13,17 @@ export default function AdminEditUser() {
   const [formData, setFormData] = useState({
     name: "", employeeId: "", address: "", contactNumber: "",
     role: "Employee", job: "", jobType: "Academic",
-    username: "", email: "", password: "", confirmPassword: "",
+    username: "", email: "",
+  });
+
+  const [modal, setModal] = useState<{
+    show: boolean;
+    type: "success" | "error";
+    msg: string;
+  }>({
+    show: false,
+    type: "success",
+    msg: "",
   });
 
   useEffect(() => {
@@ -24,11 +35,15 @@ export default function AdminEditUser() {
         if (result.success && result.data) {
           const e = result.data;
           setFormData({
-            name: e.name || "", employeeId: e.employeeId || "", address: e.address || "",
-            contactNumber: e.contactNumber || "", role: e.role || "Employee",
-            job: e.job || "", jobType: e.jobType || "Academic",
-            username: e.username || "", email: e.email || "",
-            password: "", confirmPassword: "",
+            name: e.name || "",
+            employeeId: e.employeeId || "",
+            address: e.address || "",
+            contactNumber: e.contactNumber || "",
+            role: e.role || "Employee",
+            job: e.job || "",
+            jobType: e.jobType || "Academic",
+            username: e.username || "",
+            email: e.email || "",
           });
         }
       } catch { console.error("Fetch error"); }
@@ -42,9 +57,16 @@ export default function AdminEditUser() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.password && formData.password !== formData.confirmPassword) { alert("Passwords don't match"); return; }
-    const payload: any = { name: formData.name, address: formData.address, contactNumber: formData.contactNumber, role: formData.role, job: formData.job, jobType: formData.jobType, username: formData.username, email: formData.email };
-    if (formData.password) payload.password = formData.password;
+    const payload: any = {
+      name: formData.name,
+      address: formData.address,
+      contactNumber: formData.contactNumber,
+      role: formData.role,
+      job: formData.job,
+      jobType: formData.jobType,
+      username: formData.username, // sent silently to satisfy backend NOT NULL constraint
+      email: formData.email,
+    };
     try {
       const res = await fetch(`http://localhost:2027/api/employees/${employeeId}`, {
         method: "PUT",
@@ -52,12 +74,23 @@ export default function AdminEditUser() {
         body: JSON.stringify(payload),
       });
       const result = await res.json();
-      if (result.success) { alert("Updated!"); router.push("/admin-dashboard/admin-manage-users"); }
-      else alert("Update failed");
-    } catch { alert("Error updating"); }
+      if (result.success) {
+        setModal({ show: true, type: "success", msg: "Employee updated successfully!" });
+      } else {
+        setModal({ show: true, type: "error", msg: result.message || "Update failed." });
+      }
+    } catch {
+      setModal({ show: true, type: "error", msg: "Error connecting to server." });
+    }
   };
 
-  if (loading) return <p style={{ color: '#fff' }}>Loading...</p>;
+  const handleCloseModal = () => {
+    const wasSuccess = modal.type === "success";
+    setModal({ ...modal, show: false });
+    if (wasSuccess) router.push("/admin-dashboard/admin-manage-users");
+  };
+
+  if (loading) return <p style={{ color: "#fff" }}>Loading...</p>;
 
   return (
     <>
@@ -68,11 +101,11 @@ export default function AdminEditUser() {
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label className={styles.label}>Name</label>
-              <input name="name" value={formData.name} onChange={handleChange} className={styles.input} />
+              <input name="name" value={formData.name} onChange={handleChange} className={styles.input} required />
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>Employee ID</label>
-              <input value={formData.employeeId} readOnly className={styles.input} style={{ background: '#f0f0f0', cursor: 'not-allowed' }} />
+              <input value={formData.employeeId} readOnly className={styles.input} style={{ background: "#f0f0f0", cursor: "not-allowed" }} />
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>Address</label>
@@ -101,35 +134,23 @@ export default function AdminEditUser() {
                 <option value="Non-academic">Non-academic</option>
               </select>
             </div>
-          </div>
-
-          <h3 className={styles.sectionTitle}>Login Credentials</h3>
-          <div className={styles.formGrid}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Username</label>
-              <input name="username" value={formData.username} onChange={handleChange} className={styles.input} />
-            </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>Email</label>
-              <input name="email" value={formData.email} onChange={handleChange} className={styles.input} />
-            </div>
-          </div>
-
-          <h3 className={styles.sectionTitle}>Change Password <span style={{ fontWeight: 400, fontSize: '0.85rem' }}>(leave blank to keep)</span></h3>
-          <div className={styles.formGrid}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>New Password</label>
-              <input name="password" type="password" value={formData.password} onChange={handleChange} className={styles.input} />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Confirm Password</label>
-              <input name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} className={styles.input} />
+              <input name="email" value={formData.email} onChange={handleChange} className={styles.input} required />
             </div>
           </div>
 
           <button type="submit" className={styles.updateBtn}>UPDATE USER</button>
         </form>
       </div>
+
+      {modal.show && (
+        <MessageBox
+          type={modal.type}
+          message={modal.msg}
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 }
