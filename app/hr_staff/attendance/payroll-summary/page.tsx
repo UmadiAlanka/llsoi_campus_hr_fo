@@ -34,6 +34,7 @@ const PayrollSummaryPage = () => {
     // If no month is selected, reset summary and exit
     if (!selectedMonth) {
       setSummary(prev => ({ ...prev, noOfEmployees: 0, totalSalaryPayout: 0 }));
+      setStatus('idle'); // Reset status when month changes
       return;
     }
 
@@ -59,10 +60,14 @@ const PayrollSummaryPage = () => {
             noOfEmployees: data.length,
             totalSalaryPayout: total
           }));
-          setStatus('idle');
+          
+          // Check if all records in this month are already approved to persist the button status
+          const allApproved = data.length > 0 && data.every((item: any) => item.status === 'APPROVED');
+          setStatus(allApproved ? 'success' : 'idle');
         } else {
           // Reset summary if no data is found or if the backend returns success: false
           setSummary(prev => ({ ...prev, noOfEmployees: 0, totalSalaryPayout: 0 }));
+          setStatus('idle');
         }
       } catch (error) {
         console.error("Connection error to API:", error);
@@ -88,10 +93,9 @@ const PayrollSummaryPage = () => {
       setStatus('success');
       setShowPopup(true);
       
-      // Auto-hide the success popup after 2 seconds
+      // Auto-hide the success popup after 2 seconds but KEEP status as 'success'
       setTimeout(() => {
         setShowPopup(false);
-        setStatus('idle');
       }, 2000);
     } catch (e) {
       setStatus('error');

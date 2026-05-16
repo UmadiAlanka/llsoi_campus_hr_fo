@@ -198,6 +198,16 @@ const EditSalaryPage = () => {
           {status === 'loading' ? 'Processing...' : 'Update Record'}
         </button>
       </form>
+
+      <div className={styles.backButtonContainer}>
+        <button 
+          type="button" 
+          className={styles.backBtn} 
+          onClick={() => router.push('/hr_staff/attendance')}
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

@@ -28,7 +28,14 @@ const AttendancePage = () => {
   // Payroll Filter States
   const [paySearch, setPaySearch] = useState('');
   const [payType, setPayType] = useState('');
-  const [payMonth, setPayMonth] = useState(''); // Stores "YYYY-MM"
+
+  // Set current month as default (e.g., "2026-05") so data loads immediately
+  const [payMonth, setPayMonth] = useState(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  });
 
   /**
    * Fetch Attendance data with Filters
@@ -62,7 +69,6 @@ const AttendancePage = () => {
    * Fetch Payroll data with Month, Year, and JobType filters
    */
   const fetchPayrollData = useCallback(async () => {
-    // We only fetch if a month is selected to keep the table clean
     if (!payMonth) {
         setPayrollList([]);
         return;
@@ -70,11 +76,9 @@ const AttendancePage = () => {
 
     setLoadingPay(true);
     try {
-      // Split "2026-05" -> year: 2026, month: 5
       const [year, monthStr] = payMonth.split('-');
       const monthInt = parseInt(monthStr);
 
-      // Using the specialized filter endpoint we discussed
       let url = new URL('http://localhost:2027/api/payroll/filter'); 
       url.searchParams.append('month', monthInt.toString());
       url.searchParams.append('year', year);
@@ -96,13 +100,14 @@ const AttendancePage = () => {
     }
   }, [payMonth, payType]);
 
-  /**
-   * Initial & Reactive Data Loading
-   */
+  // Separate concerns in useEffect to prevent infinite loops and lag
   useEffect(() => {
     fetchAttendanceData();
+  }, [fetchAttendanceData]);
+
+  useEffect(() => {
     fetchPayrollData();
-  }, [fetchAttendanceData, fetchPayrollData]);
+  }, [fetchPayrollData]);
 
   /**
    * Handle Individual Payroll Approval
@@ -116,14 +121,13 @@ const AttendancePage = () => {
       
       if (result.success) {
         setShowPopup(true);
-        fetchPayrollData(); // Refresh list after approval
+        fetchPayrollData(); 
       }
     } catch (error) {
       console.error("Approval Error:", error);
     }
   };
 
-  // Auto-hide popup timer
   useEffect(() => {
     if (showPopup) {
       const timer = setTimeout(() => setShowPopup(false), 3000);
@@ -142,15 +146,18 @@ const AttendancePage = () => {
 
   const filteredPayroll = payrollList.filter((item: any) => {
     const searchLower = paySearch.toLowerCase();
+    // Support both snake_case from DB schema and object nesting if mapped via Hibernate
+    const empId = item.employee_id || item.employee?.emp_id || item.employee?.employeeId;
+    const empName = item.employee?.name || item.employeeName || '';
+    
     return (
-      item.employee?.employeeId?.toString().includes(searchLower) || 
-      item.employee?.name?.toLowerCase().includes(searchLower)
+      empId?.toString().includes(searchLower) || 
+      empName?.toLowerCase().includes(searchLower)
     );
   });
 
   return (
     <div className={styles.container}>
-      {/* Notification Popup */}
       {showPopup && (
         <div className={styles.popupOverlay}>
           <div className={styles.popupCard}>
@@ -170,7 +177,7 @@ const AttendancePage = () => {
           <input type="date" className={styles.filterInput} onChange={(e) => setAttDate(e.target.value)} />
           <select className={styles.filterSelect} onChange={(e) => setAttDept(e.target.value)}>
             <option value="">Filter by Department</option>
-            <option value="HR">HR</option>
+            <option value="HR">Management</option>
             <option value="IT">IT</option>
             <option value="Finance">Finance</option>
           </select>
@@ -246,29 +253,42 @@ const AttendancePage = () => {
             {loadingPay ? (
               <tr><td colSpan={7} className={styles.loadingCell}>Loading payroll...</td></tr>
             ) : filteredPayroll.length > 0 ? (
-              filteredPayroll.map((item: any) => (
-                <tr key={item.id} className={styles.tableRow}>
-                  <td>{item.employee?.employeeId || 'N/A'}</td>
-                  <td>{item.employee?.name || 'N/A'}</td>
-                  <td>{item.employee?.jobType || 'N/A'}</td>
-                  <td>{item.basicSalary}</td>
-                  <td>{item.netSalary}</td>
-                  <td>
-                    <Link href={`/hr_staff/attendance/edit-salary/${item.employee?.employeeId}`}>
-                      <button className={styles.editBtn}>Edit/View</button>
-                    </Link>
-                  </td>
-                  <td>
-                    {item.status === 'APPROVED' ? (
-                      <span className={styles.statusText}>Approved</span>
-                    ) : (
-                      <button className={styles.approveBtn} onClick={() => handleApprove(item.id)}>Approve</button>
-                    )}
-                  </td>
-                </tr>
-              ))
+              filteredPayroll.map((item: any) => {
+                // Determine accurate mapping properties safely
+                const currentEmpId = item.employee_id || item.employee?.emp_id || item.employee?.employeeId || 'N/A';
+                const currentEmpName = item.employee?.name || item.employeeName || 'N/A';
+                const currentJobType = item.employee?.jobType || item.jobType || 'N/A';
+                const currentBasic = item.basic_salary !== undefined ? item.basic_salary : item.basicSalary;
+                const currentNet = item.net_salary !== undefined ? item.net_salary : item.netSalary;
+
+                return (
+                  <tr key={item.id} className={styles.tableRow}>
+                    <td>{currentEmpId}</td>
+                    <td>{currentEmpName}</td>
+                    <td>{currentJobType}</td>
+                    <td>{currentBasic}</td>
+                    <td>{currentNet}</td>
+                    <td>
+                      <Link href={`/hr_staff/attendance/edit-salary/${currentEmpId}`}>
+                        <button className={styles.editBtn}>Edit/View</button>
+                      </Link>
+                    </td>
+                    <td>
+                      {item.status === 'APPROVED' ? (
+                        <span className={styles.statusText}>Approved</span>
+                      ) : (
+                        <button className={styles.approveBtn} onClick={() => handleApprove(item.id)}>Approve</button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
-              <tr><td colSpan={7} className={styles.noDataCell}>{payMonth ? "No payroll records found for this selection" : "Please select a Month to view Payroll"}</td></tr>
+              <tr>
+                <td colSpan={7} className={styles.noDataCell}>
+                  {payMonth ? "No payroll records found for this selection" : "Please select a Month to view Payroll"}
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
