@@ -11,8 +11,6 @@ const EditEmployeePage = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<{ contact?: string; email?: string }>({});
   
-  // Initializing state with empty strings. 
-  // Added 'username' to the state to prevent "null" errors during database update.
   const [formData, setFormData] = useState({
     name: '', 
     nic: '', 
@@ -20,12 +18,12 @@ const EditEmployeePage = () => {
     gender: '', 
     contact: '',
     email: '', 
-    employeeId: '', 
+    employeeId: '', // පසුබිමෙන් තබා ගනී (UI එකෙන් ඉවත් කර ඇත)
     department: '', 
     position: '',
     dateJoined: '', 
     employeeType: '',
-    username: '' // Vital field for the backend update query
+    username: '' 
   });
 
   // 1. Fetch Employee Data from Backend on page load
@@ -38,7 +36,6 @@ const EditEmployeePage = () => {
         if (result.success) {
           const emp = result.data;
           
-          // Map backend response fields to frontend state keys
           setFormData({
             name: emp.name || '',
             nic: emp.nic || '', 
@@ -51,7 +48,7 @@ const EditEmployeePage = () => {
             position: emp.job || '',
             dateJoined: emp.dateJoined || '',
             employeeType: emp.jobType || '',
-            username: emp.username || '' // Ensure username is stored even if hidden
+            username: emp.username || '' 
           });
         }
       } catch (error) {
@@ -67,14 +64,12 @@ const EditEmployeePage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    // Contact Number Validation: Only digits and max 10 characters
     if (name === "contact") {
       if (!/^\d*$/.test(value) || value.length > 10) return;
     }
 
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear validation errors when user types
     if (errors.contact || errors.email) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -83,7 +78,6 @@ const EditEmployeePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Manual Validation for contact and email
     let validationErrors: { contact?: string; email?: string } = {};
     if (formData.contact.length !== 10) {
       validationErrors.contact = "Contact number must be exactly 10 digits.";
@@ -100,8 +94,8 @@ const EditEmployeePage = () => {
     setStatus('loading');
 
     // 2. Prepare Payload for PUT Request
-    // Added 'username' to satisfy the [Column 'username' cannot be null] constraint.
     const payload = {
+      employeeId: formData.employeeId, // Backend එකට හඳුනාගැනීම සඳහා අවශ්‍ය වේ
       name: formData.name,
       nic: formData.nic,
       dob: formData.dob,
@@ -112,7 +106,7 @@ const EditEmployeePage = () => {
       job: formData.position,
       dateJoined: formData.dateJoined,
       jobType: formData.employeeType,
-      username: formData.username // Required by backend database constraints
+      username: formData.username 
     };
 
     try {
@@ -126,14 +120,12 @@ const EditEmployeePage = () => {
 
       if (result.success) {
         setStatus('success');
-        // Redirect to employee list after successful update
         setTimeout(() => {
           setStatus('idle');
           router.push('/hr_staff/employees'); 
         }, 2000);
       } else {
         setStatus('error');
-        // Display backend error message if update fails
         alert("Update failed: " + (result.message || "Check console for details"));
         console.error("Backend Error Details:", result);
         setTimeout(() => setStatus('idle'), 3000);
@@ -144,8 +136,17 @@ const EditEmployeePage = () => {
     }
   };
 
-  // Show loading state until data is successfully fetched
-  if (!formData.name && status !== 'error') return <div className={styles.loading}>Loading Data...</div>;
+  // දත්ත ලැබෙන තුරු loading එක පෙන්වීමට ඇති පේළිය මෙයට යටින් back button එකක් සහිතව වෙනස් කර ඇත.
+  if (!formData.name && status !== 'error') {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading Data...</div>
+        <div className={styles.backButtonContainer}>
+          <button type="button" className={styles.backBtn} onClick={() => router.push('/hr_staff/employees')}>Back</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -215,10 +216,7 @@ const EditEmployeePage = () => {
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Job Information</h3>
 
-            <div className={styles.inputWrapper}>
-              <label className={styles.fieldLabel}>Employee ID:</label>
-              <input type="text" name="employeeId" value={formData.employeeId} className={styles.whiteInput} readOnly />
-            </div>
+            {/* Employee ID input එක මෙතනින් සම්පූර්ණයෙන්ම ඉවත් කර ඇත */}
 
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Department:</label>
@@ -259,6 +257,17 @@ const EditEmployeePage = () => {
           {status === 'loading' ? 'Updating...' : 'Update Employee Details'}
         </button>
       </form>
+
+    
+      <div className={styles.backButtonContainer}>
+        <button 
+          type="button" 
+          className={styles.backBtn} 
+          onClick={() => router.push('/hr_staff/employees')}
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

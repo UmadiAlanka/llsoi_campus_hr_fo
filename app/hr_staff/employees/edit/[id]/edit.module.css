@@ -19,22 +19,7 @@
   margin-bottom: 25px;
 }
 
-.backBtn {
-  background: #741010;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
 
-.backBtn:hover {
-  transform: scale(1.1);
-}
 
 .subtitle {
   font-size: 1.2rem;
@@ -179,4 +164,21 @@
 
 @media (max-width: 850px) {
   .formGrid { grid-template-columns: 1fr; gap: 20px; }
+}
+
+.backBtn {
+  margin-top: 10px;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background-color: #5a0c0c;
+  color: #fff;
 }
