@@ -53,7 +53,7 @@ const LeaveManagement = () => {
       const result = await response.json();
 
       if (result.success) {
-        // Remove processed record from UI
+        // Remove processed record from UI using the unique leave record ID
         setLeaveRequests(prev => prev.filter((item: any) => item.id !== id));
       }
     } catch (error) {
@@ -94,7 +94,8 @@ const LeaveManagement = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>ID</th>
+              {/* 👈 Changed from "ID" to "Employee ID" for better visual clarity */}
+              <th>Employee ID</th>
               <th>Name</th>
               <th>Reason</th>
               <th>Duration (Date Range)</th>
@@ -108,7 +109,7 @@ const LeaveManagement = () => {
             ) : filteredLeaves.length > 0 ? (
               filteredLeaves.map((item: any) => (
                 <tr key={item.id} className={styles.tableRow}>
-                  {/* Displaying ID matching Attendance ID style */}
+                  {/* Displaying actual Database Employee ID matching Attendance style */}
                   <td>{item.employee?.employeeId || 'N/A'}</td>
                   <td>{item.employee?.name || 'N/A'}</td>
                   <td>{item.reason}</td>
