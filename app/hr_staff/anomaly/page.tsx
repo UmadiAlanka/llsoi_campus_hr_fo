@@ -155,7 +155,7 @@ const AnomalyDetection = () => {
         <h2 className={styles.ruleTitle}>Currently Rule Being Used</h2>
         <ul className={styles.ruleList}>
           <li><span className={styles.checkIcon}>✓</span> Salary Range Rule</li>
-          <li><span className={styles.checkIcon}>✓</span> Rs.300 Sudden Change Rule</li>
+          <li><span className={styles.checkIcon}>✓</span> RS.10000 Sudden Change Rule</li>
         </ul>
         
         <button 
