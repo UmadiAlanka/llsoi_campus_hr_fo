@@ -28,7 +28,6 @@ interface SalaryRecord {
   year: number;
   status: string;
   generatedDate?: string;
-
 }
 
 export default function AdminSalary() {
