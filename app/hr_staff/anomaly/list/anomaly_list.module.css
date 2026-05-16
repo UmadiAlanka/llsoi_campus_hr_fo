@@ -102,3 +102,32 @@
   background-color: #5a0c0c;
   color: #fff;
 }
+
+
+.ignoredText {
+  color: #c62828; 
+  background-color: #ffebee; 
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.statusText {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pendingText {
+  color: #e65100;
+  background-color: #fff3e0;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}

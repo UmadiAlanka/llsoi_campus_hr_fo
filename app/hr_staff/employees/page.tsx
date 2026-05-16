@@ -20,16 +20,14 @@ export default function EmployeesPage() {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        // Fetching from the new DTO endpoint we created
         const response = await fetch('http://localhost:2027/api/employees/all-dto');
         const result = await response.json();
         
         if (result.success) {
-          // Setting the data array to the state
           setEmployees(result.data);
         }
       } catch (error) {
-        console.error("English: Error fetching data from backend", error);
+        console.error("Error fetching data from backend", error);
       } finally {
         setLoading(false);
       }
@@ -63,7 +61,6 @@ export default function EmployeesPage() {
     }
   }, [filteredEmployees, selectedEmployee]);
 
-  // Show loading state while waiting for API
   if (loading) {
     return <div className={styles.container}>Loading Employee Data...</div>;
   }
@@ -122,8 +119,8 @@ export default function EmployeesPage() {
                     <tr 
                       key={emp.employeeId} 
                       onClick={() => setSelectedEmployee(emp)}
-                      className={selectedEmployee?.employeeId === emp.employeeId ? styles.activeRow : ''}
-                      style={{ cursor: 'pointer' }}
+                      /* මෙන්න මෙතනට tableRow class එක සහ activeRow logic එක නිවැරදිව එකතු කර ඇත */
+                      className={`${styles.tableRow} ${selectedEmployee?.employeeId === emp.employeeId ? styles.activeRow : ''}`}
                     >
                       <td>{emp.employeeId}</td>
                       <td>{emp.name}</td>
@@ -169,7 +166,6 @@ export default function EmployeesPage() {
                   <div className={styles.infoRow}><span>Department</span> <span>{selectedEmployee.department}</span></div>
                   <div className={styles.infoRow}><span>Date joined</span> <span>{selectedEmployee.dateJoined}</span></div>
                 </section>
-                {/* Note: Update the link to use the internal database ID if needed */}
                 <Link href={`/hr_staff/employees/edit/${selectedEmployee.id}`}>
                     <button className={styles.editBtn}>Edit Employee</button>
                 </Link>

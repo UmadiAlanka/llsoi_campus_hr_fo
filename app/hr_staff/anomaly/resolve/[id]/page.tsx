@@ -10,6 +10,8 @@ const ResolveAnomaly = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  // Popup එකේ පෙන්විය යුතු පණිවිඩය රඳවා ගැනීමට අලුත් State එකක්
+  const [popupMessage, setPopupMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -34,7 +36,17 @@ const ResolveAnomaly = () => {
       });
       const result = await response.json();
       if (result.success) {
+        // ක්ලික් කළ බොත්තම අනුව Popup පණිවිඩය තීරණය කිරීම
+        if (newStatus === 'RESOLVED') {
+          setPopupMessage('Anomaly Resolved Successfully!');
+        } else if (newStatus === 'IGNORED') {
+          setPopupMessage('Anomaly Ignored Successfully!');
+        }
+
         setStatus('success');
+        
+        setData((prev: any) => ({ ...prev, status: newStatus }));
+
         setTimeout(() => {
           router.push('/hr_staff/anomaly/list');
         }, 2000);
@@ -45,15 +57,21 @@ const ResolveAnomaly = () => {
     }
   };
 
+  const isActionDisabled = 
+    status === 'loading' || 
+    data?.status === 'RESOLVED' || 
+    data?.status === 'IGNORED';
+
   if (loading) return <div className={styles.container}>Loading...</div>;
 
   return (
     <div className={styles.container}>
+      {/* සාර්ථක වූ විට popupMessage එක ගතිකව (Dynamically) මෙතනින් පෙන්වයි */}
       {status === 'success' && (
         <div className={styles.popupOverlay}>
           <div className={styles.popupCard}>
             <div className={styles.successIcon}>✔</div>
-            <p>Anomaly Resolved Successfully!</p>
+            <p>{popupMessage}</p>
           </div>
         </div>
       )}
@@ -102,27 +120,39 @@ const ResolveAnomaly = () => {
           </div>
         </div>
 
+        {(data?.status === 'RESOLVED' || data?.status === 'IGNORED') && (
+          <div style={{ textAlign: 'center', marginBottom: '15px', fontWeight: 'bold', color: data.status === 'RESOLVED' ? '#2e7d32' : '#c62828' }}>
+            This anomaly has already been {data.status.toLowerCase()}.
+          </div>
+        )}
+
         <div className={styles.actionWrapper}>
           <button 
             className={styles.resolvedBtn} 
             onClick={() => handleUpdateStatus('RESOLVED')}
-            disabled={status === 'loading'}
+            disabled={isActionDisabled}
           >
             {status === 'loading' ? 'Processing...' : 'RESOLVE ANOMALY'}
           </button>
           <button 
             className={styles.ignoreBtn} 
             onClick={() => handleUpdateStatus('IGNORED')}
-            disabled={status === 'loading'}
+            disabled={isActionDisabled}
           >
             IGNORE
           </button>
         </div>
       </div>
 
-      <button className={styles.backBtn} onClick={() => router.push('/hr_staff/anomaly/list')}>
-        Back
-      </button>
+      <div className={styles.backButtonContainer}>
+        <button 
+          type="button" 
+          className={styles.backBtn} 
+          onClick={() => router.push('/hr_staff/anomaly/list')}
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

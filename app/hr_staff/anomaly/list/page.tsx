@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import styles from './anomaly_list.module.css';
 
 interface Anomaly {
-  id: number;
+  id: number; // Anomaly Record ID 
   employee: {
+    id: string; // 
     name: string;
     jobType: string;
   };
@@ -27,7 +28,15 @@ const AnomalyList = () => {
         const response = await fetch('http://localhost:2027/api/anomaly/list');
         const result = await response.json();
         if (result.success) {
-          setAnomalies(result.data);
+          
+          // 1. Pending ඒවා table එකේ උඩටම එන විදිහට දත්ත Sort කර ගැනීම
+          const sortedData = result.data.sort((a: Anomaly, b: Anomaly) => {
+            if (a.status === 'PENDING' && b.status !== 'PENDING') return -1;
+            if (a.status !== 'PENDING' && b.status === 'PENDING') return 1;
+            return 0;
+          });
+
+          setAnomalies(sortedData);
         }
       } catch (error) {
         console.error("Error fetching anomaly list:", error);
@@ -47,7 +56,7 @@ const AnomalyList = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Employee ID</th> 
               <th>Name</th>
               <th>Salary (Rs)</th>
               <th>Type</th>
@@ -64,7 +73,8 @@ const AnomalyList = () => {
             ) : (
               anomalies.map((item) => (
                 <tr key={item.id} className={styles.tableRow}>
-                  <td>{String(item.id).padStart(3, '0')}</td>
+                  
+                  <td>{item.employee.id || "N/A"}</td>
                   <td>{item.employee.name}</td>
                   <td>{item.currentAmount.toLocaleString()}</td>
                   <td>{item.employee.jobType}</td>
@@ -78,9 +88,13 @@ const AnomalyList = () => {
                     </button>
                   </td>
                   <td>
-                    {item.status === 'RESOLVED' ? (
+                    {item.status === 'RESOLVED' && (
                       <span className={styles.statusText}>Resolved</span>
-                    ) : (
+                    )}
+                    {item.status === 'IGNORED' && (
+                      <span className={styles.ignoredText}>Ignored</span>
+                    )}
+                    {item.status === 'PENDING' && (
                       <span className={styles.pendingText}>Pending</span>
                     )}
                   </td>
@@ -91,9 +105,15 @@ const AnomalyList = () => {
         </table>
       </section>
 
-      <button className={styles.backBtn} onClick={() => router.back()}>
-        Back
-      </button>
+      <div className={styles.backButtonContainer}>
+        <button 
+          type="button" 
+          className={styles.backBtn} 
+          onClick={() => router.push('/hr_staff/anomaly')}
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

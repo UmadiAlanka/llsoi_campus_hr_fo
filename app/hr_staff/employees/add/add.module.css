@@ -159,3 +159,21 @@
     gap: 20px;
   }
 }
+
+
+.backBtn {
+  margin-top: 10px;
+  background-color: #741010;
+  color: #FEC83F;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover {
+  background-color: #5a0c0c;
+  color: #fff;
+}

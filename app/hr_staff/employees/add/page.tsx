@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; // useRouter import කරගන්න
 import styles from './add.module.css';
 
 const AddEmployeePage = () => {
+  const router = useRouter(); // router object එක සාදාගන්න
+  
   // Status can be idle, loading, success, or error
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   
   // State for form data
   const [formData, setFormData] = useState({
     name: '', nic: '', dob: '', gender: '', contact: '',
-    email: '', employeeId: '', department: '', position: '',
-    dateJoined: '', employeeType: ''
+    email: '', department: '', position: '',
+    dateJoined: '', employeeType: '', username: '', password: ''
   });
 
   // State for validation errors
@@ -20,14 +23,12 @@ const AddEmployeePage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    // Validation for Contact Number: Only digits and max 10 characters
     if (name === "contact") {
       if (!/^\d*$/.test(value) || value.length > 10) return;
     }
 
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear specific error when user starts typing again
     if (errors.contact || errors.email) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
@@ -36,20 +37,16 @@ const AddEmployeePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // --- Manual Validation Logic ---
     let validationErrors: { contact?: string; email?: string } = {};
 
-    // Check if contact is exactly 10 digits
     if (formData.contact.length !== 10) {
       validationErrors.contact = "Contact number must be exactly 10 digits.";
     }
 
-    // Check if email contains '@'
     if (!formData.email.includes('@')) {
       validationErrors.email = "Please enter a valid email address containing '@'.";
     }
 
-    // If there are errors, stop the submission
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -58,25 +55,23 @@ const AddEmployeePage = () => {
     setErrors({});
     setStatus('loading');
 
-    // Mapping frontend fields to backend Entity fields
     const payload = {
       name: formData.name,
       nic: formData.nic,
       dob: formData.dob,
       gender: formData.gender,
-      contactNumber: formData.contact, // frontend 'contact' -> backend 'contactNumber'
+      contactNumber: formData.contact,
       email: formData.email,
       department: formData.department,
-      job: formData.position,          // frontend 'position' -> backend 'job'
+      job: formData.position,          
       dateJoined: formData.dateJoined,
-      jobType: formData.employeeType,  // frontend 'employeeType' -> backend 'jobType'
-      role: "EMPLOYEE",                // Default security role
-      username: formData.email,        // Using email as default username
-      password: "123"                  // Default temporary password
+      jobType: formData.employeeType,  
+      role: "EMPLOYEE",                
+      username: formData.username,     
+      password: formData.password      
     };
 
     try {
-      // API call to Spring Boot backend
       const response = await fetch('http://localhost:2027/api/employees', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,22 +82,17 @@ const AddEmployeePage = () => {
 
       if (result.success) {
         setStatus('success');
-        
-        // Reset form on success
         setFormData({
           name: '', nic: '', dob: '', gender: '', contact: '',
-          email: '', employeeId: '', department: '', position: '',
-          dateJoined: '', employeeType: ''
+          email: '', department: '', position: '',
+          dateJoined: '', employeeType: '', username: '', password: ''
         });
-
-        // Reset status to idle after 3 seconds
         setTimeout(() => setStatus('idle'), 3000);
       } else {
         setStatus('error');
         alert("Error: " + (result.message || "Operation failed"));
         setTimeout(() => setStatus('idle'), 3000);
       }
-      
     } catch (error) {
       console.error("Submission error:", error);
       setStatus('error');
@@ -172,14 +162,9 @@ const AddEmployeePage = () => {
             </div>
           </div>
 
-          {/* Right Column: Job Information */}
+          {/* Right Column: Job & Account Information */}
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Job Information</h3>
-
-            <div className={styles.inputWrapper}>
-              <label className={styles.fieldLabel}>Employee ID:</label>
-              <input type="text" name="employeeId" value={formData.employeeId} className={styles.whiteInput} onChange={handleChange} required />
-            </div>
 
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Department:</label>
@@ -209,6 +194,18 @@ const AddEmployeePage = () => {
                 <option value="Non-academic">Non-academic</option>
               </select>
             </div>
+
+            <h3 className={styles.sectionTitle} style={{ marginTop: '24px' }}>Account Information</h3>
+
+            <div className={styles.inputWrapper}>
+              <label className={styles.fieldLabel}>Username:</label>
+              <input type="text" name="username" value={formData.username} className={styles.whiteInput} onChange={handleChange} required />
+            </div>
+
+            <div className={styles.inputWrapper}>
+              <label className={styles.fieldLabel}>Password:</label>
+              <input type="password" name="password" value={formData.password} className={styles.whiteInput} onChange={handleChange} required />
+            </div>
           </div>
         </div>
 
@@ -220,6 +217,17 @@ const AddEmployeePage = () => {
           {status === 'loading' ? 'Saving...' : 'Add New Employee'}
         </button>
       </form>
+
+     
+      <div className={styles.backButtonContainer}>
+        <button 
+          type="button" 
+          className={styles.backBtn} 
+          onClick={() => router.push('/hr_staff/employees')}
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 };

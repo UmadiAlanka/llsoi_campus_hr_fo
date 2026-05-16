@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './anomaly.module.css';
-import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, Calendar } from 'lucide-react';
 
 const AnomalyDetection = () => {
   const router = useRouter();
@@ -12,9 +12,35 @@ const AnomalyDetection = () => {
   const [detecting, setDetecting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const fetchAnomalyStats = async () => {
+  // වර්තමාන වර්ෂය සහ මාසය ලබාගෙන Default අගය "YYYY-MM" ආකෘතියට සකසා ගැනීම
+  const getCurrentMonthFormat = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  };
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonthFormat());
+  
+  // Input එක programmatically open කිරීමට useRef එකක් භාවිතා කරමු
+  const monthInputRef = useRef<HTMLInputElement>(null);
+
+  // Icon එක හෝ text එක ක්ලික් කළ විට calendar එක open වීමට
+  const handleCalendarClick = () => {
+    if (monthInputRef.current) {
+      // Browser එකේ native picker එක පෙන්වීම සඳහා (showPicker method එක සහාය දක්වයි නම්)
+      if (typeof monthInputRef.current.showPicker === 'function') {
+        monthInputRef.current.showPicker();
+      } else {
+        monthInputRef.current.click();
+      }
+    }
+  };
+
+  const fetchAnomalyStats = async (month: string) => {
+    setLoading(true);
     try {
-      const response = await fetch('http://localhost:2027/api/anomaly/stats');
+      const response = await fetch(`http://localhost:2027/api/anomaly/stats?month=${month}`);
       const result = await response.json();
       if (result.success) {
         setStats({
@@ -30,20 +56,22 @@ const AnomalyDetection = () => {
   };
 
   useEffect(() => {
-    fetchAnomalyStats();
-  }, []);
+    if (selectedMonth) {
+      fetchAnomalyStats(selectedMonth);
+    }
+  }, [selectedMonth]);
 
   const handleDetect = async () => {
     setDetecting(true);
     try {
-      const response = await fetch('http://localhost:2027/api/anomaly/detect', {
+      const response = await fetch(`http://localhost:2027/api/anomaly/detect?month=${selectedMonth}`, {
         method: 'POST',
       });
       const result = await response.json();
       
       if (result.success) {
         setShowSuccess(true);
-        fetchAnomalyStats();
+        fetchAnomalyStats(selectedMonth);
         
         setTimeout(() => {
           setShowSuccess(false);
@@ -57,6 +85,14 @@ const AnomalyDetection = () => {
     } finally {
       setDetecting(false);
     }
+  };
+
+  // පෙන්වීමට අවශ්‍ය මාසයේ නම වඩාත් පැහැදිලිව සකසා ගැනීම (உதா: "May 2026")
+  const formatDisplayMonth = (yearMonth: string) => {
+    if (!yearMonth) return "";
+    const [year, month] = yearMonth.split("-");
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
 
   return (
@@ -73,11 +109,30 @@ const AnomalyDetection = () => {
 
       <h1 className={styles.title}>Anomaly Detection</h1>
 
+      {/* 📅 Clickable Calendar Component එක */}
+      <div className={styles.filterContainer}>
+        <div className={styles.calendarPickerWrapper} onClick={handleCalendarClick}>
+          <Calendar className={styles.calendarIcon} size={22} />
+          <span className={styles.selectedMonthText}>
+            {formatDisplayMonth(selectedMonth)}
+          </span>
+          
+          {/* නොපෙනෙන සේ සඟවා ඇති (Hidden) Month Input එක */}
+          <input 
+            type="month" 
+            ref={monthInputRef}
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className={styles.hiddenMonthInput}
+          />
+        </div>
+      </div>
+
       <div className={styles.topCards}>
-        {/* Total Anomalies - මෙය ලැයිස්තුවට යයි */}
+        {/* Total Anomalies */}
         <div 
           className={`${styles.card} ${styles.clickable}`} 
-          onClick={() => router.push('/hr_staff/anomaly/list')}
+          onClick={() => router.push(`/hr_staff/anomaly/list?month=${selectedMonth}`)}
         >
           <div className={styles.cardHeader}>
             <AlertCircle size={40} className={styles.anomalyIcon} />
@@ -86,7 +141,7 @@ const AnomalyDetection = () => {
           <div className={styles.cardValue}>{loading ? "..." : stats.total}</div>
         </div>
 
-        {/* Resolved Card - මෙය දැන් Clickable නොවේ, අගය පමණක් පෙන්වයි */}
+        {/* Resolved Card */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <CheckCircle2 size={40} className={styles.resolvedIcon} />
@@ -100,7 +155,7 @@ const AnomalyDetection = () => {
         <h2 className={styles.ruleTitle}>Currently Rule Being Used</h2>
         <ul className={styles.ruleList}>
           <li><span className={styles.checkIcon}>✓</span> Salary Range Rule</li>
-          <li><span className={styles.checkIcon}>✓</span> Rs.300 Sudden Change Rule</li>
+          <li><span className={styles.checkIcon}>✓</span> RS.10000 Sudden Change Rule</li>
         </ul>
         
         <button 

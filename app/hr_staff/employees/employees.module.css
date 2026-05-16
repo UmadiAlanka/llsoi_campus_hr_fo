@@ -20,6 +20,8 @@
   flex: 2;
 }
 
+
+
 .searchBar {
   display: flex;
   background: white;
@@ -94,6 +96,15 @@
   cursor: pointer;
 }
 
+.tableRow {
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+  background-color: #fff3b0 !important; /* Light gold hover from attendance */
+  cursor: pointer;
+}
+
 .activeRow {
   background-color: #fff3b0; /* Highlighted yellow row */
 }
@@ -106,6 +117,11 @@
   padding: 10px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.addBtn:hover:not(:disabled) {
+  background-color: #5a0c0c;
+  transform: translateY(-2px);
 }
 
 /* Sidebar Details Styles */
@@ -152,4 +168,8 @@
   margin-top: 20px;
   border-radius: 4px;
   cursor: pointer;
+}
+.editBtn:hover:not(:disabled) {
+  background-color: #5a0c0c;
+  transform: translateY(-2px);
 }
