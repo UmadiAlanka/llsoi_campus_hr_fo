@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 const LeaveRequest = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [leaveBalance, setLeaveBalance] = useState(15);
+  const [leaveBalance, setLeaveBalance] = useState(48);
   const [formData, setFormData] = useState({
     startDate: '',
     endDate: '',
@@ -28,14 +28,39 @@ const LeaveRequest = () => {
     }
   }, []);
 
+  const parseDate = (dateVal) => {
+    if (Array.isArray(dateVal)) return new Date(dateVal[0], dateVal[1] - 1, dateVal[2]);
+    return new Date(dateVal);
+  };
+
   const fetchLeaveBalance = async (userId) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
     try {
+      // 1. Try fetching directly from the new balance endpoint
+      const balanceRes = await fetch(`${API_URL}/leave/employee/${userId}/balance`);
+      const balanceResult = await balanceRes.json();
+      
+      if (balanceRes.ok && balanceResult.success) {
+        setLeaveBalance(balanceResult.data);
+        return;
+      }
+
+      // 2. Fallback to manual calculation if endpoint fails
       const response = await fetch(`${API_URL}/leave/employee/${userId}`);
       const result = await response.json();
       const leaves = (result && result.data) || (Array.isArray(result) ? result : []);
-      const usedLeaves = leaves.filter(l => l.status && l.status.toUpperCase() === 'APPROVED').length;
-      setLeaveBalance(15 - usedLeaves);
+      const currentYear = new Date().getFullYear();
+      const usedLeaves = leaves
+        .filter(l => l.status && l.status.toUpperCase() === 'APPROVED')
+        .filter(l => parseDate(l.startDate).getFullYear() === currentYear)
+        .reduce((sum, l) => {
+          const start = parseDate(l.startDate);
+          const end = parseDate(l.endDate);
+          if (isNaN(start.getTime()) || isNaN(end.getTime())) return sum;
+          const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+          return sum + (diffDays > 0 ? diffDays : 0);
+        }, 0);
+      setLeaveBalance(48 - usedLeaves);
     } catch (error) {
       console.error("Error fetching leave balance:", error);
     }
@@ -58,6 +83,24 @@ const LeaveRequest = () => {
 
     setLoading(true);
     setMessage('');
+
+    // Calculate requested days
+    const start = new Date(formData.startDate);
+    const end = new Date(formData.endDate);
+    
+    if (end < start) {
+      toast.error('End date cannot be before start date.');
+      setLoading(false);
+      return;
+    }
+
+    const requestedDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+    if (requestedDays > leaveBalance) {
+      toast.error(`Insufficient leave balance. You only have ${leaveBalance} days left.`);
+      setLoading(false);
+      return;
+    }
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
 
@@ -159,7 +202,7 @@ const LeaveRequest = () => {
               <img src="/icons/MRcalender.png" alt="Calendar Icon" className={styles.balanceIcon} />
               <div>
                 <p className={styles.balanceTitle}>Leave Balance:</p>
-                <p className={styles.balanceDays}><strong>{leaveBalance}</strong> /15 Days Left</p>
+                <p className={styles.balanceDays}><strong>{leaveBalance}</strong> /48 Days Left</p>
               </div>
             </div>
 

@@ -209,21 +209,49 @@ html, body, #root {
 .actionsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 20px;
+  width: 100%;
+}
+
+.actionsGrid a {
+  text-decoration: none;
+  width: 100%;
 }
 
 .actionButton {
   background: white;
-  border: 1px solid #7a1212; 
-  padding: 15px;
-  border-radius: 6px;
+  border: 2px solid #7a1212; 
+  padding: 20px;
+  border-radius: 12px;
   color: #7a1212;
   font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.actionButton:hover {
+  background: #7a1212;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(122, 18, 18, 0.3);
+}
+
+.actionButton:hover img {
+  filter: brightness(0) invert(1);
+}
+
+.smallBtnIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 /* HOLIDAY MODAL STYLES */
@@ -394,4 +422,242 @@ html, body, #root {
 
 .calendarDay:hover {
   background: #f0f0f0;
+}
+
+/* PAYSLIP MODAL STYLES */
+.payslipModalContent {
+  background: white;
+  width: 95%;
+  max-width: 850px;
+  max-height: 90vh;
+  border-radius: 12px;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  position: relative;
+  padding: 0;
+}
+
+.payslipPrintable {
+  padding: 40px;
+  background: white;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+.payslipHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.payslipLogo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.companyName {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #7a1212;
+  font-weight: 800;
+}
+
+.payslipTitleHeader {
+  margin: 5px 0 0;
+  font-size: 1rem;
+  color: #555;
+  letter-spacing: 1px;
+}
+
+.statusTag {
+  background: #e6f4ea;
+  color: #1e7e34;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.divider {
+  border: 0;
+  border-top: 2px solid #7a1212;
+  margin: 20px 0;
+}
+
+.employeeDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+  background: #fdf2f2;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.detailGroup p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.detailGroup strong {
+  color: #7a1212;
+  width: 140px;
+  display: inline-block;
+}
+
+.salaryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.salaryGrid h4 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #7a1212;
+  border-bottom: 1px solid #7a1212;
+  padding-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.salaryRowItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed #eee;
+}
+
+.salaryTotalItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #000;
+  margin-top: 10px;
+}
+
+.netSalarySection {
+  background: #7a1212;
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.netSalaryLabel {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.netSalaryValue {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.payslipFooter {
+  text-align: center;
+  color: #777;
+  font-size: 0.85rem;
+  margin-top: 40px;
+}
+
+.modalActions {
+  padding: 20px 40px;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  border-top: 1px solid #eee;
+}
+
+.printBtn {
+  background: #7a1212;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.closeModalBtn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media print {
+  /* Hide EVERYTHING by default */
+  :global(*) {
+    visibility: hidden !important;
+  }
+
+  /* Show only the printable payslip area and its parents */
+  :global(#printable-payslip), 
+  :global(#printable-payslip) * {
+    visibility: visible !important;
+  }
+
+  /* Position the printable area at the very top left */
+  :global(#printable-payslip) {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    visibility: visible !important;
+    z-index: 9999 !important;
+  }
+
+  /* Hide specific elements that might still show up */
+  :global(.no-print), 
+  :global(.no-print) * {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Reset body/html for printing */
+  body, html {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Special handling for background colors in print */
+  .netSalarySection { 
+    background: #7a1212 !important; 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important;
+    color: white !important;
+  }
+
+  .divider {
+    border-top: 2px solid #7a1212 !important;
+    -webkit-print-color-adjust: exact !important;
+  }
 }

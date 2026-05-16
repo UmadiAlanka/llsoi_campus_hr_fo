@@ -52,64 +52,73 @@ const ViewAttendance = () => {
       return timeVal;
     };
 
+    // 1. Filter by Month/Year
     let filtered = allData.filter(record => {
       const dateObj = parseDate(record.date);
-      const recordMonth = dateObj.getMonth();
-      const recordYear = dateObj.getFullYear();
-      return recordMonth === parseInt(selectedMonth) && recordYear === parseInt(selectedYear);
+      return dateObj.getMonth() === parseInt(selectedMonth) && dateObj.getFullYear() === parseInt(selectedYear);
     });
 
-    // Calculate Summary based on times
-    const stats = filtered.reduce((acc, curr) => {
-      if (curr.status && curr.status.toLowerCase() === 'present') {
-        const time = formatTime(curr.clockInTime);
-        if (time && time > "09:00:00") acc.late++;
-        else acc.present++;
-      } else if (curr.status && (curr.status.toLowerCase() === 'absent' || curr.status.toLowerCase() === 'on leave')) {
-        acc.leave++;
-      }
-      return acc;
-    }, { present: 0, late: 0, leave: 0 });
+    const newStats = { present: 0, late: 0, leave: 0 };
+    const transformed = [];
 
-    setSummary(stats);
-
-    if (selectedStatus !== "Status") {
-      filtered = filtered.filter(record => {
-        const status = record.status ? record.status.toLowerCase() : '';
-        const time = formatTime(record.clockInTime);
-        if (selectedStatus.toLowerCase() === 'late') return time > "09:00:00";
-        if (selectedStatus.toLowerCase() === 'present') return status === 'present' && (!time || time <= "09:00:00");
-        return status === selectedStatus.toLowerCase();
-      });
-    }
-
-    const transformedData = filtered.map(record => {
-      let hours = 'N/A';
+    // 2. Process everything in ONE loop to ensure summary matches table
+    filtered.forEach(record => {
       const inTime = formatTime(record.clockInTime);
       const outTime = formatTime(record.clockOutTime);
-
-      if (inTime && outTime) {
+      
+      let hrs = record.workingHours;
+      if (hrs === null && inTime && outTime) {
         try {
           const [h1, m1] = inTime.split(':').map(Number);
           const [h2, m2] = outTime.split(':').map(Number);
           const diff = (h2 + m2/60) - (h1 + m1/60);
-          hours = diff > 0 ? diff.toFixed(1) + ' hrs' : 'N/A';
-        } catch (e) { hours = 'N/A'; }
+          hrs = diff > 0 ? diff : 0;
+        } catch (e) { hrs = 0; }
       }
 
-      const isLate = inTime && inTime > "09:00:00";
+      let stat = (record.status || 'PRESENT').toUpperCase();
+      
+      // APPLY THE RULE: Less than 4 hours is always ABSENT
+      if (hrs !== null && hrs > 0 && hrs < 4) {
+        stat = 'ABSENT';
+      }
 
-      return {
-        date: parseDate(record.date).toLocaleDateString(),
-        in: inTime || 'N/A',
-        out: outTime || 'N/A',
-        hours: hours,
-        lateness: isLate ? 'Late' : 'On-Time',
-        rawStatus: isLate ? 'Late' : (record.status || 'Present')
-      };
+      // Update Summary Counters
+      if (stat === 'PRESENT') newStats.present++;
+      else if (stat === 'LATE') newStats.late++;
+      else newStats.leave++; // Absent, Half-Day, On Leave, etc.
+
+      // Map labels for display
+      let label = 'On-Time';
+      if (stat === 'LATE') label = 'Late';
+      else if (stat === 'ABSENT') label = 'Absent';
+      else if (stat === 'HALF_DAY') label = 'Half-Day';
+      else if (stat === 'ON LEAVE' || stat === 'LEAVE') label = 'Leave';
+
+      // 3. Apply Status Filter to the display list (but summary keeps all)
+      let matchesFilter = true;
+      if (selectedStatus !== "Status") {
+        const sel = selectedStatus.toUpperCase();
+        if (sel === 'LATE') matchesFilter = (stat === 'LATE');
+        else if (sel === 'PRESENT') matchesFilter = (stat === 'PRESENT');
+        else if (sel === 'ABSENT') matchesFilter = (stat === 'ABSENT');
+        else if (sel === 'ON LEAVE') matchesFilter = (stat === 'ON LEAVE' || stat === 'LEAVE' || stat === 'HALF_DAY');
+      }
+
+      if (matchesFilter) {
+        transformed.push({
+          date: parseDate(record.date).toLocaleDateString(),
+          in: inTime || 'N/A',
+          out: outTime || 'N/A',
+          hours: (hrs !== null && hrs !== undefined) ? Number(hrs).toFixed(1) + ' hrs' : 'N/A',
+          lateness: label,
+          status: stat
+        });
+      }
     });
 
-    setAttendanceData(transformedData);
+    setSummary(newStats);
+    setAttendanceData(transformed);
   }, [allData, selectedMonth, selectedYear, selectedStatus]);
 
   const months = [
@@ -121,32 +130,21 @@ const ViewAttendance = () => {
 
   return (
     <div className={styles.appContainer}>
-      {/* HEADER */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
           <img src="/logo.png" alt="Logo" className={styles.mainLogo} />
-          <h1 className={styles.systemTitle}>
-            LLSOI Campus HR Management System
-          </h1>
+          <h1 className={styles.systemTitle}>LLSOI Campus HR Management System</h1>
         </div>
-
         <div className={styles.userProfile}>
           <div className={styles.userText}>
-            <p>
-              Welcome, <strong>{user ? user.name : 'Employee'}!</strong>
-            </p>
+            <p>Welcome, <strong>{user ? user.name : 'Employee'}!</strong></p>
             <span>Employee ID: {user ? user.username : ''}</span>
           </div>
-          <img
-            src="/icons/user-profile.png"
-            alt="User"
-            className={styles.avatarImg}
-          />
+          <img src="/icons/user-profile.png" alt="User" className={styles.avatarImg} />
         </div>
       </header>
 
       <div className={styles.dashboardBody}>
-        {/* Sidebar Navigation */}
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
             <Link href="/employees" className={styles.navLink}>
@@ -167,64 +165,40 @@ const ViewAttendance = () => {
           </nav>
         </aside>
 
-        {/* Main Attendance Content */}
         <main className={styles.mainContent}>
           <h2 className={styles.pageTitle}>Attendance</h2>
 
-          {/* Filters: Month/Year and Status */}
           <div className={styles.filterRow}>
             <div className={styles.filterItem}>
               <label className={styles.filterLabel}>Month/Year</label>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <select 
-                  className={styles.selectInput} 
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                >
-                  {months.map((m, index) => (
-                    <option key={m} value={index}>{m}</option>
-                  ))}
+                <select className={styles.selectInput} value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+                  {months.map((m, index) => (<option key={m} value={index}>{m}</option>))}
                 </select>
-                <select 
-                  className={styles.selectInput} 
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                >
-                  {[2024, 2025, 2026, 2027, 2028].map((y) => (
-                    <option key={y} value={y}>{y}</option>
-                  ))}
+                <select className={styles.selectInput} value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                  {[2024, 2025, 2026, 2027, 2028].map((y) => (<option key={y} value={y}>{y}</option>))}
                 </select>
               </div>
             </div>
             <div className={styles.filterItem}>
-              <select 
-                className={styles.selectInput}
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                {statuses.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
+              <select className={styles.selectInput} value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+                {statuses.map((s) => (<option key={s} value={s}>{s}</option>))}
               </select>
             </div>
           </div>
 
-          {/* Monthly Attendance Summary Card */}
           <div className={styles.summaryCard}>
             <div className={styles.summaryHeader}>
-              <div className={styles.redTargetIcon}>
-                <div className={styles.innerDot}></div>
-              </div>
+              <div className={styles.redTargetIcon}><div className={styles.innerDot}></div></div>
               <h3>Monthly Attendance Summary:</h3>
             </div>
             <div className={styles.statsGrid}>
               <div className={styles.statBox}>{summary.present} Present (On-Time)</div>
               <div className={styles.statBox}>{summary.late} Late (After 9 AM)</div>
-              <div className={styles.statBox}>{summary.leave} Absent/Leave</div>
+              <div className={styles.statBox}>{summary.leave} Total Leaves</div>
             </div>
           </div>
 
-          {/* Attendance Data Table */}
           <div className={styles.tableWrapper}>
             <table className={styles.attendanceTable}>
               <thead>
@@ -241,7 +215,7 @@ const ViewAttendance = () => {
                   attendanceData.map((row, i) => (
                     <tr key={i}>
                       <td>{row.date}</td>
-                      <td className={row.rawStatus === 'Late' ? styles.lateText : ''}>{row.in}</td>
+                      <td className={row.status === 'LATE' ? styles.lateText : ''}>{row.in}</td>
                       <td>{row.out}</td>
                       <td>{row.hours}</td>
                       <td>{row.lateness}</td>
