@@ -13,8 +13,8 @@ const Sidebar = () => {
     { name: 'Dashboard', icon: <Home size={20} strokeWidth={4.5} />, path: '/hr_staff/dashboard' },
     { name: 'Employee Data', icon: <Users size={20} fill="currentColor" />, path: '/hr_staff/employees' },
     { name: 'Attendance and payroll operations', icon: <Calculator size={20} strokeWidth={3.5} />, path: '/hr_staff/attendance' },
-    { name: 'Anomaly Review and Validation', icon: <AlertTriangle size={20} strokeWidth={4.5} />, path: '/hr_staff/anomalies' },
-    { name: 'Document Management', icon: <FileText size={20} strokeWidth={4.5} />, path: '/hr_staff/documents' },
+    { name: 'Anomaly Review and Validation', icon: <AlertTriangle size={20} strokeWidth={4.5} />, path: '/hr_staff/anomaly' },
+    { name: 'Document Management', icon: <FileText size={20} strokeWidth={4.5} />, path: '/hr_staff/document' },
     { name: 'Leave Management', icon: <CalendarDays size={20} strokeWidth={4.5} />, path: '/hr_staff/leave' },
     { name: 'Logout', icon: <LogOut size={20} fill="currentColor" />, path: '/login' }
   ];
