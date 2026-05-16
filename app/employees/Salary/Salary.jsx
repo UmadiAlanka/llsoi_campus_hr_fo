@@ -24,15 +24,23 @@ const Salary = () => {
   const fetchSalary = async (userId) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:2027/api";
     try {
-      const response = await fetch(`${API_URL}/salary/employee/${userId}`);
+      // FIXED: was /api/salary/employee, correct endpoint is /api/payroll/employee
+      const response = await fetch(`${API_URL}/payroll/employee/${userId}`);
       const result = await response.json();
-      let salaries = (result && result.data) || (Array.isArray(result) ? result : []);
+
+      // Handle both ApiResponse wrapper { success, data: [...] } and plain array
+      let salaries = [];
+      if (result && result.success && Array.isArray(result.data)) {
+        salaries = result.data;
+      } else if (Array.isArray(result)) {
+        salaries = result;
+      }
       
       setSalaryData(salaries);
 
-      // Calculate Last Paid Date
+      // Calculate Last Paid Date from APPROVED records
       const paidSalaries = salaries
-        .filter(s => s.status && s.status.toUpperCase() === 'PAID')
+        .filter(s => s.status && (s.status.toUpperCase() === 'PAID' || s.status.toUpperCase() === 'APPROVED'))
         .sort((a, b) => {
           const dateA = a.generatedDate ? new Date(a.generatedDate) : new Date(a.year, a.month - 1);
           const dateB = b.generatedDate ? new Date(b.generatedDate) : new Date(b.year, b.month - 1);
@@ -70,7 +78,6 @@ const Salary = () => {
 
   return (
     <div className={styles.appContainer}>
-      {/* ... Header and Sidebar stay exactly the same ... */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
           <img src="/logo.png" alt="Logo" className={styles.mainLogo} />
@@ -87,7 +94,6 @@ const Salary = () => {
       </header>
 
       <div className={styles.dashboardBody}>
-        {/* SIDEBAR */}
         <aside className={styles.sidebar}>
           <nav className={styles.navMenu}>
             <Link href="/employees" className={styles.navLink}>
@@ -109,7 +115,6 @@ const Salary = () => {
               <img src="/icons/salary.png" className={styles.navIcon} />
               View Salary
             </Link>
-
             <Link href="/login" className={styles.navLink}>
               <img src="/icons/logout.png" className={styles.navIcon} />
               Log Out
@@ -156,6 +161,20 @@ const Salary = () => {
             </div>
           </div>
 
+          {salaryData.length === 0 && (
+            <div style={{
+              background: 'rgba(255,255,255,0.15)',
+              borderRadius: '12px',
+              padding: '20px 24px',
+              marginBottom: '20px',
+              color: '#fff',
+              fontSize: '0.9rem',
+              border: '1px solid rgba(255,255,255,0.25)'
+            }}>
+              No salary records found. Salary records will appear here once your admin adds them.
+            </div>
+          )}
+
           <div className={styles.glassTableContainer}>
             <table className={styles.payslipTable}>
               <thead>
@@ -185,7 +204,7 @@ const Salary = () => {
             </table>
           </div>
 
-          {/* PAYSLIP MODAL / PRINT VIEW */}
+          {/* PAYSLIP MODAL */}
           {showPayslipModal && selectedSlip && (
             <div className={`${styles.modalOverlay} no-print`} onClick={() => setShowPayslipModal(false)}>
               <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -222,7 +241,7 @@ const Salary = () => {
                       <div className={styles.salaryRowItem}><span>Basic Salary</span> <span>{Number(selectedSlip.basicSalary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
                       <div className={styles.salaryRowItem}><span>Allowances</span> <span>{Number(selectedSlip.allowances || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
                       <div className={styles.salaryRowItem}><span>Overtime Pay</span> <span>{Number(selectedSlip.overtimePay || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
-                      <div className={styles.salaryTotalItem}><span>GROSS SALARY</span> <span>LKR {Number(selectedSlip.grossSalary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                      <div className={styles.salaryTotalItem}><span>GROSS SALARY</span> <span>LKR {Number(selectedSlip.grossSalary || selectedSlip.basicSalary || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
                     </div>
 
                     <div className={styles.deductionsSection}>

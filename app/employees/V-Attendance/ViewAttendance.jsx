@@ -130,6 +130,7 @@ const ViewAttendance = () => {
 
   return (
     <div className={styles.appContainer}>
+
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
           <img src="/logo.png" alt="Logo" className={styles.mainLogo} />
@@ -138,6 +139,7 @@ const ViewAttendance = () => {
         <div className={styles.userProfile}>
           <div className={styles.userText}>
             <p>Welcome, <strong>{user ? user.name : 'Employee'}!</strong></p>
+
             <span>Employee ID: {user ? user.username : ''}</span>
           </div>
           <img src="/icons/user-profile.png" alt="User" className={styles.avatarImg} />
@@ -183,6 +185,7 @@ const ViewAttendance = () => {
             <div className={styles.filterItem}>
               <select className={styles.selectInput} value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
                 {statuses.map((s) => (<option key={s} value={s}>{s}</option>))}
+
               </select>
             </div>
           </div>
@@ -196,6 +199,7 @@ const ViewAttendance = () => {
               <div className={styles.statBox}>{summary.present} Present (On-Time)</div>
               <div className={styles.statBox}>{summary.late} Late (After 9 AM)</div>
               <div className={styles.statBox}>{summary.leave} Total Leaves</div>
+
             </div>
           </div>
 

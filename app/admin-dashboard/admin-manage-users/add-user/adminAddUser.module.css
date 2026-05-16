@@ -53,7 +53,7 @@
 .registerBtn {
   width: 100%;
   padding: 15px;
-  background: #0f5f1a;
+  background: #720e0e;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -67,4 +67,5 @@
 }
 
 .registerBtn:hover   { background: #0d4d16; }
+
 .registerBtn:active  { transform: scale(0.98); }

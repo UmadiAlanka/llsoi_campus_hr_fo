@@ -311,6 +311,7 @@ const Dashboard = () => {
             <Link href="/employees/Salary" className={styles.navLink}>
               <img src="/icons/salary.png" alt="" className={styles.navIcon} /> View Salary
             </Link>
+
             <div onClick={() => {
               localStorage.removeItem('user');
               window.location.href = '/login';
@@ -319,6 +320,8 @@ const Dashboard = () => {
             </div>
           </nav>
         </aside>
+
+        {/* MAIN CONTENT */}
 
         <main className={styles.mainContent}>
           <section className={`${styles.pageBody} no-print`}>
