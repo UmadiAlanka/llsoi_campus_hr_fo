@@ -86,14 +86,9 @@ export default function EmployeesPage() {
               <option value="">Department (All)</option>
               <option value="IT">IT</option>
               <option value="Management">Management</option>
+              <option value="Finance">Finance</option>
             </select>
             
-            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
-              <option value="">Job Role (All)</option>
-              <option value="Officer">Officer</option>
-              <option value="Manager">Manager</option>
-              <option value="Lecturer">Lecturer</option>
-            </select>
 
             <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
               <option value="">Type (All)</option>
