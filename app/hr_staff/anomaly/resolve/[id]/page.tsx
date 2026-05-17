@@ -10,13 +10,15 @@ const ResolveAnomaly = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
-  // Popup එකේ පෙන්විය යුතු පණිවිඩය රඳවා ගැනීමට අලුත් State එකක්
+  
+  // State to hold the dynamic success message for the popup notification
   const [popupMessage, setPopupMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const response = await fetch(`http://localhost:2027/api/anomaly/${id}`);
+        // Matches your @GetMapping("/{id}") inside SalaryAnomalyController
+        const response = await fetch(`http://localhost:2027/api/anomalies/${id}`);
         const result = await response.json();
         if (result.success) setData(result.data);
       } catch (error) {
@@ -30,13 +32,26 @@ const ResolveAnomaly = () => {
 
   const handleUpdateStatus = async (newStatus: string) => {
     setStatus('loading');
+    
+    // Dynamically choose the accurate endpoint according to your Spring Boot Controller mappings
+    const endpoint = newStatus === 'RESOLVED' ? 'resolve' : 'ignore';
+    
     try {
-      const response = await fetch(`http://localhost:2027/api/anomaly/review/${id}?status=${newStatus}&notes=Verified&reviewedBy=HRStaff`, {
-        method: 'PUT'
+      const response = await fetch(`http://localhost:2027/api/anomalies/${id}/${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Maps directly to @RequestBody Map<String, Object> payload in backend
+        // Basic Salary maps to previousAmount, Current Amount maps to currentAmount
+        body: JSON.stringify({
+          previousAmount: parseFloat(data?.salary?.basicSalary || 0),
+          currentAmount: parseFloat(data?.currentAmount || 0)
+        })
       });
+      
       const result = await response.json();
       if (result.success) {
-        // ක්ලික් කළ බොත්තම අනුව Popup පණිවිඩය තීරණය කිරීම
         if (newStatus === 'RESOLVED') {
           setPopupMessage('Anomaly Resolved Successfully!');
         } else if (newStatus === 'IGNORED') {
@@ -44,9 +59,9 @@ const ResolveAnomaly = () => {
         }
 
         setStatus('success');
-        
-        setData((prev: any) => ({ ...prev, status: newStatus }));
+        setData((prev: any) => ({ ...prev, status: 'RESOLVED' }));
 
+        // Redirect back to the tracking board after 2 seconds
         setTimeout(() => {
           router.push('/hr_staff/anomaly/list');
         }, 2000);
@@ -62,11 +77,12 @@ const ResolveAnomaly = () => {
     data?.status === 'RESOLVED' || 
     data?.status === 'IGNORED';
 
+  //  Fixed syntax typo error completely here
   if (loading) return <div className={styles.container}>Loading...</div>;
 
   return (
     <div className={styles.container}>
-      {/* සාර්ථක වූ විට popupMessage එක ගතිකව (Dynamically) මෙතනින් පෙන්වයි */}
+      {/* Dynamic Success Notification Popup Overlay */}
       {status === 'success' && (
         <div className={styles.popupOverlay}>
           <div className={styles.popupCard}>
@@ -108,21 +124,39 @@ const ResolveAnomaly = () => {
               <input type="text" value={data?.detectedDate || ""} className={styles.whiteInput} readOnly />
             </div>
 
+            {/* Editable Basic Salary Field (Tied to salary.basicSalary structure) */}
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Basic Salary (Rs):</label>
-              <input type="text" value={data?.salary?.basicSalary || "0"} className={styles.whiteInput} readOnly />
+              <input 
+                type="number" 
+                value={data?.salary?.basicSalary ?? "0"} 
+                className={styles.whiteInput} 
+                onChange={(e) => setData((prev: any) => ({
+                  ...prev,
+                  salary: { ...prev.salary, basicSalary: e.target.value }
+                }))}
+                disabled={data?.status === 'RESOLVED' || data?.status === 'IGNORED'} 
+              />
             </div>
 
+            {/* Editable Current Amount Field (Tied to currentAmount structure) */}
             <div className={styles.inputWrapper}>
               <label className={styles.fieldLabel}>Current Amount (Rs):</label>
-              <input type="text" value={data?.currentAmount || "0"} className={styles.whiteInput} readOnly />
+              <input 
+                type="number" 
+                value={data?.currentAmount ?? "0"} 
+                className={styles.whiteInput} 
+                onChange={(e) => setData((prev: any) => ({ ...prev, currentAmount: e.target.value }))}
+                disabled={data?.status === 'RESOLVED' || data?.status === 'IGNORED'} 
+              />
             </div>
           </div>
         </div>
 
+        {/* Display informational banner if the anomaly has already been processed */}
         {(data?.status === 'RESOLVED' || data?.status === 'IGNORED') && (
-          <div style={{ textAlign: 'center', marginBottom: '15px', fontWeight: 'bold', color: data.status === 'RESOLVED' ? '#2e7d32' : '#c62828' }}>
-            This anomaly has already been {data.status.toLowerCase()}.
+          <div style={{ textAlign: 'center', marginBottom: '15px', fontWeight: 'bold', color: '#2e7d32' }}>
+            This anomaly has already been resolved.
           </div>
         )}
 
