@@ -118,12 +118,19 @@
   border-radius: 15px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: popIn 0.3s ease-out;
 }
 
 .successIcon {
   font-size: 3rem;
   color: #28a745;
   margin-bottom: 10px;
+}
+
+.popupCard p {
+  color: #333;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 @media (max-width: 850px) {
@@ -134,14 +141,13 @@
 }
 
 .backBtn {
-  margin-top: 25px;
+  margin-top: 10px;
   background-color: #741010;
   color: #FEC83F;
-  padding: 10px 30px;
   border: none;
-  border-radius: 8px;
+  padding: 8px 25px;
+  border-radius: 4px;
   font-weight: bold;
-  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -149,5 +155,10 @@
 .backBtn:hover {
   background-color: #5a0c0c;
   color: #fff;
-  transform: translateY(-2px);
+}
+
+.resolvedBtn:disabled, .ignoreBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none; 
 }

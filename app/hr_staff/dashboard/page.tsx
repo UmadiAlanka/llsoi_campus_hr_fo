@@ -1,4 +1,5 @@
 'use client'; 
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // Import Link for navigation
 import styles from './dashboard.module.css';
@@ -14,8 +15,14 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Calling our Spring Boot API (Port: 2027)
-        const response = await fetch('http://localhost:2027/api/dashboard/hr-staff');
+        // Automatically determine the current real-time month and year from the client clock
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Ensures 2 digits (e.g., "05")
+        const currentMonthStr = `${year}-${month}`; // Constructing format like "2026-05"
+
+        // Calling Spring Boot API (Port: 2027) with the active month query parameter
+        const response = await fetch(`http://localhost:2027/api/dashboard/hr-staff?month=${currentMonthStr}`);
         
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -28,7 +35,7 @@ export default function DashboardPage() {
           setTotalEmployees(result.data.totalEmployees);
           setPresentToday(result.data.presentToday);
           setPendingLeave(result.data.pendingLeaveRequests);
-          setAnomalies(result.data.anomaliesDetected);
+          setAnomalies(result.data.anomaliesDetected); // Receives month-filtered values now
         }
         
         setIsLoading(false);
@@ -41,10 +48,12 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
+  // Calculate the live attendance rate percentage dynamically
   const attendanceRate = totalEmployees > 0 
     ? Math.round((presentToday / totalEmployees) * 100) 
     : 0;
 
+  // Configuration for dashboard summary cards
   const stats = [
     { label: 'Total Employees', value: totalEmployees, icon: <Users strokeWidth={2.5} /> },
     { label: 'Employees present Today', value: presentToday, icon: <UserCheck strokeWidth={2.5} /> },
@@ -52,13 +61,14 @@ export default function DashboardPage() {
     { label: 'Anomalies Detected', value: anomalies, icon: <AlertCircle strokeWidth={2.5} /> },
   ];
 
-  // While data is "fetching", we can show a simple loading message
+  // While data is fetching, display a clean loading message state
   if (isLoading) return <div className={styles.loading}>Loading Dashboard...</div>;
 
   return (
     <div className={styles.container}>
       <h2 className={styles.pageTitle}>HR Staff Dashboard</h2>
       
+      {/* Metrics Summary Grid Section */}
       <div className={styles.statsGrid}>
         {stats.map((stat, index) => (
           <div key={index} className={styles.statCard}>
@@ -69,9 +79,9 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      {/* Quick Administration Routing Actions */}
       <h3 className={styles.sectionTitle}>Quick Actions</h3>
       <div className={styles.actionGrid}>
-        {/* Changed from <button> to <Link> */}
         <Link href="/hr_staff/employees/add" className={styles.actionBtn}>
           Add new Employee
         </Link>
@@ -86,6 +96,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
+      {/* Graphical Attendance Progression Ring Context */}
       <div className={styles.chartSection}>
         <h3>Attendance Overview</h3>
         <div className={styles.chartPlaceholder}>

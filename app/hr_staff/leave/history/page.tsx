@@ -6,7 +6,7 @@ import styles from './history.module.css';
 
 /**
  * Leave History Component
- * Based on prototype p-HRstaff14_2.JPG with glassmorphism table and back button.
+ * Based on prototype p-HRstaff14_2.JPG with glassmorphic table and back button.
  */
 const LeaveHistory = () => {
   const router = useRouter();
@@ -41,7 +41,8 @@ const LeaveHistory = () => {
           <table className={styles.historyTable}>
             <thead>
               <tr>
-                <th>ID</th>
+                {/* 👈 Changed from "ID" to "Employee ID" for consistency across operations */}
+                <th>Employee ID</th>
                 <th>Name</th>
                 <th>Leave Dates</th>
                 <th>Type</th>
@@ -55,7 +56,8 @@ const LeaveHistory = () => {
               ) : history.length > 0 ? (
                 history.map((item: any) => (
                   <tr key={item.id} className={styles.tableRow}>
-                    <td>{String(item.employee?.employeeId || item.id).padStart(3, '0')}</td>
+                    {/* 👈 Displays the real database employeeId directly */}
+                    <td>{item.employee?.employeeId || 'N/A'}</td>
                     <td>{item.employee?.name || 'N/A'}</td>
                     <td>{item.startDate} to {item.endDate}</td>
                     <td>{item.leaveType || 'Academic'}</td>
