@@ -7,10 +7,11 @@ html, body, #root {
 .appContainer {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures the page is at least full screen */
+  height: 100vh;
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 /* HEADER STYLES */
@@ -25,6 +26,7 @@ html, body, #root {
   width: 100%;
   box-sizing: border-box;
   z-index: 100;
+  flex-shrink: 0;
 }
 
 .headerLeft {
@@ -72,26 +74,23 @@ html, body, #root {
 .dashboardBody {
   display: flex;
   flex: 1;
-  background-image: url('/background.jpg'); 
+  min-height: 0;
+  background-image: url('/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  
-  /* CHANGE THIS: */
-  overflow: visible; /* Ensure content isn't cut off */
-  align-items: stretch; /* This ensures sidebar and mainContent are equal height */
+  overflow: hidden;
 }
 
 .sidebar {
   width: 280px;
+  min-width: 280px;
   background: rgba(207, 207, 207, 0.25); 
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  
-  /* CHANGE THIS: */
-  min-height: calc(100vh - 80px); 
-  height: auto; /* Allow it to grow with content */
-  
+  height: 100%;
+  overflow-y: auto;
+  flex-shrink: 0;
   padding-top: 20px;
 }
 
@@ -103,7 +102,7 @@ html, body, #root {
 .navLink {
   padding: 15px 25px;
   border-radius: 40px;
-  margin: 20 10px 10px 10px;
+  margin: 10px;
   color: #0b0b0b;
   font-weight: 800;
   display: flex;
@@ -119,7 +118,7 @@ html, body, #root {
 }
 
 .active {
-  background-color:  rgba(207, 207, 207, 0.25);
+  background-color: rgba(207, 207, 207, 0.25);
   border-left: 5px solid #7a1212;
   color: #0b0b0b;
 }
@@ -131,12 +130,12 @@ html, body, #root {
 /* MAIN CONTENT AREA */
 .mainContent {
   flex: 1;
+  min-width: 0;
   background-color: rgba(76, 67, 67, 0.444); 
   padding: 40px;
   color: white;
-  height: auto; 
-  overflow: visible; 
- 
+  overflow-y: auto;
+  height: 100%;
 }
 
 .sectionHeading {
@@ -159,6 +158,10 @@ html, body, #root {
   border: 3px solid #7a1212; 
 }
 
+.attendanceDate {
+  margin-bottom: 10px;
+}
+
 .markAttendanceBtn {
   background: #7a1212;
   color: white;
@@ -172,6 +175,11 @@ html, body, #root {
   gap: 10px;
   margin: 15px auto 0;
   text-align: center;
+}
+
+.btnIcon {
+  width: 20px;
+  height: 20px;
 }
 
 .statsGrid {
@@ -194,16 +202,40 @@ html, body, #root {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
   color: #7a1212;
-
 }
 
-.cardLabel{
+.cardIcon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+}
+
+.cardLabel {
   font-weight: bold;
 }
 
 .statValue {
   font-size: 2.5rem;
   font-weight: bold;
+}
+
+.statSubtext {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+}
+
+.dateValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #7a1212;
+  margin-top: 4px;
+}
+
+.attendanceDetail p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .actionsGrid {
@@ -224,6 +256,11 @@ html, body, #root {
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.smallBtnIcon {
+  width: 20px;
+  height: 20px;
 }
 
 /* HOLIDAY MODAL STYLES */

@@ -11,9 +11,20 @@ export default function AdminEditUser() {
   const employeeId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    name: "", employeeId: "", address: "", contactNumber: "",
-    role: "Employee", job: "", jobType: "Academic",
-    username: "", email: "",
+    name: "",
+    employeeId: "",
+    nic: "",
+    dob: "",
+    gender: "",
+    address: "",
+    contactNumber: "",
+    role: "EMPLOYEE",
+    job: "",
+    jobType: "Academic",
+    department: "",
+    dateJoined: "",
+    username: "",
+    email: "",
   });
 
   const [modal, setModal] = useState<{
@@ -37,11 +48,16 @@ export default function AdminEditUser() {
           setFormData({
             name: e.name || "",
             employeeId: e.employeeId || "",
+            nic: e.nic || "",
+            dob: e.dob || "",
+            gender: e.gender || "",
             address: e.address || "",
             contactNumber: e.contactNumber || "",
-            role: e.role || "Employee",
+            role: e.role || "EMPLOYEE",
             job: e.job || "",
             jobType: e.jobType || "Academic",
+            department: e.department || "",
+            dateJoined: e.dateJoined || "",
             username: e.username || "",
             email: e.email || "",
           });
@@ -59,12 +75,17 @@ export default function AdminEditUser() {
     e.preventDefault();
     const payload: any = {
       name: formData.name,
+      nic: formData.nic,
+      dob: formData.dob,
+      gender: formData.gender,
       address: formData.address,
       contactNumber: formData.contactNumber,
       role: formData.role,
       job: formData.job,
       jobType: formData.jobType,
-      username: formData.username, // sent silently to satisfy backend NOT NULL constraint
+      department: formData.department,
+      dateJoined: formData.dateJoined,
+      username: formData.username,
       email: formData.email,
     };
     try {
@@ -97,36 +118,69 @@ export default function AdminEditUser() {
       <h2 className={styles.pageTitle}>Edit User — {formData.name}</h2>
       <div className={styles.formCard}>
         <form onSubmit={handleSubmit}>
-          <h3 className={styles.sectionTitle}>User Details</h3>
+
+          {/* ── Personal Details ── */}
+          <h3 className={styles.sectionTitle}>Personal Details</h3>
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label className={styles.label}>Name</label>
               <input name="name" value={formData.name} onChange={handleChange} className={styles.input} required />
             </div>
+
             <div className={styles.formGroup}>
               <label className={styles.label}>Employee ID</label>
               <input value={formData.employeeId} readOnly className={styles.input} style={{ background: "#f0f0f0", cursor: "not-allowed" }} />
             </div>
+
             <div className={styles.formGroup}>
-              <label className={styles.label}>Address</label>
-              <input name="address" value={formData.address} onChange={handleChange} className={styles.input} />
+              <label className={styles.label}>NIC</label>
+              <input name="nic" value={formData.nic} onChange={handleChange} className={styles.input} placeholder="e.g. 200012345678" />
             </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Date of Birth</label>
+              <input name="dob" type="date" value={formData.dob} onChange={handleChange} className={styles.input} />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Gender</label>
+              <select name="gender" value={formData.gender} onChange={handleChange} className={styles.select}>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
             <div className={styles.formGroup}>
               <label className={styles.label}>Contact Number</label>
-              <input name="contactNumber" value={formData.contactNumber} onChange={handleChange} className={styles.input} />
+              <input name="contactNumber" value={formData.contactNumber} onChange={handleChange} className={styles.input} placeholder="07xxxxxxxx" />
             </div>
+
+            <div className={styles.formGroup} style={{ gridColumn: "1 / -1" }}>
+              <label className={styles.label}>Address</label>
+              <input name="address" value={formData.address} onChange={handleChange} className={styles.input} placeholder="Residential Address" />
+            </div>
+          </div>
+
+          {/* ── Job Details ── */}
+          <h3 className={styles.sectionTitle}>Job Details</h3>
+          <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label className={styles.label}>Job Title</label>
-              <input name="job" value={formData.job} onChange={handleChange} className={styles.input} />
+              <input name="job" value={formData.job} onChange={handleChange} className={styles.input} placeholder="Lecturer / Officer" />
             </div>
+
             <div className={styles.formGroup}>
-              <label className={styles.label}>Role</label>
-              <select name="role" value={formData.role} onChange={handleChange} className={styles.select}>
-                <option value="Employee">Employee</option>
-                <option value="Admin">Admin</option>
+              <label className={styles.label}>Department</label>
+              <select name="department" value={formData.department} onChange={handleChange} className={styles.select}>
+                <option value="">Select Department</option>
+                <option value="IT">IT</option>
+                <option value="Management">Management</option>
+                <option value="Finance">Finance</option>
                 <option value="HR">HR</option>
               </select>
             </div>
+
             <div className={styles.formGroup}>
               <label className={styles.label}>Job Type</label>
               <select name="jobType" value={formData.jobType} onChange={handleChange} className={styles.select}>
@@ -134,9 +188,33 @@ export default function AdminEditUser() {
                 <option value="Non-academic">Non-academic</option>
               </select>
             </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Date Joined</label>
+              <input name="dateJoined" type="date" value={formData.dateJoined} onChange={handleChange} className={styles.input} />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Role</label>
+              <select name="role" value={formData.role} onChange={handleChange} className={styles.select}>
+                <option value="EMPLOYEE">Employee</option>
+                <option value="ADMIN">Admin</option>
+                <option value="HR">HR Staff</option>
+              </select>
+            </div>
+          </div>
+
+          {/* ── Login Credentials ── */}
+          <h3 className={styles.sectionTitle}>Login Credentials</h3>
+          <div className={styles.formGrid}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Username</label>
+              <input name="username" value={formData.username} onChange={handleChange} className={styles.input} required />
+            </div>
+
             <div className={styles.formGroup}>
               <label className={styles.label}>Email</label>
-              <input name="email" value={formData.email} onChange={handleChange} className={styles.input} required />
+              <input name="email" type="email" value={formData.email} onChange={handleChange} className={styles.input} required />
             </div>
           </div>
 
